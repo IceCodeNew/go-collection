@@ -29,42 +29,42 @@ RUN source "/root/.bashrc" \
     && strip "$HOME/go/bin"/* \
     && rm -r "$HOME/.cache/go-build" "$HOME/go/pkg" "$HOME/go/src"
 WORKDIR "$HOME/go/bin"
-RUN github-release release \
+RUN "$HOME/go/bin/github-release" release \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$(TZ=':Asia/Taipei' date -I)" \
     --name "$(TZ=':Asia/Taipei' date -I)"; \
-    github-release upload \
+    "$HOME/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$(TZ=':Asia/Taipei' date -I)" \
     --name "croc" \
     --file "$HOME/go/bin/croc"; \
-    github-release upload \
+    "$HOME/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$(TZ=':Asia/Taipei' date -I)" \
     --name "github-release" \
     --file "$HOME/go/bin/github-release"; \
-    github-release upload \
+    "$HOME/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$(TZ=':Asia/Taipei' date -I)" \
     --name "go-shadowsocks2" \
     --file "$HOME/go/bin/go-shadowsocks2"; \
-    github-release upload \
+    "$HOME/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$(TZ=':Asia/Taipei' date -I)" \
     --name "nali" \
     --file "$HOME/go/bin/nali"; \
-    github-release upload \
+    "$HOME/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$(TZ=':Asia/Taipei' date -I)" \
     --name "shfmt" \
     --file "$HOME/go/bin/shfmt"; \
-    github-release upload \
+    "$HOME/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$(TZ=':Asia/Taipei' date -I)" \
