@@ -18,10 +18,18 @@ curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_c
 sudo rm '/usr/local/bin/go-shadowsocks2';
 curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/go-shadowsocks2" > \
   '/usr/local/bin/go-shadowsocks2' && sudo chmod +x '/usr/local/bin/go-shadowsocks2'
-sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/local/bin/caddy-maxmind-geolocation';
-curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/caddy-maxmind-geolocation" > \
-  '/usr/local/bin/caddy' && sudo chmod +x '/usr/local/bin/caddy'
 sudo rm '/usr/local/bin/nali';
 curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/nali" > \
   '/usr/local/bin/nali' && sudo chmod +x '/usr/local/bin/nali'
+
+curl -sSLR -o 'caddy_linux_amd64.deb' \
+"$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+       'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
+       grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d\" -f4)"
+sudo gdebi -n 'caddy_linux_amd64.deb' && rm 'caddy_linux_amd64.deb'
+sudo systemctl disable --now caddy
+sudo rm '/usr/bin/caddy' '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/local/bin/caddy-maxmind-geolocation';
+curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/caddy-maxmind-geolocation" > \
+  '/usr/bin/caddy' && sudo chmod +x '/usr/bin/caddy'
+
 # checksec --dir=/usr/local/bin
