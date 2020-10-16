@@ -18,9 +18,9 @@ curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_c
 sudo rm '/usr/local/bin/go-shadowsocks2';
 curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/go-shadowsocks2" > \
   '/usr/local/bin/go-shadowsocks2' && sudo chmod +x '/usr/local/bin/go-shadowsocks2'
-sudo rm '/usr/local/bin/xcaddy';
-curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/xcaddy" > \
-  '/usr/local/bin/xcaddy' && sudo chmod +x '/usr/local/bin/xcaddy'
+sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/local/bin/caddy-maxmind-geolocation';
+curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/caddy-maxmind-geolocation" > \
+  '/usr/local/bin/caddy' && sudo chmod +x '/usr/local/bin/caddy'
 sudo rm '/usr/local/bin/nali';
 curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/nali" > \
   '/usr/local/bin/nali' && sudo chmod +x '/usr/local/bin/nali'

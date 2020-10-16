@@ -26,6 +26,8 @@ RUN source "/root/.bashrc" \
     && go get -u -v github.com/zu1k/nali \
     && GO111MODULE=on go get -v mvdan.cc/sh/v3/cmd/shfmt \
     && GO111MODULE=on go get -v github.com/schollz/croc/v8 \
+    && "$HOME/go/bin/xcaddy" build --output "$HOME/go/bin/caddy-maxmind-geolocation" \
+    --with github.com/porech/caddy-maxmind-geolocation \
     && strip "$HOME/go/bin"/* \
     && rm -r "$HOME/.cache/go-build" "$HOME/go/pkg" "$HOME/go/src"
 WORKDIR "$HOME/go/bin"
@@ -68,5 +70,5 @@ RUN "$HOME/go/bin/github-release" release \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$(TZ=':Asia/Taipei' date -I)" \
-    --name "xcaddy" \
-    --file "$HOME/go/bin/xcaddy"; \
+    --name "caddy-maxmind-geolocation" \
+    --file "$HOME/go/bin/caddy-maxmind-geolocation"; \
