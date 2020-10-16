@@ -26,7 +26,7 @@ sudo rm '/usr/local/bin/nali';
 curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/nali" -o '/usr/local/bin/nali' && \
 sudo chmod +x '/usr/local/bin/nali'
 
-curl -sSLR -o 'caddy_linux_amd64.deb' \
+curl -LR4q -o 'caddy_linux_amd64.deb' \
 "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
        'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
        grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d\" -f4)"
@@ -36,4 +36,20 @@ sudo rm '/usr/bin/caddy' '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/lo
 curl -LR4q "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/caddy-maxmind-geolocation" -o '/usr/bin/caddy' && \
 sudo chmod +x '/usr/bin/caddy'
 
+sudo apt-get update
+sudo apt-get -y install minify
+(
+tmp_dir=$(mktemp -d)
+cd "$tmp_dir" || exit 1
+curl -LR4q \
+"$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+       'https://api.github.com/repos/tdewolff/minify/releases/latest' |
+       grep 'browser_download_url' | grep 'linux_amd64.tar.gz' | cut -d\" -f4)" |
+    bsdtar -xf-
+    /bin/mv -f './minify' '/usr/bin/minify'
+    /bin/mv -f './bash_completion' '/etc/bash_completion.d/minify'
+    /bin/rm -rf "$tmp_dir"
+)
 # checksec --dir=/usr/local/bin
+# checksec --file=/usr/bin/caddy
+# checksec --file=/usr/bin/minify
