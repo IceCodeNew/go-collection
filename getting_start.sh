@@ -50,6 +50,6 @@ curl -LR4q \
     /bin/mv -f './bash_completion' '/etc/bash_completion.d/minify'
     /bin/rm -rf "$tmp_dir"
 )
-# checksec --dir=/usr/local/bin
-# checksec --file=/usr/bin/caddy
-# checksec --file=/usr/bin/minify
+checksec --dir=/usr/local/bin
+checksec --file=/usr/bin/caddy
+checksec --file=/usr/bin/minify
