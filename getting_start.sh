@@ -9,11 +9,12 @@ export DEBIAN_FRONTEND=noninteractive
 export PAGER='cat'
 export SYSTEMD_PAGER=cat
 
+# Shell functions are only known to the shell. External commands like `find`, `xargs`, `su` and `sudo` do not recognize shell functions.
+# Instead, the function contents can be executed in a shell, either through sh -c or by creating a separate shell script as an executable file.
+## Refer: https://github.com/koalaman/shellcheck/wiki/SC2033
+
 cd() {
   cd "$@" || exit 1
-}
-rm() {
-  $(type -P rm) "$@"
 }
 cp() {
   $(type -P cp) "$@"
@@ -21,11 +22,21 @@ cp() {
 mv() {
   $(type -P mv) "$@"
 }
-mkdir() {
-  $(type -P mkdir) -p "$@"
-}
+
 curl() {
   $(type -P curl) -LRq --retry 5 --retry-delay 10 --retry-max-time 60 "$@"
+}
+curl_to_dest() {
+  if [[ $# -eq 2 ]]; then
+    (
+      tmp_dir=$(mktemp -d)
+      cd "$tmp_dir" || exit 1
+      if $(type -P curl) -LROJq --retry 5 --retry-delay 10 --retry-max-time 60 "$1"; then
+        find . -maxdepth 1 -type f -print0 | xargs -0 -i -r -s 2000 "$(type -P install)" -pvDm 644 "{}" "$2"
+      fi
+      /bin/rm -rf "$tmp_dir"
+    )
+  fi
 }
 
 ################
