@@ -31,7 +31,7 @@ curl_to_dest() {
     tmp_dir=$(mktemp -d)
     pushd "$tmp_dir" || exit 1
     if $(type -P curl) -LROJq --retry 5 --retry-delay 10 --retry-max-time 60 "$1"; then
-      find . -maxdepth 1 -type f -print0 | xargs -0 -i -r -s 2000 sudo "$(type -P install)" -pvDm 644 "{}" "$2"
+      find . -maxdepth 1 -type f -print0 | xargs -0 -i -r -s 2000 sudo "$(type -P install)" -pvD "{}" "$2"
     fi
     popd || exit 1
     /bin/rm -rf "$tmp_dir"
@@ -45,27 +45,18 @@ sudo mkdir -p /usr/local/bin
 go_collection_tag_name=$(curl -sSL -H "Accept: application/vnd.github.v3+json" \
   'https://api.github.com/repos/icecodenew/go-collection/releases/latest' |
   grep 'tag_name' | cut -d\" -f4)
-# sudo rm '/usr/local/bin/croc'
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/croc" '/usr/local/bin/croc' &&
-  sudo chmod +x '/usr/local/bin/croc'
-# sudo rm '/etc/bash_completion.d/croc'
-curl_to_dest 'https://github.com/schollz/croc/raw/master/src/install/bash_autocomplete' '/etc/bash_completion.d/croc'
 
-# sudo rm '/usr/local/bin/shfmt'
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/shfmt" '/usr/local/bin/shfmt' &&
-  sudo chmod +x '/usr/local/bin/shfmt'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/croc" '/usr/local/bin/croc'
+curl_to_dest 'https://github.com/schollz/croc/raw/master/src/install/bash_autocomplete' '/etc/bash_completion.d/croc' &&
+  sudo chmod -x '/etc/bash_completion.d/croc'
 
-# sudo rm '/usr/local/bin/github-release'
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/github-release" '/usr/local/bin/github-release' &&
-  sudo chmod +x '/usr/local/bin/github-release'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/shfmt" '/usr/local/bin/shfmt'
 
-# sudo rm '/usr/local/bin/go-shadowsocks2'
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2' &&
-  sudo chmod +x '/usr/local/bin/go-shadowsocks2'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/github-release" '/usr/local/bin/github-release'
 
-# sudo rm '/usr/local/bin/nali'
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/nali" '/usr/local/bin/nali' &&
-  sudo chmod +x '/usr/local/bin/nali'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
+
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/nali" '/usr/local/bin/nali'
 
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
@@ -84,8 +75,7 @@ else
   sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
 fi
 sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/local/bin/caddy-maxmind-geolocation'
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/caddy-maxmind-geolocation" '/usr/bin/caddy' &&
-  sudo chmod +x '/usr/bin/caddy'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/caddy-maxmind-geolocation" '/usr/bin/caddy'
 
 sudo apt-get update
 sudo apt-get -y install minify
