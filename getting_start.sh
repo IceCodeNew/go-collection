@@ -101,6 +101,8 @@ sudo "$(type -P install)" -pvDm 644 './bash_completion' '/etc/bash_completion.d/
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
+[[ -f /usr/share/caddy/index.html ]] && minify -o /usr/share/caddy/index.html /usr/share/caddy/index.html
+
 
 checksec --dir=/usr/local/bin
 checksec --file=/usr/bin/caddy
