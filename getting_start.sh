@@ -28,14 +28,14 @@ curl() {
 }
 curl_to_dest() {
   if [[ $# -eq 2 ]]; then
-    (
-      tmp_dir=$(mktemp -d)
-      cd "$tmp_dir" || exit 1
-      if $(type -P curl) -LROJq --retry 5 --retry-delay 10 --retry-max-time 60 "$1"; then
-        find . -maxdepth 1 -type f -print0 | xargs -0 -i -r -s 2000 sudo "$(type -P install)" -pvDm 644 "{}" "$2"
-      fi
-      /bin/rm -rf "$tmp_dir"
-    )
+    tmp_dir=$(mktemp -d)
+    pushd "$tmp_dir" || exit 1
+    if $(type -P curl) -LROJq --retry 5 --retry-delay 10 --retry-max-time 60 "$1"; then
+      find . -maxdepth 1 -type f -print0 | xargs -0 -i -r -s 2000 sudo "$(type -P install)" -pvDm 644 "{}" "$2"
+    fi
+    popd || exit 1
+    /bin/rm -rf "$tmp_dir"
+    dirs -c
   fi
 }
 
@@ -67,40 +67,41 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/nali" '/usr/local/bin/nali' &&
   sudo chmod +x '/usr/local/bin/nali'
 
-(
-  tmp_dir=$(mktemp -d)
-  cd "$tmp_dir" || exit 1
-  curl -o 'caddy_linux_amd64.deb' \
-    "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-      'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
-      grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d\" -f4)"
-  sudo gdebi -n 'caddy_linux_amd64.deb' && rm 'caddy_linux_amd64.deb'
-  # shellcheck disable=SC2154
-  if [[ x"${donot_need_caddy_autorun:0:1}" = x'y' ]]; then
-    sudo systemctl disable --now caddy
-  else
-    sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
-  fi
-  /bin/rm -rf "$tmp_dir"
-)
+tmp_dir=$(mktemp -d)
+pushd "$tmp_dir" || exit 1
+curl -o 'caddy_linux_amd64.deb' \
+  "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
+    grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d\" -f4)"
+sudo gdebi -n 'caddy_linux_amd64.deb' && rm 'caddy_linux_amd64.deb'
+popd || exit 1
+/bin/rm -rf "$tmp_dir"
+dirs -c
+# shellcheck disable=SC2154
+if [[ x"${donot_need_caddy_autorun:0:1}" = x'y' ]]; then
+  sudo systemctl disable --now caddy
+else
+  sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
+fi
 sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/local/bin/caddy-maxmind-geolocation'
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/caddy-maxmind-geolocation" '/usr/bin/caddy' &&
   sudo chmod +x '/usr/bin/caddy'
 
 sudo apt-get update
 sudo apt-get -y install minify
-(
-  tmp_dir=$(mktemp -d)
-  cd "$tmp_dir" || exit 1
-  curl \
-    "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-      'https://api.github.com/repos/tdewolff/minify/releases/latest' |
-      grep 'browser_download_url' | grep 'linux_amd64.tar.gz' | cut -d\" -f4)" |
-    bsdtar -xf-
-  sudo "$(type -P install)" -pvD './minify' '/usr/bin/minify'
-  sudo "$(type -P install)" -pvDm 644 './bash_completion' '/etc/bash_completion.d/minify'
-  /bin/rm -rf "$tmp_dir"
-)
+tmp_dir=$(mktemp -d)
+pushd "$tmp_dir" || exit 1
+curl \
+  "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    'https://api.github.com/repos/tdewolff/minify/releases/latest' |
+    grep 'browser_download_url' | grep 'linux_amd64.tar.gz' | cut -d\" -f4)" |
+  bsdtar -xf-
+sudo "$(type -P install)" -pvD './minify' '/usr/bin/minify'
+sudo "$(type -P install)" -pvDm 644 './bash_completion' '/etc/bash_completion.d/minify'
+popd || exit 1
+/bin/rm -rf "$tmp_dir"
+dirs -c
+
 checksec --dir=/usr/local/bin
 checksec --file=/usr/bin/caddy
 checksec --file=/usr/bin/minify
