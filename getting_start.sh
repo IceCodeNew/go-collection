@@ -63,6 +63,8 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
 
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/got" '/usr/local/bin/got'
+
 curl_to_dest "$v2ray_plugin_url" '/usr/local/bin/v2ray-plugin'
 
 # curl_to_dest "$haproxy_url" '/usr/local/sbin/haproxy'

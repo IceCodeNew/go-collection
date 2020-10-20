@@ -22,6 +22,7 @@ RUN source "/root/.bashrc" \
     # && go env -w GOPROXY=https://goproxy.cn,direct \
     && go get -u -v github.com/github-release/github-release \
     && go get -u -v github.com/shadowsocks/go-shadowsocks2 \
+    && go get -u -v github.com/melbahja/got/cmd/got \
     && go get -u -v github.com/caddyserver/xcaddy/cmd/xcaddy \
     && go get -u -v github.com/zu1k/nali \
     && GO111MODULE=on go get -v mvdan.cc/sh/v3/cmd/shfmt \
@@ -54,6 +55,12 @@ RUN "$HOME/go/bin/github-release" release \
     --tag "$(TZ=':Asia/Taipei' date -I)" \
     --name "go-shadowsocks2" \
     --file "$HOME/go/bin/go-shadowsocks2"; \
+    "$HOME/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$(TZ=':Asia/Taipei' date -I)" \
+    --name "got" \
+    --file "$HOME/go/bin/got"; \
     "$HOME/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
