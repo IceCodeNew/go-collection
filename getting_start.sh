@@ -41,7 +41,7 @@ curl_to_dest() {
 
 ################
 
-sudo mkdir -p /usr/local/bin
+sudo mkdir -p /usr/local/bin /usr/local/sbin
 go_collection_tag_name=$(curl -sSL -H "Accept: application/vnd.github.v3+json" \
   'https://api.github.com/repos/IceCodeNew/go-collection/releases/latest' |
   grep 'tag_name' | cut -d\" -f4)
