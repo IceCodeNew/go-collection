@@ -48,6 +48,9 @@ go_collection_tag_name=$(curl -sSL -H "Accept: application/vnd.github.v3+json" \
 v2ray_plugin_url=$(curl -sSL -H "Accept: application/vnd.github.v3+json" \
   'https://api.github.com/repos/IceCodeNew/v2ray-plugin/releases/latest' |
   grep 'browser_download_url' | grep -i 'linux_amd64' | cut -d\" -f4)
+haproxy_url=$(curl -sSL -H "Accept: application/vnd.github.v3+json" \
+  'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
+  grep 'browser_download_url' | cut -d\" -f4 | grep -iE 'haproxy$')
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/croc" '/usr/local/bin/croc'
 curl_to_dest 'https://github.com/schollz/croc/raw/master/src/install/bash_autocomplete' '/etc/bash_completion.d/croc' &&
@@ -60,6 +63,8 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
 
 curl_to_dest "$v2ray_plugin_url" '/usr/local/bin/v2ray-plugin'
+
+curl_to_dest "$haproxy_url" '/usr/local/sbin/haproxy'
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/nali" '/usr/local/bin/nali'
 
