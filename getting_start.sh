@@ -54,7 +54,7 @@ v2ray_plugin_url=$(curl -sSL -H "Accept: application/vnd.github.v3+json" \
 #   grep 'browser_download_url' | cut -d\" -f4 | grep -iE 'haproxy$')
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/croc" '/usr/local/bin/croc'
-curl_to_dest 'https://github.com/schollz/croc/raw/master/src/install/bash_autocomplete' '/etc/bash_completion.d/croc' &&
+curl_to_dest 'https://raw.githubusercontent.com/schollz/croc/master/src/install/bash_autocomplete' '/etc/bash_completion.d/croc' &&
   sudo chmod -x '/etc/bash_completion.d/croc'
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/shfmt" '/usr/local/bin/shfmt'
