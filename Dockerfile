@@ -10,9 +10,8 @@ RUN apk update; apk --no-cache add \
     curl -sSL4q --retry 5 --retry-delay 10 --retry-max-time 60 -o '/root/.bashrc' 'https://raw.githubusercontent.com/IceCodeNew/myrc/main/.bashrc'; \
     mkdir -p "/root/go-collection"
 
-FROM base AS go_get_and_upload
+FROM base AS go_get
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-ENV GITHUB_TOKEN="set_your_github_token_here"
 RUN source "/root/.bashrc" \
     && go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
     && go env -w CGO_CFLAGS="$CGO_CFLAGS -O2 -D_FORTIFY_SOURCE=2 -pipe -fexceptions -fstack-clash-protection -fstack-protector-strong -g -grecord-gcc-switches -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all" \
@@ -31,6 +30,10 @@ RUN source "/root/.bashrc" \
     --with github.com/porech/caddy-maxmind-geolocation \
     && strip "$HOME/go/bin"/* \
     && rm -r "$HOME/.cache/go-build" "$HOME/go/pkg" "$HOME/go/src"
+
+FROM go_get AS go_upload
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ENV GITHUB_TOKEN="set_your_github_token_here"
 WORKDIR "$HOME/go/bin"
 RUN "$HOME/go/bin/github-release" release \
     --user IceCodeNew \
