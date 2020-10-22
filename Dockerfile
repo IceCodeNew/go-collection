@@ -1,8 +1,12 @@
 FROM alpine:edge AS base
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
-RUN apk update; apk --no-cache add \
-    apk-tools autoconf automake bash bash-completion binutils build-base ca-certificates coreutils curl dos2unix dpkg gettext-tiny-dev git go grep libarchive-tools libedit-dev libedit-static linux-headers lld musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl perl pkgconf util-linux; \
-    apk --no-cache upgrade; \
+ARG TZ='Asia/Taipei'
+ENV DEFAULT_TZ ${TZ}
+RUN apk update; apk --no-progress --no-cache add \
+    apk-tools autoconf automake bash bash-completion binutils build-base ca-certificates coreutils curl dos2unix dpkg gettext-tiny-dev git go grep libarchive-tools libedit-dev libedit-static linux-headers lld musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl perl pkgconf tzdata util-linux; \
+    apk --no-progress --no-cache upgrade; \
+    rm -rf /var/cache/apk/*; \
+    cp -f /usr/share/zoneinfo/${DEFAULT_TZ} /etc/localtime; \
     update-alternatives --install /usr/local/bin/ld ld /usr/bin/lld 100; \
     update-alternatives --auto ld; \
     curl -sSL4q --retry 5 --retry-delay 10 --retry-max-time 60 -o '/usr/bin/checksec' 'https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec'; \
