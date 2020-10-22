@@ -26,7 +26,7 @@ RUN source "/root/.bashrc" \
     && go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/zu1k/nali \
     && GO111MODULE=on go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -v mvdan.cc/sh/v3/cmd/shfmt \
     && GO111MODULE=on go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -v github.com/schollz/croc/v8 \
-    && "$HOME/go/bin/xcaddy" build --output "$HOME/go/bin/caddy-maxmind-geolocation" \
+    && "/root/go/bin/xcaddy" build --output "/root/go/bin/caddy-maxmind-geolocation" \
     --with github.com/porech/caddy-maxmind-geolocation \
-    && strip "$HOME/go/bin"/* \
-    && rm -r "$HOME/.cache/go-build" "$HOME/go/pkg" "$HOME/go/src"
+    && strip "/root/go/bin"/* \
+    && rm -r "/root/.cache/go-build" "/root/go/pkg" "/root/go/src"
