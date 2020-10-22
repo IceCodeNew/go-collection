@@ -35,8 +35,8 @@ jobs:
           file: ./release.Dockerfile
           pull: true
           push: false
-          # build-args: |
-          #   GITHUB_TOKEN=token
+          secrets: |
+            GIT_AUTH_TOKEN=${{ secrets.GIT_AUTH_TOKEN }}
           # cache-from: type=registry,ref=myorg/myrepository:latest
           # cache-to: type=inline
           # tags: myorg/myrepository:latest
