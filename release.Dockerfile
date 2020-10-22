@@ -1,8 +1,10 @@
+# syntax = docker/dockerfile:1.0-experimental
 FROM quay.io/icecodenew/go-collection:latest AS go_upload
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# ARG GITHUB_TOKEN
 WORKDIR "/root/go/bin"
-RUN "/root/go/bin/github-release" release \
+# import secret:
+RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/root/go/bin/secret_token export GITHUB_TOKEN="$(cat /root/go/bin/secret_token)" \
+    && "/root/go/bin/github-release" release \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$(TZ=':Asia/Taipei' date -I)" \
