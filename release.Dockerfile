@@ -1,6 +1,6 @@
 FROM quay.io/icecodenew/go-collection:latest AS go_upload
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-ARG GITHUB_TOKEN
+# ARG GITHUB_TOKEN
 WORKDIR "$HOME/go/bin"
 RUN "$HOME/go/bin/github-release" release \
     --user IceCodeNew \
