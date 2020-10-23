@@ -46,5 +46,6 @@ jobs:
           git reset --hard origin/master
           git rm getting_start.sh
           git rm release.Dockerfile
+          git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
           git push -f -u origin release
