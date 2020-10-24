@@ -1,5 +1,7 @@
 FROM alpine:edge AS base
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+ARG checksec_latest_commit_hash='f3e56af80f7b24ebfdde5679b4a862d739636b11'
+ARG bashrc_latest_commit_hash='dffed49d1d1472f1b22b3736a5c191d74213efaa'
 ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 RUN apk update; apk --no-progress --no-cache add \
@@ -9,9 +11,9 @@ RUN apk update; apk --no-progress --no-cache add \
     cp -f /usr/share/zoneinfo/${DEFAULT_TZ} /etc/localtime; \
     update-alternatives --install /usr/local/bin/ld ld /usr/bin/lld 100; \
     update-alternatives --auto ld; \
-    curl -sSL4q --retry 5 --retry-delay 10 --retry-max-time 60 -o '/usr/bin/checksec' 'https://raw.githubusercontent.com/slimm609/checksec.sh/master/checksec'; \
+    curl -sSL4q --retry 5 --retry-delay 10 --retry-max-time 60 -o '/usr/bin/checksec' "https://raw.githubusercontent.com/slimm609/checksec.sh/${checksec_latest_commit_hash}/checksec"; \
     chmod +x '/usr/bin/checksec'; \
-    curl -sSL4q --retry 5 --retry-delay 10 --retry-max-time 60 -o '/root/.bashrc' 'https://raw.githubusercontent.com/IceCodeNew/myrc/main/.bashrc'; \
+    curl -sSL4q --retry 5 --retry-delay 10 --retry-max-time 60 -o '/root/.bashrc' "https://raw.githubusercontent.com/IceCodeNew/myrc/${bashrc_latest_commit_hash}/.bashrc"; \
     mkdir -p "/root/go-collection"
 
 FROM base AS go_get
