@@ -22,42 +22,42 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN source "/root/.bashrc" \
     && go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/github-release/github-release \
     && strip "/root/go/bin"/* \
-    && rm -r "/root/.cache/go-build" "/root/go/pkg" "/root/go/src"
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM base AS got
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN source "/root/.bashrc" \
     && go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/melbahja/got/cmd/got \
     && strip "/root/go/bin"/* \
-    && rm -r "/root/.cache/go-build" "/root/go/pkg" "/root/go/src"
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM base AS shfmt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN source "/root/.bashrc" \
     && GO111MODULE=on go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -v mvdan.cc/sh/v3/cmd/shfmt \
     && strip "/root/go/bin"/* \
-    && rm -r "/root/.cache/go-build" "/root/go/pkg" "/root/go/src"
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM base AS croc
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN source "/root/.bashrc" \
     && GO111MODULE=on go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -v github.com/schollz/croc/v8 \
     && strip "/root/go/bin"/* \
-    && rm -r "/root/.cache/go-build" "/root/go/pkg" "/root/go/src"
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM base AS go-shadowsocks2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN source "/root/.bashrc" \
     && go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/shadowsocks/go-shadowsocks2 \
     && strip "/root/go/bin"/* \
-    && rm -r "/root/.cache/go-build" "/root/go/pkg" "/root/go/src"
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM base AS nali
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN source "/root/.bashrc" \
     && go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/zu1k/nali \
     && strip "/root/go/bin"/* \
-    && rm -r "/root/.cache/go-build" "/root/go/pkg" "/root/go/src"
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM base AS caddy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -66,7 +66,7 @@ RUN source "/root/.bashrc" \
     && "/root/go/bin/xcaddy" build --output "/root/go/bin/caddy-maxmind-geolocation" \
     --with github.com/porech/caddy-maxmind-geolocation \
     && strip "/root/go/bin"/* \
-    && rm -r "/root/.cache/go-build" "/root/go/pkg" "/root/go/src"
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM alpine:edge AS collection
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
