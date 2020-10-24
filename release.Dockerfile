@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1.0-experimental
 FROM quay.io/icecodenew/go-collection:latest AS go_upload
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-WORKDIR "/root/go/bin"
+WORKDIR /root/go/bin
 # import secret:
 RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/root/go/bin/secret_token export GITHUB_TOKEN="$(cat /root/go/bin/secret_token)" \
     && export tag_name="$(TZ=':Asia/Taipei' date +%F-%H-%M-%S)" \
@@ -51,4 +51,4 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/root/go/bin/secret_token export G
     --repo go-collection \
     --tag "$tag_name" \
     --name "caddy-maxmind-geolocation" \
-    --file "/root/go/bin/caddy-maxmind-geolocation";
+    --file "/root/go/bin/caddy-maxmind-geolocation"
