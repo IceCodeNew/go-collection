@@ -101,7 +101,7 @@ COPY --from=croc /root/go/bin/croc /root/go/bin/croc
 COPY --from=go-shadowsocks2 /root/go/bin/go-shadowsocks2 /root/go/bin/go-shadowsocks2
 COPY --from=nali /root/go/bin/nali /root/go/bin/nali
 COPY --from=caddy /root/go/bin/caddy-maxmind-geolocation /root/go/bin/caddy-maxmind-geolocation
-COPY --from=quay.io/icecodenew/rust-collection:latest /root/.cargo/bin/b3sum /root/go/bin/b3sum
+COPY --from=quay.io/icecodenew/rust-collection:latest /root/go/bin/b3sum /root/go/bin/b3sum
 RUN apk update; apk --no-progress --no-cache add \
     bash tzdata; \
     apk --no-progress --no-cache upgrade; \
