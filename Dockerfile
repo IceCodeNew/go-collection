@@ -1,6 +1,8 @@
 FROM alpine:edge AS base
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+# https://api.github.com/repos/slimm609/checksec.sh/commits?per_page=1
 ARG checksec_latest_commit_hash='f3e56af80f7b24ebfdde5679b4a862d739636b11'
+# https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc
 ARG bashrc_latest_commit_hash='dffed49d1d1472f1b22b3736a5c191d74213efaa'
 RUN apk update; apk --no-progress --no-cache add \
     apk-tools autoconf automake bash binutils build-base ca-certificates coreutils curl dos2unix dpkg file gettext-tiny-dev git go grep libarchive-tools libedit-dev libedit-static linux-headers lld musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl perl pkgconf util-linux; \
@@ -37,7 +39,7 @@ RUN source "/root/.bashrc" \
 
 FROM base AS shfmt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/mvdan/sh/commits?path=go.mod
+# https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod
 ARG shfmt_latest_commit_hash='c5ff78f0d68e4067c7218775c2ff4cef6a1d23fc'
 RUN source "/root/.bashrc" \
     && GO111MODULE=on go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -v mvdan.cc/sh/v3/cmd/shfmt \
@@ -46,7 +48,7 @@ RUN source "/root/.bashrc" \
 
 FROM base AS croc
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/mvdan/sh/commits?path=go.mod
+# https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod
 ARG croc_latest_commit_hash='8d430b6cb10506848f5d50439fc2ab68c45b2957'
 RUN source "/root/.bashrc" \
     && GO111MODULE=on go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -v github.com/schollz/croc/v8 \
@@ -55,7 +57,7 @@ RUN source "/root/.bashrc" \
 
 FROM base AS go-shadowsocks2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/shadowsocks/go-shadowsocks2/commits
+# https://api.github.com/repos/shadowsocks/go-shadowsocks2/commits?per_page=1
 ARG go_ss2_latest_commit_hash='75d43273f5a50373be2a70e91372a3a6afc53a54'
 RUN source "/root/.bashrc" \
     && go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/shadowsocks/go-shadowsocks2 \
@@ -64,8 +66,8 @@ RUN source "/root/.bashrc" \
 
 FROM base AS nali
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/zu1k/nali/commits?path=go.mod
-ARG go_ss2_latest_commit_hash='9b0aa92bd4a677a9e61f27be5e1cce30b8040fc9'
+# https://api.github.com/repos/zu1k/nali/commits?per_page=1&path=go.mod
+ARG nali_latest_commit_hash='9b0aa92bd4a677a9e61f27be5e1cce30b8040fc9'
 RUN source "/root/.bashrc" \
     && go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/zu1k/nali \
     && strip "/root/go/bin"/* \
@@ -73,9 +75,9 @@ RUN source "/root/.bashrc" \
 
 FROM base AS caddy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/caddyserver/caddy/commits?path=go.mod
+# https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
 ARG caddy_latest_commit_hash='b6e96d6f4a55f96ccbb69f112822f0a923942246'
-# https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?path=go.mod
+# https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1
 ARG caddy_geoip_latest_commit_hash='d500cc3ca64b734da42e0f0446003f437c915ac8'
 RUN source "/root/.bashrc" \
     && go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/caddyserver/xcaddy/cmd/xcaddy \
