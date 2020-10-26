@@ -4,6 +4,8 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG checksec_latest_tag_name='2.4.0'
 # https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc
 ARG bashrc_latest_commit_hash='dffed49d1d1472f1b22b3736a5c191d74213efaa'
+# https://api.github.com/repos/golang/go/tags?per_page=100&page=2
+ARG golang_latest_tag_name='go1.15.3'
 RUN apk update; apk --no-progress --no-cache add \
     apk-tools autoconf automake bash binutils build-base ca-certificates coreutils curl dos2unix dpkg file gettext-tiny-dev git go grep libarchive-tools libedit-dev libedit-static linux-headers lld musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl perl pkgconf util-linux; \
     apk --no-progress --no-cache upgrade; \

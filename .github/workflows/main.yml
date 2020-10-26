@@ -62,6 +62,11 @@ jobs:
           echo "caddy_geoip_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "while [[ -z $golang_latest_tag_name ]]; do \
+                  golang_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+                    'https://api.github.com/repos/golang/go/tags?per_page=100&page=2' |
+                    grep -F 'name' | cut -d'"' -f4 | grep -Em1 '^go[0-9]+\.[0-9]+\.[0-9]+')
+                done" >> $GITHUB_ENV
           echo "cachebust=$(date +%s)" >> $GITHUB_ENV
         shell: bash
       # Runs a set of commands using the runners shell
@@ -80,6 +85,7 @@ jobs:
           sed -i -E "s/^ARG nali_latest_commit_hash=.+/ARG nali_latest_commit_hash=${nali_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_latest_commit_hash=.+/ARG caddy_latest_commit_hash=${caddy_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_geoip_latest_commit_hash=.+/ARG caddy_geoip_latest_commit_hash=${caddy_geoip_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG golang_latest_tag_name=.+/ARG golang_latest_tag_name=${golang_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
           git add Dockerfile
           git commit -m "Bump"
