@@ -1,12 +1,11 @@
-name: Daily build
+name: Bump
 
 on:
   schedule:
-    - cron: "15 1 * * *"
+    - cron: "15 1-23/8 * * *"
   push:
     branches:
       - master
-      - release
     paths-ignore:
       - "**/LICENSE"
       - "**/README.md"
@@ -14,12 +13,11 @@ on:
   # pull_request:
   #   branches:
   #     - master
-  #     - develop
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "Daily-build"
-  Daily-build:
+  # This workflow contains a single job called "Bump"
+  Bump:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -34,12 +32,60 @@ jobs:
           echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "REPO_URL=github.com/${{ github.repository }}" >> $GITHUB_ENV
+          echo "checksec_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/slimm609/checksec.sh/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "bashrc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "github_release_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/github-release/github-release/releases/latest' |
+                grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "got_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/melbahja/got/releases/latest' |
+                grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "shfmt_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "croc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "go_ss2_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/shadowsocks/go-shadowsocks2/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "nali_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/zu1k/nali/commits?per_page=1&path=go.mod' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "caddy_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/caddyserver/caddy/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "caddy_geoip_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "cachebust=$(date +%s)" >> $GITHUB_ENV
         shell: bash
       # Runs a set of commands using the runners shell
-      - name: git rm getting_start.sh
+      - name: Bump
         run: |
-          # python3 -m pip install -U pip
-          # python3 -m pip install -U pip setuptools wheel git-filter-repo
+          git config --local user.name "actions"
+          git config --local user.email "action@github.com"
+          git reset --hard origin/master
+          sed -i -E "s/^ARG checksec_latest_commit_hash=.+/ARG checksec_latest_commit_hash=${checksec_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG github_release_latest_tag_name=.+/ARG github_release_latest_tag_name=${github_release_latest_tag_name:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG got_latest_tag_name=.+/ARG got_latest_tag_name=${got_latest_tag_name:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG shfmt_latest_commit_hash=.+/ARG shfmt_latest_commit_hash=${shfmt_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG croc_latest_commit_hash=.+/ARG croc_latest_commit_hash=${croc_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG go_ss2_latest_commit_hash=.+/ARG go_ss2_latest_commit_hash=${go_ss2_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG nali_latest_commit_hash=.+/ARG nali_latest_commit_hash=${nali_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG caddy_latest_commit_hash=.+/ARG caddy_latest_commit_hash=${caddy_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG caddy_geoip_latest_commit_hash=.+/ARG caddy_geoip_latest_commit_hash=${caddy_geoip_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
+          git add Dockerfile
+          git commit -m "Bump"
+          git push -u origin master
+      - name: Force push `release` branch
+        run: |
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
           git checkout release
