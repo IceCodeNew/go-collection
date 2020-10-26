@@ -2,7 +2,7 @@ name: Release
 
 on:
   schedule:
-    - cron: "40 1 * * *"
+    - cron: "5 18 * * *"
   label:
     types: [created, deleted]
 
