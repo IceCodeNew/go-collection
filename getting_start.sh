@@ -69,9 +69,23 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go
 
 curl_to_dest "$v2ray_plugin_url" '/usr/local/bin/v2ray-plugin'
 
-# curl_to_dest "$haproxy_url" '/usr/local/sbin/haproxy'
-
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/nali" '/usr/local/bin/nali'
+
+# curl_to_dest "$haproxy_url" '/usr/local/sbin/haproxy'
+tmp_dir=$(mktemp -d)
+pushd "$tmp_dir" || exit 1
+curl -o 'haproxy_amd64.deb' \
+  "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
+    grep 'browser_download_url' | cut -d\" -f4 | grep -E '[0-9]\/haproxy_.+?amd64.deb$')"
+curl -o 'jemalloc_amd64.deb' \
+  "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
+    grep 'browser_download_url' | cut -d\" -f4 | grep -E '[0-9]\/jemalloc_.+?amd64.deb$')"
+sudo dpkg -i 'jemalloc_amd64.deb' && sudo dpkg -i 'haproxy_amd64.deb'
+popd || exit 1
+/bin/rm -rf "$tmp_dir"
+dirs -c
 
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
