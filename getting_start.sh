@@ -79,7 +79,7 @@ curl -o 'caddy_linux_amd64.deb' \
   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
     grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d\" -f4)"
-sudo gdebi -n 'caddy_linux_amd64.deb' && rm 'caddy_linux_amd64.deb'
+sudo dpkg -i 'caddy_linux_amd64.deb' && rm 'caddy_linux_amd64.deb'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
