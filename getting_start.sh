@@ -87,24 +87,26 @@ popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
 
-tmp_dir=$(mktemp -d)
-pushd "$tmp_dir" || exit 1
-curl -o 'caddy_linux_amd64.deb' \
-  "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-    'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
-    grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d\" -f4)"
-sudo dpkg -i 'caddy_linux_amd64.deb' && rm 'caddy_linux_amd64.deb'
-popd || exit 1
-/bin/rm -rf "$tmp_dir"
-dirs -c
-# shellcheck disable=SC2154
-if [[ x"${donot_need_caddy_autorun:0:1}" = x'y' ]]; then
-  sudo systemctl disable --now caddy
-else
-  sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
+if date +%u | grep -qF '6'; then
+  tmp_dir=$(mktemp -d)
+  pushd "$tmp_dir" || exit 1
+  curl -o 'caddy_linux_amd64.deb' \
+    "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+      'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
+      grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d\" -f4)"
+  sudo dpkg -i 'caddy_linux_amd64.deb' && rm 'caddy_linux_amd64.deb'
+  popd || exit 1
+  /bin/rm -rf "$tmp_dir"
+  dirs -c
+  # shellcheck disable=SC2154
+  if [[ x"${donot_need_caddy_autorun:0:1}" = x'y' ]]; then
+    sudo systemctl disable --now caddy
+  else
+    sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
+  fi
+  sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/local/bin/caddy-maxmind-geolocation'
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/caddy-maxmind-geolocation" '/usr/bin/caddy'
 fi
-sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/local/bin/caddy-maxmind-geolocation'
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/caddy-maxmind-geolocation" '/usr/bin/caddy'
 
 sudo apt-get update
 sudo apt-get -y install minify
