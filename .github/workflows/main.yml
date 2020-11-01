@@ -52,7 +52,7 @@ jobs:
                 'https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "croc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod' |
+                'https://api.github.com/repos/schollz/croc/commits?per_page=1&path=go.mod' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "go_ss2_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/shadowsocks/go-shadowsocks2/commits?per_page=1' |

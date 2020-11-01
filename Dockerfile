@@ -59,8 +59,8 @@ RUN source "/root/.bashrc" \
 
 FROM base AS croc
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod
-ARG croc_latest_commit_hash='8d430b6cb10506848f5d50439fc2ab68c45b2957'
+# https://api.github.com/repos/schollz/croc/commits?per_page=1&path=go.mod
+ARG croc_latest_commit_hash='0bafce5efe88bbf39f6ec05cb27ae7242478f43b'
 RUN source "/root/.bashrc" \
     && GO111MODULE=on go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -v github.com/schollz/croc/v8 \
     && strip "/root/go/bin"/* \
