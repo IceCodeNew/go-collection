@@ -38,6 +38,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/root/go/bin/secret_token export G
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "duf" \
+    --file "/root/go/bin/duf"; \
+    "/root/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "nali" \
     --file "/root/go/bin/nali"; \
     "/root/go/bin/github-release" upload \

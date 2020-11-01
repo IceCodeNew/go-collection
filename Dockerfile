@@ -39,6 +39,15 @@ RUN source "/root/.bashrc" \
     && strip "/root/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM base AS duf
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/muesli/duf/commits?per_page=1&path=go.mod
+ARG duf_latest_commit_hash='02161643e0fb8530aa13bfbcfefad79bd8ffdf3c'
+RUN source "/root/.bashrc" \
+    && go get -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/muesli/duf \
+    && strip "/root/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM base AS shfmt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod
@@ -96,6 +105,7 @@ ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 COPY --from=github-release /root/go/bin/github-release /root/go/bin/github-release
 COPY --from=got /root/go/bin/got /root/go/bin/got
+COPY --from=duf /root/go/bin/duf /root/go/bin/duf
 COPY --from=shfmt /root/go/bin/shfmt /root/go/bin/shfmt
 COPY --from=croc /root/go/bin/croc /root/go/bin/croc
 COPY --from=go-shadowsocks2 /root/go/bin/go-shadowsocks2 /root/go/bin/go-shadowsocks2

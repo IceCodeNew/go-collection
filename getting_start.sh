@@ -65,6 +65,8 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/got" '/usr/local/bin/got'
 
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/duf" '/usr/local/bin/duf'
+
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/b3sum" '/usr/local/bin/b3sum'
 
 curl_to_dest "$v2ray_plugin_url" '/usr/local/bin/v2ray-plugin'
