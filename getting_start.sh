@@ -53,6 +53,81 @@ v2ray_plugin_url=$(curl -sSL -H "Accept: application/vnd.github.v3+json" \
 #   'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
 #   grep 'browser_download_url' | cut -d\" -f4 | grep -iE 'haproxy$')
 
+tmp_dir=$(mktemp -d)
+pushd "$tmp_dir" || exit 1
+curl -o 'ripgrep_amd64.deb' \
+  "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    'https://api.github.com/repos/BurntSushi/ripgrep/releases/latest' |
+    grep 'browser_download_url' | cut -d\" -f4 | grep -iE 'amd64.deb$')"
+sudo dpkg -i 'ripgrep_amd64.deb'
+popd || exit 1
+/bin/rm -rf "$tmp_dir"
+dirs -c
+
+tmp_dir=$(mktemp -d)
+pushd "$tmp_dir" || exit 1
+curl -o 'bat-musl_amd64.deb' \
+  "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    'https://api.github.com/repos/sharkdp/bat/releases/latest' |
+    grep 'browser_download_url' | cut -d\" -f4 | grep -iE 'musl.+amd64.deb$')"
+sudo dpkg -i 'bat-musl_amd64.deb'
+popd || exit 1
+/bin/rm -rf "$tmp_dir"
+dirs -c
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/bat" '/usr/bin/bat'
+
+tmp_dir=$(mktemp -d)
+pushd "$tmp_dir" || exit 1
+curl -o 'fd-musl_amd64.deb' \
+  "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    'https://api.github.com/repos/sharkdp/fd/releases/latest' |
+    grep 'browser_download_url' | cut -d\" -f4 | grep -iE 'musl.+amd64.deb$')"
+sudo dpkg -i 'fd-musl_amd64.deb'
+popd || exit 1
+/bin/rm -rf "$tmp_dir"
+dirs -c
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/fd" '/usr/bin/fd'
+
+tmp_dir=$(mktemp -d)
+pushd "$tmp_dir" || exit 1
+curl -o 'hexyl-musl_amd64.deb' \
+  "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    'https://api.github.com/repos/sharkdp/hexyl/releases/latest' |
+    grep 'browser_download_url' | cut -d\" -f4 | grep -iE 'musl.+amd64.deb$')"
+sudo dpkg -i 'hexyl-musl_amd64.deb'
+popd || exit 1
+/bin/rm -rf "$tmp_dir"
+dirs -c
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/hexyl" '/usr/bin/hexyl'
+
+# tmp_dir=$(mktemp -d)
+# pushd "$tmp_dir" || exit 1
+# curl -o 'diskus-musl_amd64.deb' \
+#   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+#     'https://api.github.com/repos/sharkdp/diskus/releases/latest' |
+#     grep 'browser_download_url' | cut -d\" -f4 | grep -iE 'musl.+amd64.deb$')"
+# sudo dpkg -i 'diskus-musl_amd64.deb'
+# popd || exit 1
+# /bin/rm -rf "$tmp_dir"
+# dirs -c
+# curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/diskus" '/usr/bin/diskus'
+
+# shellcheck disable=SC2154
+if [[ x"${need_hugo_extended:0:1}" = x'y' ]] && date +%u | grep -qF '7'; then
+  tmp_dir=$(mktemp -d)
+  pushd "$tmp_dir" || exit 1
+  curl -o 'hugo_extended_Linux-64bit.deb' \
+    "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+      'https://api.github.com/repos/gohugoio/hugo/releases/latest' |
+      grep 'browser_download_url' | cut -d\" -f4 | grep -iE 'extended.+linux-64bit.deb$')"
+  sudo dpkg -i 'hugo_extended_Linux-64bit.deb'
+  popd || exit 1
+  /bin/rm -rf "$tmp_dir"
+  dirs -c
+fi
+
+################
+
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/croc" '/usr/local/bin/croc'
 curl_to_dest 'https://raw.githubusercontent.com/schollz/croc/master/src/install/bash_autocomplete' '/etc/bash_completion.d/croc' &&
   sudo chmod -x '/etc/bash_completion.d/croc'
@@ -131,4 +206,4 @@ dirs -c
 ################
 
 checksec --dir=/usr/local/bin
-checksec --listfile=<(echo -e '/usr/bin/caddy\n/usr/bin/minify')
+checksec --listfile=<(echo -e '/usr/bin/bat\n/usr/bin/fd\n/usr/bin/hexyl\n/usr/bin/caddy\n/usr/bin/minify')
