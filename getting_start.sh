@@ -73,6 +73,8 @@ curl_to_dest "$v2ray_plugin_url" '/usr/local/bin/v2ray-plugin'
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/nali" '/usr/local/bin/nali'
 
+################
+
 # curl_to_dest "$haproxy_url" '/usr/local/sbin/haproxy'
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
@@ -126,7 +128,7 @@ popd || exit 1
 dirs -c
 [[ -f /usr/share/caddy/index.html ]] && minify -o /usr/share/caddy/index.html /usr/share/caddy/index.html
 
+################
 
 checksec --dir=/usr/local/bin
-checksec --file=/usr/bin/caddy
-checksec --file=/usr/bin/minify
+checksec --listfile=<(echo -e '/usr/bin/caddy\n/usr/bin/minify')
