@@ -63,4 +63,28 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/root/go/bin/secret_token export G
     --repo go-collection \
     --tag "$tag_name" \
     --name "b3sum" \
-    --file "/root/go/bin/b3sum"
+    --file "/root/go/bin/b3sum"; \
+    "/root/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "fd" \
+    --file "/root/go/bin/fd"; \
+    "/root/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "bat" \
+    --file "/root/go/bin/bat"; \
+    "/root/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "hexyl" \
+    --file "/root/go/bin/hexyl"; \
+    "/root/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "hyperfine" \
+    --file "/root/go/bin/hyperfine"
