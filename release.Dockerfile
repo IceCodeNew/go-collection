@@ -56,11 +56,11 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/root/go/bin/secret_token export G
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
-    --name "b3sum" \
-    --file "/root/go/bin/b3sum"; \
+    --name "caddy-maxmind-geolocation" \
+    --file "/root/go/bin/caddy-maxmind-geolocation"; \
     "/root/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
-    --name "caddy-maxmind-geolocation" \
-    --file "/root/go/bin/caddy-maxmind-geolocation"
+    --name "b3sum" \
+    --file "/root/go/bin/b3sum"
