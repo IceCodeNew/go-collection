@@ -27,7 +27,7 @@ curl_path="$(type -P curl)"
 geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
 [[ x"$geo_country" = x'CN' ]] && curl_path="$(type -P curl) --retry-connrefused"
 curl() {
-  "$curl_path" -LRq --retry 5 --retry-delay 10 --retry-max-time 60 "$@"
+  $curl_path -LRq --retry 5 --retry-delay 10 --retry-max-time 60 "$@"
 }
 curl_to_dest() {
   if [[ $# -eq 2 ]]; then
