@@ -87,4 +87,10 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/root/go/bin/secret_token export G
     --repo go-collection \
     --tag "$tag_name" \
     --name "hyperfine" \
-    --file "/root/go/bin/hyperfine"
+    --file "/root/go/bin/hyperfine"; \
+    "/root/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "boringtun" \
+    --file "/root/go/bin/boringtun"
