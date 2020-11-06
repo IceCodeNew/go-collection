@@ -171,7 +171,7 @@ popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
 
-if date +%u | grep -qF '6'; then
+if ! [[ -f /usr/bin/caddy ]] || date +%u | grep -qF '6'; then
   tmp_dir=$(mktemp -d)
   pushd "$tmp_dir" || exit 1
   curl -o 'caddy_linux_amd64.deb' \
