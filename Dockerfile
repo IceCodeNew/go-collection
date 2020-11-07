@@ -103,14 +103,14 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG cachebust='1603527789'
 ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
-COPY --from=github-release /root/go/bin/github-release /root/go/bin/github-release
-COPY --from=got /root/go/bin/got /root/go/bin/got
-COPY --from=duf /root/go/bin/duf /root/go/bin/duf
-COPY --from=shfmt /root/go/bin/shfmt /root/go/bin/shfmt
-COPY --from=croc /root/go/bin/croc /root/go/bin/croc
-COPY --from=go-shadowsocks2 /root/go/bin/go-shadowsocks2 /root/go/bin/go-shadowsocks2
-COPY --from=nali /root/go/bin/nali /root/go/bin/nali
-COPY --from=caddy /root/go/bin/caddy-maxmind-geolocation /root/go/bin/caddy-maxmind-geolocation
+COPY --from=github-release /root/go/bin /root/go/bin/
+COPY --from=got /root/go/bin /root/go/bin/
+COPY --from=duf /root/go/bin /root/go/bin/
+COPY --from=shfmt /root/go/bin /root/go/bin/
+COPY --from=croc /root/go/bin /root/go/bin/
+COPY --from=go-shadowsocks2 /root/go/bin /root/go/bin/
+COPY --from=nali /root/go/bin /root/go/bin/
+COPY --from=caddy /root/go/bin /root/go/bin/
 COPY --from=quay.io/icecodenew/rust-collection:latest /root/go/bin /root/go/bin/
 RUN apk update; apk --no-progress --no-cache add \
     bash tzdata; \
