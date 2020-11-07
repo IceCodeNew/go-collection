@@ -68,7 +68,7 @@ sudo dpkg -i 'bat-musl_amd64.deb'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/bat" '/usr/bin/bat'
+curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/bat" '/usr/bin/bat'
 
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
@@ -80,7 +80,7 @@ sudo dpkg -i 'fd-musl_amd64.deb'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/fd" '/usr/bin/fd'
+curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/fd" '/usr/bin/fd'
 
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
@@ -92,7 +92,7 @@ sudo dpkg -i 'hexyl-musl_amd64.deb'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/hexyl" '/usr/bin/hexyl'
+curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/hexyl" '/usr/bin/hexyl'
 
 # tmp_dir=$(mktemp -d)
 # pushd "$tmp_dir" || exit 1
@@ -136,13 +136,13 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/downlo
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/duf" '/usr/local/bin/duf'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/b3sum" '/usr/local/bin/b3sum'
+curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/b3sum" '/usr/local/bin/b3sum'
 
 curl_to_dest "https://github.com/IceCodeNew/v2ray-plugin/releases/latest/download/v2ray-plugin_linux_amd64" '/usr/local/bin/v2ray-plugin'
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/nali" '/usr/local/bin/nali'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/boringtun" '/usr/local/bin/boringtun'
+curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/boringtun" '/usr/local/bin/boringtun'
 
 ################
 
