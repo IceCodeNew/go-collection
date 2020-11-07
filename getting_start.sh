@@ -53,7 +53,7 @@ curl -o 'ripgrep_amd64.deb' \
   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/BurntSushi/ripgrep/releases/latest' |
     grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'amd64.deb$')"
-sudo dpkg -i 'ripgrep_amd64.deb'
+sudo dpkg -i 'ripgrep_amd64.deb' && apt-mark hold ripgrep
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
