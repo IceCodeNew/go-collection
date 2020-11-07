@@ -3,7 +3,7 @@ FROM quay.io/icecodenew/go-collection:latest AS go_upload
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 WORKDIR /root/go/bin
 # import secret:
-RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/root/go/bin/secret_token export GITHUB_TOKEN="$(cat /root/go/bin/secret_token)" \
+RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TOKEN="$(cat /tmp/secret_token)" \
     && export tag_name="$(TZ=':Asia/Taipei' date +%F-%H-%M-%S)" \
     && "/root/go/bin/github-release" release \
     --user IceCodeNew \
