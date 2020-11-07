@@ -46,15 +46,6 @@ curl_to_dest() {
 
 # sudo mkdir -p /usr/local/bin /usr/local/sbin
 sudo mkdir -p /usr/local/bin
-go_collection_tag_name=$(curl -sSL -H "Accept: application/vnd.github.v3+json" \
-  'https://api.github.com/repos/IceCodeNew/go-collection/releases/latest' |
-  grep 'tag_name' | cut -d'"' -f4)
-v2ray_plugin_url=$(curl -sSL -H "Accept: application/vnd.github.v3+json" \
-  'https://api.github.com/repos/IceCodeNew/v2ray-plugin/releases/latest' |
-  grep 'browser_download_url' | grep -i 'linux_amd64' | cut -d'"' -f4)
-# haproxy_url=$(curl -sSL -H "Accept: application/vnd.github.v3+json" \
-#   'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
-#   grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'haproxy$')
 
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
@@ -77,7 +68,7 @@ sudo dpkg -i 'bat-musl_amd64.deb'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/bat" '/usr/bin/bat'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/bat" '/usr/bin/bat'
 
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
@@ -89,7 +80,7 @@ sudo dpkg -i 'fd-musl_amd64.deb'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/fd" '/usr/bin/fd'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/fd" '/usr/bin/fd'
 
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
@@ -101,7 +92,7 @@ sudo dpkg -i 'hexyl-musl_amd64.deb'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/hexyl" '/usr/bin/hexyl'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/hexyl" '/usr/bin/hexyl'
 
 # tmp_dir=$(mktemp -d)
 # pushd "$tmp_dir" || exit 1
@@ -113,7 +104,7 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go
 # popd || exit 1
 # /bin/rm -rf "$tmp_dir"
 # dirs -c
-# curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/diskus" '/usr/bin/diskus'
+# curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/diskus" '/usr/bin/diskus'
 
 # shellcheck disable=SC2154
 if [[ x"${need_hugo_extended:0:1}" = x'y' ]] && date +%u | grep -qF '7'; then
@@ -131,31 +122,31 @@ fi
 
 ################
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/croc" '/usr/local/bin/croc'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/croc" '/usr/local/bin/croc'
 curl_to_dest 'https://raw.githubusercontent.com/schollz/croc/master/src/install/bash_autocomplete' '/etc/bash_completion.d/croc' &&
   sudo chmod -x '/etc/bash_completion.d/croc'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/shfmt" '/usr/local/bin/shfmt'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/shfmt" '/usr/local/bin/shfmt'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/github-release" '/usr/local/bin/github-release'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/github-release" '/usr/local/bin/github-release'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/got" '/usr/local/bin/got'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/got" '/usr/local/bin/got'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/duf" '/usr/local/bin/duf'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/duf" '/usr/local/bin/duf'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/b3sum" '/usr/local/bin/b3sum'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/b3sum" '/usr/local/bin/b3sum'
 
-curl_to_dest "$v2ray_plugin_url" '/usr/local/bin/v2ray-plugin'
+curl_to_dest "https://github.com/IceCodeNew/v2ray-plugin/releases/latest/download/v2ray-plugin_linux_amd64" '/usr/local/bin/v2ray-plugin'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/nali" '/usr/local/bin/nali'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/nali" '/usr/local/bin/nali'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/boringtun" '/usr/local/bin/boringtun'
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/boringtun" '/usr/local/bin/boringtun'
 
 ################
 
-# curl_to_dest "$haproxy_url" '/usr/local/sbin/haproxy'
+# curl_to_dest "https://github.com/IceCodeNew/haproxy_static/releases/latest/download/haproxy" '/usr/local/sbin/haproxy'
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
 curl -o 'haproxy_amd64.deb' \
@@ -189,18 +180,14 @@ if ! [[ -f /usr/bin/caddy ]] || date +%u | grep -qF '6'; then
     sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
   fi
   sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/local/bin/caddy-maxmind-geolocation'
-  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/download/${go_collection_tag_name}/caddy-maxmind-geolocation" '/usr/bin/caddy'
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/caddy-maxmind-geolocation" '/usr/bin/caddy'
 fi
 
 sudo apt-get update
 sudo apt-get -y install minify
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
-curl \
-  "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-    'https://api.github.com/repos/tdewolff/minify/releases/latest' |
-    grep 'browser_download_url' | grep 'linux_amd64.tar.gz' | cut -d'"' -f4)" |
-  bsdtar -xf-
+curl "https://github.com/tdewolff/minify/releases/latest/download/minify_linux_amd64.tar.gz" | bsdtar -xf-
 sudo "$(type -P install)" -pvD './minify' '/usr/bin/minify'
 sudo "$(type -P install)" -pvDm 644 './bash_completion' '/etc/bash_completion.d/minify'
 popd || exit 1
