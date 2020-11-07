@@ -111,7 +111,6 @@ COPY --from=croc /root/go/bin /root/go/bin/
 COPY --from=go-shadowsocks2 /root/go/bin /root/go/bin/
 COPY --from=nali /root/go/bin /root/go/bin/
 COPY --from=caddy /root/go/bin /root/go/bin/
-COPY --from=quay.io/icecodenew/rust-collection:latest /root/go/bin /root/go/bin/
 RUN apk update; apk --no-progress --no-cache add \
     bash tzdata; \
     apk --no-progress --no-cache upgrade; \
