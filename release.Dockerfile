@@ -56,5 +56,11 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "apk-file" \
+    --file "/root/go/bin/apk-file"; \
+    "/root/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "caddy-maxmind-geolocation" \
     --file "/root/go/bin/caddy-maxmind-geolocation"

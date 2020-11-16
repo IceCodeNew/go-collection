@@ -144,6 +144,8 @@ curl_to_dest "https://github.com/IceCodeNew/v2ray-plugin/releases/latest/downloa
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/nali" '/usr/local/bin/nali'
 
+[[ -n "$(type -P apk)" ]] && curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/apk-file" '/usr/local/bin/apk-file'
+
 curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/boringtun" '/usr/local/bin/boringtun'
 
 ################

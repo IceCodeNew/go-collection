@@ -84,6 +84,15 @@ RUN source "/root/.bashrc" \
     && strip "/root/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM base AS apk-file
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/genuinetools/apk-file/releases/latest
+ARG apk_file_latest_tag_name='v0.3.6'
+RUN source "/root/.bashrc" \
+    && go get -trimpath -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/genuinetools/apk-file \
+    && strip "/root/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM base AS caddy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
@@ -110,6 +119,7 @@ COPY --from=shfmt /root/go/bin /root/go/bin/
 COPY --from=croc /root/go/bin /root/go/bin/
 COPY --from=go-shadowsocks2 /root/go/bin /root/go/bin/
 COPY --from=nali /root/go/bin /root/go/bin/
+COPY --from=apk-file /root/go/bin /root/go/bin/
 COPY --from=caddy /root/go/bin /root/go/bin/
 RUN apk update; apk --no-progress --no-cache add \
     bash tzdata; \
