@@ -26,6 +26,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "mos-chinadns" \
+    --file "/go/bin/mos-chinadns"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "go-shadowsocks2" \
     --file "/go/bin/go-shadowsocks2"; \
     "/go/bin/github-release" upload \

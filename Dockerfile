@@ -68,6 +68,15 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM base AS mosdns
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/IrineSistiana/mosdns/commits?per_page=1
+ARG mosdns_latest_commit_hash='5ee263d0b686404c93016351076851861a854eb4'
+RUN source "/root/.bashrc" \
+    && go get -trimpath -ldflags='-linkmode=external -extldflags "-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie"' -u -v github.com/IrineSistiana/mosdns \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM base AS go-shadowsocks2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/go-shadowsocks2/commits?per_page=1
@@ -119,6 +128,7 @@ COPY --from=got /go/bin /go/bin/
 COPY --from=duf /go/bin /go/bin/
 COPY --from=shfmt /go/bin /go/bin/
 COPY --from=croc /go/bin /go/bin/
+COPY --from=mosdns /go/bin /go/bin/
 COPY --from=go-shadowsocks2 /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
 COPY --from=apk-file /go/bin /go/bin/

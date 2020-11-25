@@ -54,6 +54,9 @@ jobs:
           echo "croc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/schollz/croc/commits?per_page=1&path=go.mod' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "mosdns_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/IrineSistiana/mosdns/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "go_ss2_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/shadowsocks/go-shadowsocks2/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -92,6 +95,7 @@ jobs:
           sed -i -E "s/^ARG duf_latest_commit_hash=.+/ARG duf_latest_commit_hash=${duf_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG shfmt_latest_commit_hash=.+/ARG shfmt_latest_commit_hash=${shfmt_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG croc_latest_commit_hash=.+/ARG croc_latest_commit_hash=${croc_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG mosdns_latest_commit_hash=.+/ARG mosdns_latest_commit_hash=${mosdns_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG go_ss2_latest_commit_hash=.+/ARG go_ss2_latest_commit_hash=${go_ss2_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG nali_latest_commit_hash=.+/ARG nali_latest_commit_hash=${nali_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG apk_file_latest_tag_name=.+/ARG apk_file_latest_tag_name=${apk_file_latest_tag_name:?empty value}/" Dockerfile
