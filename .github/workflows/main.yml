@@ -91,8 +91,8 @@ jobs:
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
           git reset --hard origin/master
-          sed -i -E "s/^ARG checksec_latest_tag_name=.+/ARG checksec_latest_tag_name=${checksec_latest_tag_name:?empty value}/" Dockerfile
-          sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG checksec_latest_tag_name=.+/ARG checksec_latest_tag_name=${checksec_latest_tag_name:?empty value}/" build_base.Dockerfile
+          sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG github_release_latest_tag_name=.+/ARG github_release_latest_tag_name=${github_release_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG got_latest_tag_name=.+/ARG got_latest_tag_name=${got_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG duf_latest_commit_hash=.+/ARG duf_latest_commit_hash=${duf_latest_commit_hash:?empty value}/" Dockerfile
@@ -105,9 +105,9 @@ jobs:
           sed -i -E "s/^ARG apk_file_latest_tag_name=.+/ARG apk_file_latest_tag_name=${apk_file_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_latest_commit_hash=.+/ARG caddy_latest_commit_hash=${caddy_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_geoip_latest_commit_hash=.+/ARG caddy_geoip_latest_commit_hash=${caddy_geoip_latest_commit_hash:?empty value}/" Dockerfile
-          sed -i -E "s/^ARG golang_latest_tag_name=.+/ARG golang_latest_tag_name=${golang_latest_tag_name:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG golang_latest_tag_name=.+/ARG golang_latest_tag_name=${golang_latest_tag_name:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
-          git add Dockerfile
+          git add Dockerfile build_base.Dockerfile
           git commit -m "Bump"
           git push -u origin master
       - name: Force push `release` branch
