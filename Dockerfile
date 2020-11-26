@@ -88,6 +88,17 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM base AS chisel
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/jpillora/chisel/commits?per_page=1
+ARG chisel_latest_commit_hash='20921074b5827147b1a24d4ef4f5cba174856430'
+RUN source "/root/.bashrc" \
+    && git_clone 'https://github.com/jpillora/chisel.git' '/go/src/chisel' \
+    && cd /go/src/chisel || exit 1 \
+    && go build -trimpath -ldflags="-linkmode=external -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/chisel -v . \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM base AS nali
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/zu1k/nali/commits?per_page=1&path=go.mod
@@ -132,6 +143,7 @@ COPY --from=shfmt /go/bin /go/bin/
 COPY --from=croc /go/bin /go/bin/
 COPY --from=mosdns /go/bin /go/bin/
 COPY --from=go-shadowsocks2 /go/bin /go/bin/
+COPY --from=chisel /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
 COPY --from=apk-file /go/bin /go/bin/
 COPY --from=caddy /go/bin /go/bin/
