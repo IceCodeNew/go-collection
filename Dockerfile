@@ -50,7 +50,7 @@ ARG mosdns_latest_commit_hash='5ee263d0b686404c93016351076851861a854eb4'
 RUN source "/root/.bashrc" \
     && git_clone 'https://github.com/IrineSistiana/mosdns.git' '/go/src/mosdns' \
     && cd /go/src/mosdns || exit 1 \
-    && go build -trimpath -ldflags="-linkmode=external -X main.version=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/mos-chinadns -v . \
+    && go build -trimpath -ldflags="-linkmode=external -X main.version=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/mosdns -v . \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
