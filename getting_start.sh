@@ -134,6 +134,17 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/downlo
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
 
+tmp_dir=$(mktemp -d)
+pushd "$tmp_dir" || exit 1
+curl "https://github.com/IceCodeNew/rust-collection/releases/latest/download/ss-rust-linux-gnu-x64.tar.xz" | bsdtar -xf-
+sudo "$(type -P install)" -pvD './sslocal' '/usr/local/bin/sslocal'
+sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
+sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver'
+sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
+popd || exit 1
+/bin/rm -rf "$tmp_dir"
+dirs -c
+
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/chisel" '/usr/local/bin/chisel'
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/got" '/usr/local/bin/got'
