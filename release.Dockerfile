@@ -21,7 +21,7 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --repo go-collection \
     --tag "$tag_name" \
     --name "croc.exe" \
-    --file "/go/bin/croc.exe"; \
+    --file "/go/bin/windows_amd64/croc.exe"; \
     "/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
@@ -51,7 +51,7 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --repo go-collection \
     --tag "$tag_name" \
     --name "go-shadowsocks2.exe" \
-    --file "/go/bin/go-shadowsocks2.exe"; \
+    --file "/go/bin/windows_amd64/go-shadowsocks2.exe"; \
     "/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \

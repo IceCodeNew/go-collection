@@ -59,6 +59,7 @@ RUN source "/root/.bashrc" \
     && cd /go/src/mosdns || exit 1 \
     && go build -trimpath -ldflags="-linkmode=external -X main.version=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/mosdns -v . \
     && strip "/go/bin"/*
+WORKDIR /go/src/mosdns
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-X main.version=$(git describe --tags --long --always)" -o /go/bin/mosdns.exe -v . \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
@@ -83,6 +84,7 @@ RUN source "/root/.bashrc" \
     && cd /go/src/chisel || exit 1 \
     && go build -trimpath -ldflags="-linkmode=external -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/chisel -v . \
     && strip "/go/bin"/*
+WORKDIR /go/src/chisel
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always)" -o /go/bin/chisel.exe -v . \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
