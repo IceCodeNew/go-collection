@@ -45,7 +45,8 @@ ARG croc_latest_commit_hash='0bafce5efe88bbf39f6ec05cb27ae7242478f43b'
 ARG CGO_ENABLE=0
 RUN source "/root/.bashrc" \
     && GO111MODULE=on go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -v github.com/schollz/croc/v8 \
-    && strip "/go/bin"/* \
+    && strip "/go/bin"/*
+RUN GO111MODULE=on GOOS=windows GOARCH=amd64 go get -trimpath -v github.com/schollz/croc/v8 \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS mosdns
@@ -57,7 +58,8 @@ RUN source "/root/.bashrc" \
     && git_clone 'https://github.com/IrineSistiana/mosdns.git' '/go/src/mosdns' \
     && cd /go/src/mosdns || exit 1 \
     && go build -trimpath -ldflags="-linkmode=external -X main.version=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/mosdns -v . \
-    && strip "/go/bin"/* \
+    && strip "/go/bin"/*
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-X main.version=$(git describe --tags --long --always)" -o /go/bin/mosdns.exe -v . \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS go-shadowsocks2
@@ -67,7 +69,8 @@ ARG go_ss2_latest_commit_hash='75d43273f5a50373be2a70e91372a3a6afc53a54'
 ARG CGO_ENABLE=0
 RUN source "/root/.bashrc" \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/shadowsocks/go-shadowsocks2 \
-    && strip "/go/bin"/* \
+    && strip "/go/bin"/*
+RUN GOOS=windows GOARCH=amd64 go get -trimpath -u -v github.com/shadowsocks/go-shadowsocks2 \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS chisel
@@ -79,7 +82,8 @@ RUN source "/root/.bashrc" \
     && git_clone 'https://github.com/jpillora/chisel.git' '/go/src/chisel' \
     && cd /go/src/chisel || exit 1 \
     && go build -trimpath -ldflags="-linkmode=external -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/chisel -v . \
-    && strip "/go/bin"/* \
+    && strip "/go/bin"/*
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always)" -o /go/bin/chisel.exe -v . \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS nali

@@ -20,6 +20,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "croc.exe" \
+    --file "/go/bin/croc.exe"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "github-release" \
     --file "/go/bin/github-release"; \
     "/go/bin/github-release" upload \
@@ -32,14 +38,32 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "mosdns.exe" \
+    --file "/go/bin/mosdns.exe"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "go-shadowsocks2" \
     --file "/go/bin/go-shadowsocks2"; \
     "/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "go-shadowsocks2.exe" \
+    --file "/go/bin/go-shadowsocks2.exe"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "chisel" \
     --file "/go/bin/chisel"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "chisel.exe" \
+    --file "/go/bin/chisel.exe"; \
     "/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
