@@ -99,4 +99,10 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --repo go-collection \
     --tag "$tag_name" \
     --name "caddy-maxmind-geolocation" \
-    --file "/go/bin/caddy-maxmind-geolocation"
+    --file "/go/bin/caddy-maxmind-geolocation"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "httpstat" \
+    --file "/go/bin/httpstat"

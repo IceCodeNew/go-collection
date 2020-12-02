@@ -163,6 +163,8 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/downlo
 
 [[ -n "$(type -P apk)" ]] && curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/apk-file" '/usr/local/bin/apk-file'
 
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/httpstat" '/usr/local/bin/httpstat'
+
 curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/boringtun" '/usr/local/bin/boringtun'
 
 ################

@@ -75,6 +75,9 @@ jobs:
           echo "caddy_geoip_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "httpstat_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/davecheney/httpstat/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "golang_latest_tag_name=$(for i in {1..16}; do \
                   if curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                     "https://api.github.com/repos/golang/go/tags?per_page=100&page=$i" |
@@ -105,6 +108,7 @@ jobs:
           sed -i -E "s/^ARG apk_file_latest_tag_name=.+/ARG apk_file_latest_tag_name=${apk_file_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_latest_commit_hash=.+/ARG caddy_latest_commit_hash=${caddy_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_geoip_latest_commit_hash=.+/ARG caddy_geoip_latest_commit_hash=${caddy_geoip_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG httpstat_latest_commit_hash=.+/ARG httpstat_latest_commit_hash=${httpstat_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG golang_latest_tag_name=.+/ARG golang_latest_tag_name=${golang_latest_tag_name:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
           git add Dockerfile build_base.Dockerfile

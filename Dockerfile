@@ -120,6 +120,16 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS httpstat
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/davecheney/httpstat/commits?per_page=1
+ARG httpstat_latest_commit_hash='48531c3e2d3e4cd51f04c33002898d81d61e0c93'
+ARG CGO_ENABLE=0
+RUN source "/root/.bashrc" \
+    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/davecheney/httpstat \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/alpine:edge AS collection
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # date +%s
@@ -137,6 +147,7 @@ COPY --from=chisel /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
 COPY --from=apk-file /go/bin /go/bin/
 COPY --from=caddy /go/bin /go/bin/
+COPY --from=httpstat /go/bin /go/bin/
 RUN apk update; apk --no-progress --no-cache add \
     bash tzdata; \
     apk --no-progress --no-cache upgrade; \
