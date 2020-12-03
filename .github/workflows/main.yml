@@ -86,6 +86,7 @@ jobs:
                   then break
                   fi
                 done)" >> $GITHUB_ENV
+          echo "build_base_date=$(TZ=':Asia/Taipei' date +%F)" >> $GITHUB_ENV
           echo "cachebust=$(date +%s)" >> $GITHUB_ENV
         shell: bash
       # Runs a set of commands using the runners shell
@@ -110,6 +111,7 @@ jobs:
           sed -i -E "s/^ARG caddy_geoip_latest_commit_hash=.+/ARG caddy_geoip_latest_commit_hash=${caddy_geoip_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG httpstat_latest_commit_hash=.+/ARG httpstat_latest_commit_hash=${httpstat_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG golang_latest_tag_name=.+/ARG golang_latest_tag_name=${golang_latest_tag_name:?empty value}/" build_base.Dockerfile
+          sed -i -E "s/^ARG build_base_date=.+/ARG build_base_date=${build_base_date:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
           git add Dockerfile build_base.Dockerfile
           git commit -m "Bump"
