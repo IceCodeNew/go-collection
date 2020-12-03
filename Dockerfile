@@ -114,11 +114,14 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG caddy_latest_commit_hash='b6e96d6f4a55f96ccbb69f112822f0a923942246'
 # https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1
 ARG caddy_geoip_latest_commit_hash='d500cc3ca64b734da42e0f0446003f437c915ac8'
+# https://api.github.com/repos/mholt/caddy-l4/commits?per_page=1
+ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
 ARG CGO_ENABLE=0
 RUN source "/root/.bashrc" \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/caddyserver/xcaddy/cmd/xcaddy \
-    && "/go/bin/xcaddy" build --output "/go/bin/caddy-maxmind-geolocation" \
+    && "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-and-l4" \
     --with github.com/porech/caddy-maxmind-geolocation \
+    --with github.com/mholt/caddy-l4 \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 

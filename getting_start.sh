@@ -202,8 +202,8 @@ if ! [[ -f /usr/bin/caddy ]] || date +%u | grep -qF '6'; then
   else
     sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
   fi
-  sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/local/bin/caddy-maxmind-geolocation'
-  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/caddy-maxmind-geolocation" '/usr/bin/caddy'
+  sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' '/usr/local/bin/caddy-with-geoip-and-l4'
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/caddy-with-geoip-and-l4" '/usr/bin/caddy'
 fi
 
 sudo apt-get update
