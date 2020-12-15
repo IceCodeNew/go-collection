@@ -34,7 +34,7 @@ curl_to_dest() {
     tmp_dir=$(mktemp -d)
     pushd "$tmp_dir" || exit 1
     if curl -OJ "$1"; then
-      find . -maxdepth 1 -type f -print0 | xargs -0 -i -r -s 2000 sudo "$(type -P install)" -pvD "{}" "$2"
+      find . -maxdepth 1 -type f -print0 | xargs -0 -I {} -r -s 2000 sudo "$(type -P install)" -pvD "{}" "$2"
     fi
     popd || exit 1
     /bin/rm -rf "$tmp_dir"
