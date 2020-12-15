@@ -59,8 +59,8 @@ pushd "$tmp_dir" || exit 1
 curl -o 'ripgrep_amd64.deb' \
   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/BurntSushi/ripgrep/releases/latest' |
-    grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'amd64.deb$')"
-sudo dpkg -i 'ripgrep_amd64.deb' && apt-mark hold ripgrep
+    grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'amd64.deb$')" \
+&& sudo dpkg -i 'ripgrep_amd64.deb' && apt-mark hold ripgrep
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
@@ -70,12 +70,12 @@ pushd "$tmp_dir" || exit 1
 curl -o 'bat-musl_amd64.deb' \
   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/sharkdp/bat/releases/latest' |
-    grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
-sudo dpkg -i 'bat-musl_amd64.deb'
-git_clone https://github.com/eth-p/bat-extras.git
-cd bat-extras
-chmod +x build.sh
-./build.sh --install --no-manuals
+    grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')" \
+&& sudo dpkg -i 'bat-musl_amd64.deb'
+git_clone https://github.com/eth-p/bat-extras.git \
+&& cd bat-extras \
+&& chmod +x build.sh \
+&& ./build.sh --install --no-manuals
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
@@ -86,8 +86,8 @@ pushd "$tmp_dir" || exit 1
 curl -o 'fd-musl_amd64.deb' \
   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/sharkdp/fd/releases/latest' |
-    grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
-sudo dpkg -i 'fd-musl_amd64.deb'
+    grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')" \
+&& sudo dpkg -i 'fd-musl_amd64.deb'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
@@ -98,8 +98,8 @@ pushd "$tmp_dir" || exit 1
 curl -o 'hexyl-musl_amd64.deb' \
   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/sharkdp/hexyl/releases/latest' |
-    grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
-sudo dpkg -i 'hexyl-musl_amd64.deb'
+    grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')" \
+&& sudo dpkg -i 'hexyl-musl_amd64.deb'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
@@ -110,8 +110,8 @@ curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/down
 # curl -o 'diskus-musl_amd64.deb' \
 #   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
 #     'https://api.github.com/repos/sharkdp/diskus/releases/latest' |
-#     grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
-# sudo dpkg -i 'diskus-musl_amd64.deb'
+#     grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')" \
+# && sudo dpkg -i 'diskus-musl_amd64.deb'
 # popd || exit 1
 # /bin/rm -rf "$tmp_dir"
 # dirs -c
@@ -124,8 +124,8 @@ if [[ x"${need_hugo_extended:0:1}" = x'y' ]] && date +%u | grep -qF '7'; then
   curl -o 'hugo_extended_Linux-64bit.deb' \
     "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/gohugoio/hugo/releases/latest' |
-      grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'extended.+linux-64bit.deb$')"
-  sudo dpkg -i 'hugo_extended_Linux-64bit.deb'
+      grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'extended.+linux-64bit.deb$')" \
+  && sudo dpkg -i 'hugo_extended_Linux-64bit.deb'
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
   dirs -c
@@ -134,8 +134,8 @@ fi
 ################
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/croc" '/usr/local/bin/croc'
-curl_to_dest 'https://raw.githubusercontent.com/schollz/croc/master/src/install/bash_autocomplete' '/etc/bash_completion.d/croc' &&
-  sudo chmod -x '/etc/bash_completion.d/croc'
+curl_to_dest 'https://raw.githubusercontent.com/schollz/croc/master/src/install/bash_autocomplete' '/etc/bash_completion.d/croc' \
+  && sudo chmod -x '/etc/bash_completion.d/croc'
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/shfmt" '/usr/local/bin/shfmt'
 
@@ -147,11 +147,12 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/downlo
 
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
-curl "https://github.com/IceCodeNew/rust-collection/releases/latest/download/ss-rust-linux-gnu-x64.tar.xz" | bsdtar -xf-
-sudo "$(type -P install)" -pvD './sslocal' '/usr/local/bin/sslocal'
-sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
-sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver'
-sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
+if curl "https://github.com/IceCodeNew/rust-collection/releases/latest/download/ss-rust-linux-gnu-x64.tar.xz" | bsdtar -xf-; then
+  sudo "$(type -P install)" -pvD './sslocal' '/usr/local/bin/sslocal'
+  sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
+  sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver'
+  sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
+fi
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
@@ -186,12 +187,12 @@ pushd "$tmp_dir" || exit 1
 curl -o 'haproxy_amd64.deb' \
   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
-    grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/haproxy_.+?amd64.deb$')"
-curl -o 'jemalloc_amd64.deb' \
+    grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/haproxy_.+?amd64.deb$')" \
+&& curl -o 'jemalloc_amd64.deb' \
   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
-    grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/jemalloc_.+?amd64.deb$')"
-sudo dpkg -i 'jemalloc_amd64.deb' && sudo dpkg -i 'haproxy_amd64.deb'
+    grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/jemalloc_.+?amd64.deb$')" \
+&& sudo dpkg -i 'jemalloc_amd64.deb' && sudo dpkg -i 'haproxy_amd64.deb'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
@@ -202,8 +203,8 @@ if ! [[ -f /usr/bin/caddy ]] || date +%u | grep -qF '6'; then
   curl -o 'caddy_linux_amd64.deb' \
     "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
-      grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d'"' -f4)"
-  sudo dpkg -i 'caddy_linux_amd64.deb' && rm 'caddy_linux_amd64.deb'
+      grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d'"' -f4)" \
+  && sudo dpkg -i 'caddy_linux_amd64.deb' && rm 'caddy_linux_amd64.deb'
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
   dirs -c
@@ -221,9 +222,10 @@ sudo apt-get update
 sudo apt-get -y install minify
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
-curl "https://github.com/tdewolff/minify/releases/latest/download/minify_linux_amd64.tar.gz" | bsdtar -xf-
-sudo "$(type -P install)" -pvD './minify' '/usr/bin/minify'
-sudo "$(type -P install)" -pvDm 644 './bash_completion' '/etc/bash_completion.d/minify'
+if curl "https://github.com/tdewolff/minify/releases/latest/download/minify_linux_amd64.tar.gz" | bsdtar -xf-; then
+  sudo "$(type -P install)" -pvD './minify' '/usr/bin/minify'
+  sudo "$(type -P install)" -pvDm 644 './bash_completion' '/etc/bash_completion.d/minify'
+fi
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
