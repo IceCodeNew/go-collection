@@ -14,7 +14,7 @@ export SYSTEMD_PAGER=cat
 ## Refer: https://github.com/koalaman/shellcheck/wiki/SC2033
 
 cd() {
-  cd "$@" || exit 1
+  command cd "$@" || exit 1
 }
 cp() {
   $(type -P cp) "$@"
