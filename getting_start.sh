@@ -41,6 +41,13 @@ curl_to_dest() {
     dirs -c
   fi
 }
+git_clone() {
+  if [[ -z "$GIT_PROXY" ]]; then
+    $(type -P git) clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch "$@"
+  else
+    $(type -P git) -c "$GIT_PROXY" clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch "$@"
+  fi
+}
 
 ################
 
@@ -65,6 +72,10 @@ curl -o 'bat-musl_amd64.deb' \
     'https://api.github.com/repos/sharkdp/bat/releases/latest' |
     grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
 sudo dpkg -i 'bat-musl_amd64.deb'
+git_clone https://github.com/eth-p/bat-extras.git
+cd bat-extras
+chmod +x build.sh
+./build.sh --install --no-manuals
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
