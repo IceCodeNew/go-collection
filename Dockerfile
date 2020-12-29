@@ -135,6 +135,17 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS piknik
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/jedisct1/piknik/commits?per_page=1
+ARG piknik_latest_commit_hash='00ee34cd9fe6c6c3fca2ba954c93e2a3b129f45c'
+ARG CGO_ENABLE=0
+RUN source "/root/.bashrc" \
+    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/jedisct1/piknik \
+    && strip "/go/bin"/*
+RUN GOOS=windows GOARCH=amd64 go get -trimpath -u -v github.com/jedisct1/piknik \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/alpine:edge AS collection
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # date +%s
@@ -153,6 +164,7 @@ COPY --from=nali /go/bin /go/bin/
 COPY --from=apk-file /go/bin /go/bin/
 COPY --from=caddy /go/bin /go/bin/
 COPY --from=httpstat /go/bin /go/bin/
+COPY --from=piknik /go/bin /go/bin/
 RUN apk update; apk --no-progress --no-cache add \
     bash tzdata; \
     apk --no-progress --no-cache upgrade; \
