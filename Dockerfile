@@ -169,4 +169,5 @@ RUN apk update; apk --no-progress --no-cache add \
     bash tzdata; \
     apk --no-progress --no-cache upgrade; \
     rm -rf /var/cache/apk/*; \
-    cp -f /usr/share/zoneinfo/${DEFAULT_TZ} /etc/localtime
+    cp -f /usr/share/zoneinfo/${DEFAULT_TZ} /etc/localtime; \
+    mv /go/bin/windows_amd64/* /go/bin/
