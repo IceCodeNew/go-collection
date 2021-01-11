@@ -163,17 +163,12 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/downlo
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/duf" '/usr/local/bin/duf'
 
-tmp_dir=$(mktemp -d)
-pushd "$tmp_dir" || exit 1
 dog_latest_tag_name="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/ogham/dog/tags?per_page=100' |
       grep 'name' | cut -d'"' -f4 | grep -vE 'alpha|beta|rc|test|week|pre' |
       sort -rV | head -1)"
 curl "https://github.com/ogham/dog/releases/download/${dog_latest_tag_name}/dog-${dog_latest_tag_name}-x86_64-unknown-linux-gnu.zip" | bsdtar -xf- -P -C /usr/local
 curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/dog" '/usr/local/bin/dog'
-popd || exit 1
-/bin/rm -rf "$tmp_dir"
-dirs -c
 
 # curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/just" '/usr/local/bin/just'
 
