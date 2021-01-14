@@ -74,6 +74,23 @@ RUN source "/root/.bashrc" \
 RUN GOOS=windows GOARCH=amd64 go get -trimpath -u -v github.com/shadowsocks/go-shadowsocks2 \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS frp
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/fatedier/frp/commits?per_page=1
+ARG frp_latest_commit_hash='72595b2da84f7eaceac735dbe8fd45ff9668d92c'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go env -w GO111MODULE=on \
+    && git_clone 'https://github.com/fatedier/frp.git' '/go/src/frp' \
+    && cd /go/src/frp || exit 1 \
+    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/frpc -v ./cmd/frpc \
+    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/frps -v ./cmd/frps \
+    && strip "/go/bin"/*
+WORKDIR /go/src/frp
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o /go/bin/frpc.exe -v ./cmd/frpc \
+    && GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o /go/bin/frps.exe -v ./cmd/frps \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS chisel
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jpillora/chisel/commits?per_page=1
@@ -159,6 +176,7 @@ COPY --from=shfmt /go/bin /go/bin/
 COPY --from=croc /go/bin /go/bin/
 COPY --from=mosdns /go/bin /go/bin/
 COPY --from=go-shadowsocks2 /go/bin /go/bin/
+COPY --from=frp /go/bin /go/bin/
 COPY --from=chisel /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
 COPY --from=apk-file /go/bin /go/bin/

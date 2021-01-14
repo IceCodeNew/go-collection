@@ -56,6 +56,30 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "frpc" \
+    --file "/go/bin/frpc"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "frpc.exe" \
+    --file "/go/bin/frpc.exe"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "frps" \
+    --file "/go/bin/frps"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "frps.exe" \
+    --file "/go/bin/frps.exe"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "chisel" \
     --file "/go/bin/chisel"; \
     "/go/bin/github-release" upload \
