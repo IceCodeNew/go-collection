@@ -142,6 +142,16 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS wuzz
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/asciimoo/wuzz/commits?per_page=1
+ARG wuzz_latest_commit_hash='0935ebdf55d223abbf0fd10cb8f0f9c0a323ccb7'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/asciimoo/wuzz \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS httpstat
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/davecheney/httpstat/commits?per_page=1
@@ -181,6 +191,7 @@ COPY --from=chisel /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
 COPY --from=apk-file /go/bin /go/bin/
 COPY --from=caddy /go/bin /go/bin/
+COPY --from=wuzz /go/bin /go/bin/
 COPY --from=httpstat /go/bin /go/bin/
 COPY --from=piknik /go/bin /go/bin/
 RUN apk update; apk --no-progress --no-cache add \
