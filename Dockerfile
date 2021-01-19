@@ -129,6 +129,8 @@ FROM quay.io/icecodenew/go-collection:build_base AS caddy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
 ARG caddy_latest_commit_hash='b6e96d6f4a55f96ccbb69f112822f0a923942246'
+# https://api.github.com/repos/caddyserver/nginx-adapter/commits?per_page=1
+ARG caddy_nginxadapter_latest_commit_hash='77eae3ff99cb283fd474a9a59f7b652de3d6b61d'
 # https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1
 ARG caddy_geoip_latest_commit_hash='d500cc3ca64b734da42e0f0446003f437c915ac8'
 # https://api.github.com/repos/mholt/caddy-l4/commits?per_page=1
@@ -137,6 +139,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/caddyserver/xcaddy/cmd/xcaddy \
     && "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-and-l4" \
+    --with github.com/caddyserver/nginx-adapter \
     --with github.com/porech/caddy-maxmind-geolocation \
     --with github.com/mholt/caddy-l4 \
     && strip "/go/bin"/* \
