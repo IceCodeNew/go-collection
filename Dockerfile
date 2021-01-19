@@ -173,7 +173,7 @@ RUN source "/root/.bashrc" \
 RUN GOOS=windows GOARCH=amd64 go get -trimpath -u -v github.com/jedisct1/piknik \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
-FROM quay.io/icecodenew/alpine:edge AS collection
+FROM quay.io/icecodenew/alpine:latest AS collection
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # date +%s
 # ARG cachebust='1603527789'
