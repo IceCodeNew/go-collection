@@ -192,6 +192,8 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/downlo
 
 [[ -n "$(type -P apk)" ]] && curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/apk-file" '/usr/local/bin/apk-file'
 
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/mtg" '/usr/local/bin/mtg'
+
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/wuzz" '/usr/local/bin/wuzz'
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/httpstat" '/usr/local/bin/httpstat'

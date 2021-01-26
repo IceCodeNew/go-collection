@@ -42,6 +42,9 @@ jobs:
           echo "github_release_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/github-release/github-release/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "mtg_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/9seconds/mtg/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "got_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/melbahja/got/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -113,6 +116,7 @@ jobs:
           sed -i -E "s/^ARG checksec_latest_tag_name=.+/ARG checksec_latest_tag_name=${checksec_latest_tag_name:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG github_release_latest_tag_name=.+/ARG github_release_latest_tag_name=${github_release_latest_tag_name:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG mtg_latest_commit_hash=.+/ARG mtg_latest_commit_hash=${mtg_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG got_latest_tag_name=.+/ARG got_latest_tag_name=${got_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG duf_latest_commit_hash=.+/ARG duf_latest_commit_hash=${duf_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG shfmt_latest_commit_hash=.+/ARG shfmt_latest_commit_hash=${shfmt_latest_commit_hash:?empty value}/" Dockerfile

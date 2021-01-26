@@ -8,6 +8,19 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS mtg
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/9seconds/mtg/commits?per_page=1
+ARG mtg_latest_commit_hash='e075169dd4e9fc4c2b1453668f85f5099c4fb895'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go env -w GO111MODULE=on \
+    && git_clone 'https://github.com/9seconds/mtg.git' '/go/src/mtg' \
+    && cd /go/src/mtg || exit 1 \
+    && go build -trimpath -ldflags="-linkmode=external -X 'main.version=$(git describe --tags --long --always) ($(go version)) [$(date -Ru)]' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/mtg -v . \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS got
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/melbahja/got/releases/latest
@@ -183,6 +196,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 COPY --from=github-release /go/bin /go/bin/
+COPY --from=mtg /go/bin /go/bin/
 COPY --from=got /go/bin /go/bin/
 COPY --from=duf /go/bin /go/bin/
 COPY --from=shfmt /go/bin /go/bin/
