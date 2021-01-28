@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
