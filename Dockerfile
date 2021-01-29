@@ -142,6 +142,8 @@ FROM quay.io/icecodenew/go-collection:build_base AS caddy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
 ARG caddy_latest_commit_hash='b6e96d6f4a55f96ccbb69f112822f0a923942246'
+# https://api.github.com/repos/caddy-dns/cloudflare/commits?per_page=1
+ARG caddydns_cloudflare_latest_commit_hash='eda8e5aa22232e9c279b0df7531f20c331b331c6'
 # https://api.github.com/repos/caddyserver/jsonc-adapter/commits?per_page=1
 ARG caddy_jsoncadapter_latest_commit_hash='825ee096306c2af9a28858f0db87fb982795cbea'
 # https://api.github.com/repos/caddyserver/nginx-adapter/commits?per_page=1
@@ -156,6 +158,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/caddyserver/xcaddy/cmd/xcaddy \
     && "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-and-l4" \
+    --with github.com/caddy-dns/cloudflare \
     --with github.com/caddyserver/jsonc-adapter \
     --with github.com/caddyserver/nginx-adapter \
     --with github.com/porech/caddy-maxmind-geolocation \
