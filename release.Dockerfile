@@ -128,8 +128,8 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
-    --name "caddy-with-geoip-and-l4" \
-    --file "/go/bin/caddy-with-geoip-and-l4"; \
+    --name "caddy" \
+    --file "/go/bin/caddy-with-geoip-proxyproto-and-l4"; \
     "/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
