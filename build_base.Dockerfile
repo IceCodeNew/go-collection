@@ -1,11 +1,11 @@
-FROM quay.io/icecodenew/golang:1.15.4-alpine AS base
+FROM quay.io/icecodenew/golang:alpine AS base
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # https://api.github.com/repos/slimm609/checksec.sh/releases/latest
 ARG checksec_latest_tag_name=2.4.0
 # https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc
 ARG bashrc_latest_commit_hash=6f332268abdbb7ef6c264a84691127778e3c6ef2
 # https://api.github.com/repos/golang/go/tags?per_page=100&page=2
-# ARG golang_latest_tag_name=go1.15.4
+ARG golang_latest_tag_name=go1.15.4
 ARG build_base_date='2020-12-03'
     # echo 'http://dl-cdn.alpinelinux.org/alpine/edge/main' > /etc/apk/repositories; \
     # echo 'http://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories; \
