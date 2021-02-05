@@ -165,7 +165,7 @@ RUN source "/root/.bashrc" \
     --with github.com/mastercactapus/caddy2-proxyprotocol \
     --with github.com/mholt/caddy-l4 \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS wuzz
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
