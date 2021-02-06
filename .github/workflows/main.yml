@@ -102,6 +102,9 @@ jobs:
           echo "httpstat_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/davecheney/httpstat/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "wgcf_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/ViRb3/wgcf/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "piknik_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/jedisct1/piknik/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -145,6 +148,7 @@ jobs:
           sed -i -E "s/^ARG caddy_l4_latest_commit_hash=.+/ARG caddy_l4_latest_commit_hash=${caddy_l4_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG wuzz_latest_commit_hash=.+/ARG wuzz_latest_commit_hash=${wuzz_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG httpstat_latest_commit_hash=.+/ARG httpstat_latest_commit_hash=${httpstat_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG wgcf_latest_commit_hash=.+/ARG wgcf_latest_commit_hash=${wgcf_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG piknik_latest_commit_hash=.+/ARG piknik_latest_commit_hash=${piknik_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG golang_latest_tag_name=.+/ARG golang_latest_tag_name=${golang_latest_tag_name:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG build_base_date=.+/ARG build_base_date=${build_base_date:?empty value}/" build_base.Dockerfile

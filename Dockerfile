@@ -186,6 +186,18 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS wgcf
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/ViRb3/wgcf/commits?per_page=1
+ARG wgcf_latest_commit_hash='d3850639fe43559370b9575b35fca0167ac5689d'
+WORKDIR '/go/src/wgcf'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && git_clone 'https://github.com/ViRb3/wgcf.git' '/go/src/wgcf' \
+    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/wgcf -v . \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS piknik
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jedisct1/piknik/commits?per_page=1
@@ -218,6 +230,7 @@ COPY --from=apk-file /go/bin /go/bin/
 COPY --from=caddy /go/bin /go/bin/
 COPY --from=wuzz /go/bin /go/bin/
 COPY --from=httpstat /go/bin /go/bin/
+COPY --from=wgcf /go/bin /go/bin/
 COPY --from=piknik /go/bin /go/bin/
 RUN apk update; apk --no-progress --no-cache add \
     bash tzdata; \
