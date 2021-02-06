@@ -12,11 +12,11 @@ FROM quay.io/icecodenew/go-collection:build_base AS mtg
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/9seconds/mtg/commits?per_page=1
 ARG mtg_latest_commit_hash='e075169dd4e9fc4c2b1453668f85f5099c4fb895'
+WORKDIR '/go/src/mtg'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GO111MODULE=on \
     && git_clone 'https://github.com/9seconds/mtg.git' '/go/src/mtg' \
-    && cd /go/src/mtg || exit 1 \
     && go build -trimpath -ldflags="-linkmode=external -X 'main.version=$(git describe --tags --long --always) ($(go version)) [$(date -Ru)]' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/mtg -v . \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
@@ -66,10 +66,10 @@ FROM quay.io/icecodenew/go-collection:build_base AS mosdns
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/IrineSistiana/mosdns/commits?per_page=1
 ARG mosdns_latest_commit_hash='5ee263d0b686404c93016351076851861a854eb4'
+WORKDIR '/go/src/mosdns'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && git_clone 'https://github.com/IrineSistiana/mosdns.git' '/go/src/mosdns' \
-    && cd /go/src/mosdns || exit 1 \
     && go build -trimpath -ldflags="-linkmode=external -X main.version=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/mosdns -v . \
     && strip "/go/bin"/*
 WORKDIR /go/src/mosdns
@@ -91,15 +91,14 @@ FROM quay.io/icecodenew/go-collection:build_base AS frp
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/fatedier/frp/commits?per_page=1
 ARG frp_latest_commit_hash='72595b2da84f7eaceac735dbe8fd45ff9668d92c'
+WORKDIR '/go/src/frp'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GO111MODULE=on \
     && git_clone 'https://github.com/fatedier/frp.git' '/go/src/frp' \
-    && cd /go/src/frp || exit 1 \
     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/frpc -v ./cmd/frpc \
     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/frps -v ./cmd/frps \
     && strip "/go/bin"/*
-WORKDIR /go/src/frp
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o /go/bin/frpc.exe -v ./cmd/frpc \
     && GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o /go/bin/frps.exe -v ./cmd/frps \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
@@ -108,10 +107,10 @@ FROM quay.io/icecodenew/go-collection:build_base AS chisel
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jpillora/chisel/commits?per_page=1
 ARG chisel_latest_commit_hash='20921074b5827147b1a24d4ef4f5cba174856430'
+WORKDIR '/go/src/chisel'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && git_clone 'https://github.com/jpillora/chisel.git' '/go/src/chisel' \
-    && cd /go/src/chisel || exit 1 \
     && go build -trimpath -ldflags="-linkmode=external -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/chisel -v . \
     && strip "/go/bin"/*
 WORKDIR /go/src/chisel
