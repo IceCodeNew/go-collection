@@ -8,6 +8,35 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS caddy
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
+ARG caddy_latest_commit_hash='b6e96d6f4a55f96ccbb69f112822f0a923942246'
+# https://api.github.com/repos/caddy-dns/cloudflare/commits?per_page=1
+ARG caddydns_cloudflare_latest_commit_hash='eda8e5aa22232e9c279b0df7531f20c331b331c6'
+# https://api.github.com/repos/caddyserver/jsonc-adapter/commits?per_page=1
+ARG caddy_jsoncadapter_latest_commit_hash='825ee096306c2af9a28858f0db87fb982795cbea'
+# https://api.github.com/repos/caddyserver/nginx-adapter/commits?per_page=1
+ARG caddy_nginxadapter_latest_commit_hash='77eae3ff99cb283fd474a9a59f7b652de3d6b61d'
+# https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1
+ARG caddy_geoip_latest_commit_hash='d500cc3ca64b734da42e0f0446003f437c915ac8'
+# https://api.github.com/repos/mastercactapus/caddy2-proxyprotocol/commits?per_page=1
+ARG caddy_proxyprotocol_latest_commit_hash='8cd17723e0ed50a258a2f8b498155cd9a5ece941'
+# https://api.github.com/repos/mholt/caddy-l4/commits?per_page=1
+ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/caddyserver/xcaddy/cmd/xcaddy \
+    && "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-and-l4" \
+    --with github.com/caddy-dns/cloudflare \
+    --with github.com/caddyserver/jsonc-adapter \
+    --with github.com/caddyserver/nginx-adapter \
+    --with github.com/porech/caddy-maxmind-geolocation \
+    --with github.com/mastercactapus/caddy2-proxyprotocol \
+    --with github.com/mholt/caddy-l4 \
+    && strip "/go/bin"/* \
+    && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS mtg
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/9seconds/mtg/commits?per_page=1
@@ -127,45 +156,6 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
-FROM quay.io/icecodenew/go-collection:build_base AS apk-file
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/genuinetools/apk-file/releases/latest
-ARG apk_file_latest_tag_name='v0.3.6'
-RUN source "/root/.bashrc" \
-    && go env -w CGO_ENABLED=0 \
-    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/genuinetools/apk-file \
-    && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
-
-FROM quay.io/icecodenew/go-collection:build_base AS caddy
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
-ARG caddy_latest_commit_hash='b6e96d6f4a55f96ccbb69f112822f0a923942246'
-# https://api.github.com/repos/caddy-dns/cloudflare/commits?per_page=1
-ARG caddydns_cloudflare_latest_commit_hash='eda8e5aa22232e9c279b0df7531f20c331b331c6'
-# https://api.github.com/repos/caddyserver/jsonc-adapter/commits?per_page=1
-ARG caddy_jsoncadapter_latest_commit_hash='825ee096306c2af9a28858f0db87fb982795cbea'
-# https://api.github.com/repos/caddyserver/nginx-adapter/commits?per_page=1
-ARG caddy_nginxadapter_latest_commit_hash='77eae3ff99cb283fd474a9a59f7b652de3d6b61d'
-# https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1
-ARG caddy_geoip_latest_commit_hash='d500cc3ca64b734da42e0f0446003f437c915ac8'
-# https://api.github.com/repos/mastercactapus/caddy2-proxyprotocol/commits?per_page=1
-ARG caddy_proxyprotocol_latest_commit_hash='8cd17723e0ed50a258a2f8b498155cd9a5ece941'
-# https://api.github.com/repos/mholt/caddy-l4/commits?per_page=1
-ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
-RUN source "/root/.bashrc" \
-    && go env -w CGO_ENABLED=0 \
-    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/caddyserver/xcaddy/cmd/xcaddy \
-    && "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-and-l4" \
-    --with github.com/caddy-dns/cloudflare \
-    --with github.com/caddyserver/jsonc-adapter \
-    --with github.com/caddyserver/nginx-adapter \
-    --with github.com/porech/caddy-maxmind-geolocation \
-    --with github.com/mastercactapus/caddy2-proxyprotocol \
-    --with github.com/mholt/caddy-l4 \
-    && strip "/go/bin"/* \
-    && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
-
 FROM quay.io/icecodenew/go-collection:build_base AS wuzz
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/asciimoo/wuzz/commits?per_page=1
@@ -209,6 +199,16 @@ RUN source "/root/.bashrc" \
 RUN GOOS=windows GOARCH=amd64 go get -trimpath -u -v github.com/jedisct1/piknik \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS apk-file
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/genuinetools/apk-file/releases/latest
+ARG apk_file_latest_tag_name='v0.3.6'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/genuinetools/apk-file \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/alpine:latest AS collection
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # date +%s
@@ -216,6 +216,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 COPY --from=github-release /go/bin /go/bin/
+COPY --from=caddy /go/bin /go/bin/
 COPY --from=mtg /go/bin /go/bin/
 COPY --from=got /go/bin /go/bin/
 COPY --from=duf /go/bin /go/bin/
@@ -226,12 +227,11 @@ COPY --from=go-shadowsocks2 /go/bin /go/bin/
 COPY --from=frp /go/bin /go/bin/
 COPY --from=chisel /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
-COPY --from=apk-file /go/bin /go/bin/
-COPY --from=caddy /go/bin /go/bin/
 COPY --from=wuzz /go/bin /go/bin/
 COPY --from=httpstat /go/bin /go/bin/
 COPY --from=wgcf /go/bin /go/bin/
 COPY --from=piknik /go/bin /go/bin/
+COPY --from=apk-file /go/bin /go/bin/
 RUN apk update; apk --no-progress --no-cache add \
     bash tzdata; \
     apk --no-progress --no-cache upgrade; \
