@@ -221,6 +221,10 @@ curl -o 'haproxy_amd64.deb' \
     'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
     grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/jemalloc_.+?amd64.deb$')" \
 && sudo dpkg -i 'jemalloc_amd64.deb' && sudo dpkg -i 'haproxy_amd64.deb'
+curl -LROJ 'https://github.com/IceCodeNew/haproxy_static/releases/latest/download/haproxy.service' &&
+sudo /bin/mv -f './haproxy.service' '/etc/systemd/system/haproxy.service' &&
+sudo systemctl daemon-reload
+echo 'systemctl enable --now haproxy'
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
