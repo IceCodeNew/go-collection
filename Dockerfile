@@ -160,9 +160,11 @@ FROM quay.io/icecodenew/go-collection:build_base AS dnslookup
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/ameshkov/dnslookup/commits?per_page=1
 ARG dnslookup_latest_commit_hash='a20f98f33d92f88c10231536b77e4b8013aeecac'
+WORKDIR '/go/src/dnslookup'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
-    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/ameshkov/dnslookup \
+    && git_clone 'https://github.com/ameshkov/dnslookup.git' '/go/src/dnslookup' \
+    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/dnslookup -v . \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
