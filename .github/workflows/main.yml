@@ -93,6 +93,9 @@ jobs:
           echo "nali_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/zu1k/nali/commits?per_page=1&path=go.mod' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "dnslookup_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/ameshkov/dnslookup/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "wuzz_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/asciimoo/wuzz/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -145,6 +148,7 @@ jobs:
           sed -i -E "s/^ARG frp_latest_commit_hash=.+/ARG frp_latest_commit_hash=${frp_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG chisel_latest_commit_hash=.+/ARG chisel_latest_commit_hash=${chisel_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG nali_latest_commit_hash=.+/ARG nali_latest_commit_hash=${nali_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG dnslookup_latest_commit_hash=.+/ARG dnslookup_latest_commit_hash=${dnslookup_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG wuzz_latest_commit_hash=.+/ARG wuzz_latest_commit_hash=${wuzz_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG httpstat_latest_commit_hash=.+/ARG httpstat_latest_commit_hash=${httpstat_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG wgcf_latest_commit_hash=.+/ARG wgcf_latest_commit_hash=${wgcf_latest_commit_hash:?empty value}/" Dockerfile

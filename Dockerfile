@@ -156,6 +156,16 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS dnslookup
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/ameshkov/dnslookup/commits?per_page=1
+ARG dnslookup_latest_commit_hash='a20f98f33d92f88c10231536b77e4b8013aeecac'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/ameshkov/dnslookup \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS wuzz
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/asciimoo/wuzz/commits?per_page=1
@@ -227,6 +237,7 @@ COPY --from=go-shadowsocks2 /go/bin /go/bin/
 COPY --from=frp /go/bin /go/bin/
 COPY --from=chisel /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
+COPY --from=dnslookup /go/bin /go/bin/
 COPY --from=wuzz /go/bin /go/bin/
 COPY --from=httpstat /go/bin /go/bin/
 COPY --from=wgcf /go/bin /go/bin/

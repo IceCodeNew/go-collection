@@ -167,6 +167,8 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/downlo
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/duf" '/usr/local/bin/duf'
 
+curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/dnslookup" '/usr/local/bin/dnslookup'
+
 dog_latest_tag_name="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/ogham/dog/tags?per_page=100' |
       grep 'name' | cut -d'"' -f4 | grep -vE 'alpha|beta|rc|test|week|pre' |
