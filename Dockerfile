@@ -82,7 +82,7 @@ RUN source "/root/.bashrc" \
 
 FROM quay.io/icecodenew/go-collection:build_base AS croc
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/schollz/croc/commits?per_page=1&path=go.mod
+# https://api.github.com/repos/schollz/croc/commits?per_page=1
 ARG croc_latest_commit_hash='0bafce5efe88bbf39f6ec05cb27ae7242478f43b'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -101,7 +101,6 @@ RUN source "/root/.bashrc" \
     && git_clone 'https://github.com/IrineSistiana/mosdns.git' '/go/src/mosdns' \
     && go build -trimpath -ldflags="-linkmode=external -X main.version=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/mosdns -v . \
     && strip "/go/bin"/*
-WORKDIR /go/src/mosdns
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-X main.version=$(git describe --tags --long --always)" -o /go/bin/mosdns.exe -v . \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
@@ -142,7 +141,6 @@ RUN source "/root/.bashrc" \
     && git_clone 'https://github.com/jpillora/chisel.git' '/go/src/chisel' \
     && go build -trimpath -ldflags="-linkmode=external -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/chisel -v . \
     && strip "/go/bin"/*
-WORKDIR /go/src/chisel
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always)" -o /go/bin/chisel.exe -v . \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 

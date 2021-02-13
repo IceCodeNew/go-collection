@@ -11,9 +11,9 @@ on:
       - "**/LICENSE"
       - "**/README.md"
       - "**/getting_start.sh"
-  pull_request:
-    branches:
-      - master
+  # pull_request:
+  #   branches:
+  #     - master
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -76,7 +76,7 @@ jobs:
                 'https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "croc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/schollz/croc/commits?per_page=1&path=go.mod' |
+                'https://api.github.com/repos/schollz/croc/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "mosdns_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/IrineSistiana/mosdns/commits?per_page=1' |
