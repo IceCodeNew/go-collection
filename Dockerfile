@@ -84,11 +84,14 @@ FROM quay.io/icecodenew/go-collection:build_base AS croc
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/schollz/croc/commits?per_page=1
 ARG croc_latest_commit_hash='0bafce5efe88bbf39f6ec05cb27ae7242478f43b'
+WORKDIR '/go/src/croc'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
-    && GO111MODULE=on go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -v github.com/schollz/croc/v8 \
+    && git_clone 'https://github.com/schollz/croc.git' '/go/src/croc' \
+    && sed -i -E 's/(const MAXBYTES =).+/\1 40000000/' 'src/comm/comm.go' \
+    && GO111MODULE=on go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/croc -v . \
     && strip "/go/bin"/*
-RUN GO111MODULE=on GOOS=windows GOARCH=amd64 go get -trimpath -v github.com/schollz/croc/v8 \
+RUN GO111MODULE=on GOOS=windows GOARCH=amd64 go build -trimpath -o /go/bin/croc.exe -v . \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS mosdns
