@@ -123,13 +123,12 @@ jobs:
           echo "cachebust=$(date +%s)" >> $GITHUB_ENV
         shell: bash
       # Runs a set of commands using the runners shell
-      - name: Bump
+      - name: Force push `release` branch
         run: |
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
+          git checkout release
           git reset --hard origin/master
-          sed -i -E "s/^ARG checksec_latest_tag_name=.+/ARG checksec_latest_tag_name=${checksec_latest_tag_name:?empty value}/" build_base.Dockerfile
-          sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG github_release_latest_tag_name=.+/ARG github_release_latest_tag_name=${github_release_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_latest_commit_hash=.+/ARG caddy_latest_commit_hash=${caddy_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddydns_cloudflare_latest_commit_hash=.+/ARG caddydns_cloudflare_latest_commit_hash=${caddydns_cloudflare_latest_commit_hash:?empty value}/" Dockerfile
@@ -154,20 +153,24 @@ jobs:
           sed -i -E "s/^ARG wgcf_latest_commit_hash=.+/ARG wgcf_latest_commit_hash=${wgcf_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG piknik_latest_commit_hash=.+/ARG piknik_latest_commit_hash=${piknik_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG apk_file_latest_tag_name=.+/ARG apk_file_latest_tag_name=${apk_file_latest_tag_name:?empty value}/" Dockerfile
-          sed -i -E "s/^ARG golang_latest_tag_name=.+/ARG golang_latest_tag_name=${golang_latest_tag_name:?empty value}/" build_base.Dockerfile
-          sed -i -E "s/^ARG build_base_date=.+/ARG build_base_date=${build_base_date:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
-          git add Dockerfile build_base.Dockerfile
-          git commit -m "Bump"
-          git push -u origin master
-      - name: Force push `release` branch
-        run: |
-          git config --local user.name "actions"
-          git config --local user.email "action@github.com"
-          git checkout release
-          git reset --hard origin/master
-          git rm getting_start.sh
-          git rm release.Dockerfile
+          git add Dockerfile
+          git rm getting_start.sh release.Dockerfile build_base.Dockerfile
           git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
           git push -f -u origin release
+      - name: Force push `build_base` branch
+        run: |
+          git config --local user.name "actions"
+          git config --local user.email "action@github.com"
+          git checkout build_base
+          git reset --hard origin/master
+          sed -i -E "s/^ARG checksec_latest_tag_name=.+/ARG checksec_latest_tag_name=${checksec_latest_tag_name:?empty value}/" build_base.Dockerfile
+          sed -i -E "s/^ARG bashrc_latest_commit_hash=.+/ARG bashrc_latest_commit_hash=${bashrc_latest_commit_hash:?empty value}/" build_base.Dockerfile
+          sed -i -E "s/^ARG golang_latest_tag_name=.+/ARG golang_latest_tag_name=${golang_latest_tag_name:?empty value}/" build_base.Dockerfile
+          sed -i -E "s/^ARG build_base_date=.+/ARG build_base_date=${build_base_date:?empty value}/" build_base.Dockerfile
+          git add build_base.Dockerfile
+          git rm getting_start.sh Dockerfile release.Dockerfile
+          git rm -r .github
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git push -f -u origin build_base
