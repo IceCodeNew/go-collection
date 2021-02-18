@@ -127,10 +127,19 @@ curl_to_dest 'https://raw.githubusercontent.com/schollz/croc/master/src/install/
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/shfmt" '/usr/local/bin/shfmt'
 
-# curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/github-release" '/usr/local/bin/github-release'
-rm '/usr/local/bin/github-release'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_github_release:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/github-release" '/usr/local/bin/github-release'
+else
+  rm '/usr/local/bin/github-release'
+fi
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/mosdns" '/usr/local/bin/mosdns'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_mosdns:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/mosdns" '/usr/local/bin/mosdns'
+else
+  rm '/usr/local/bin/mosdns'
+fi
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
 
