@@ -211,13 +211,33 @@ else
   rm '/usr/local/bin/desed'
 fi
 
-curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/fnm" '/usr/local/bin/fnm'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_fnm:=yes}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/fnm" '/usr/local/bin/fnm'
+else
+  rm '/usr/local/bin/fnm'
+fi
 
-curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/rsign" '/usr/local/bin/rsign'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_rsign:=yes}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/rsign" '/usr/local/bin/rsign'
+else
+  rm '/usr/local/bin/rsign'
+fi
 
-curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/b3sum" '/usr/local/bin/b3sum'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_b3sum:=yes}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/b3sum" '/usr/local/bin/b3sum'
+else
+  rm '/usr/local/bin/b3sum'
+fi
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/nali" '/usr/local/bin/nali'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_nali:=yes}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/nali" '/usr/local/bin/nali'
+else
+  rm '/usr/local/bin/nali'
+fi
 
 [[ -n "$(type -P apk)" ]] && curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/apk-file" '/usr/local/bin/apk-file'
 
