@@ -136,11 +136,12 @@ curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/downlo
 
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
-if curl "https://github.com/IceCodeNew/rust-collection/releases/latest/download/ss-rust-linux-gnu-x64.tar.xz" | bsdtar -xf-; then
-  sudo "$(type -P install)" -pvD './sslocal' '/usr/local/bin/sslocal'
+# ss_rust_file_name='4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz'
+if curl "https://github.com/IceCodeNew/rust-collection/releases/latest/download/${ss_rust_file_name:=ss-rust-linux-gnu-x64.tar.xz}" | bsdtar -xf-; then
+  [[ -f ./sslocal ]] && sudo "$(type -P install)" -pvD './sslocal' '/usr/local/bin/sslocal'
   sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
   sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver'
-  sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
+  [[ -f ./ssurl ]] && sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
 fi
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
