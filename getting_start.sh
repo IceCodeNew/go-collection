@@ -105,20 +105,8 @@ popd || exit 1
 dirs -c
 curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/hexyl" '/usr/bin/hexyl'
 
-# tmp_dir=$(mktemp -d)
-# pushd "$tmp_dir" || exit 1
-# curl -o 'diskus-musl_amd64.deb' \
-#   "$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-#     'https://api.github.com/repos/sharkdp/diskus/releases/latest' |
-#     grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')" \
-# && sudo dpkg -i 'diskus-musl_amd64.deb'
-# popd || exit 1
-# /bin/rm -rf "$tmp_dir"
-# dirs -c
-# curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/diskus" '/usr/bin/diskus'
-
 # shellcheck disable=SC2154
-if [[ x"${need_hugo_extended:0:1}" = x'y' ]] && date +%u | grep -qF '7'; then
+if [[ x"${install_hugo_extended:0:1}" = x'y' ]] && date +%u | grep -qF '7'; then
   tmp_dir=$(mktemp -d)
   pushd "$tmp_dir" || exit 1
   curl -o 'hugo_extended_Linux-64bit.deb' \
