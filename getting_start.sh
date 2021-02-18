@@ -269,12 +269,26 @@ else
   rm '/usr/local/bin/wgcf'
 fi
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/mmp-go" '/usr/local/bin/mmp-go'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_mmp_go:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/mmp-go" '/usr/local/bin/mmp-go'
+else
+  rm '/usr/local/bin/mmp-go'
+fi
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/piknik" '/usr/local/bin/piknik'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_piknik:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/piknik" '/usr/local/bin/piknik'
+else
+  rm '/usr/local/bin/piknik'
+fi
 
-# curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/boringtun-linux-musl-x64" '/usr/local/bin/boringtun'
-rm '/usr/local/bin/boringtun'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_boringtun:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/boringtun-linux-musl-x64" '/usr/local/bin/boringtun'
+else
+  rm '/usr/local/bin/boringtun'
+fi
 
 ################
 
