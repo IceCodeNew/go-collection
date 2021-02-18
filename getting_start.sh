@@ -331,20 +331,20 @@ if ! [[ -f /usr/bin/caddy ]] || date +%u | grep -qF '6'; then
   fi
   sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
   curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/caddy" '/usr/bin/caddy'
-fi
 
-sudo apt-get update
-sudo apt-get -y install minify
-tmp_dir=$(mktemp -d)
-pushd "$tmp_dir" || exit 1
-if curl "https://github.com/tdewolff/minify/releases/latest/download/minify_linux_amd64.tar.gz" | bsdtar -xf-; then
-  sudo "$(type -P install)" -pvD './minify' '/usr/bin/minify'
-  sudo "$(type -P install)" -pvDm 644 './bash_completion' '/etc/bash_completion.d/minify'
+  sudo apt-get update
+  sudo apt-get -y install minify
+  tmp_dir=$(mktemp -d)
+  pushd "$tmp_dir" || exit 1
+  if curl "https://github.com/tdewolff/minify/releases/latest/download/minify_linux_amd64.tar.gz" | bsdtar -xf-; then
+    sudo "$(type -P install)" -pvD './minify' '/usr/bin/minify'
+    sudo "$(type -P install)" -pvDm 644 './bash_completion' '/etc/bash_completion.d/minify'
+  fi
+  popd || exit 1
+  /bin/rm -rf "$tmp_dir"
+  dirs -c
+  [[ -f /usr/share/caddy/index.html ]] && minify -o /usr/share/caddy/index.html /usr/share/caddy/index.html
 fi
-popd || exit 1
-/bin/rm -rf "$tmp_dir"
-dirs -c
-[[ -f /usr/share/caddy/index.html ]] && minify -o /usr/share/caddy/index.html /usr/share/caddy/index.html
 
 ################
 
