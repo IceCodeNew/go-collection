@@ -241,13 +241,33 @@ fi
 
 [[ -n "$(type -P apk)" ]] && curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/apk-file" '/usr/local/bin/apk-file'
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/mtg" '/usr/local/bin/mtg'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_mtg:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/mtg" '/usr/local/bin/mtg'
+else
+  rm '/usr/local/bin/mtg'
+fi
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/wuzz" '/usr/local/bin/wuzz'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_wuzz:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/wuzz" '/usr/local/bin/wuzz'
+else
+  rm '/usr/local/bin/wuzz'
+fi
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/httpstat" '/usr/local/bin/httpstat'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_httpstat:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/httpstat" '/usr/local/bin/httpstat'
+else
+  rm '/usr/local/bin/httpstat'
+fi
 
-# curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/wgcf" '/usr/local/bin/wgcf'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_wgcf:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/wgcf" '/usr/local/bin/wgcf'
+else
+  rm '/usr/local/bin/wgcf'
+fi
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/mmp-go" '/usr/local/bin/mmp-go'
 
