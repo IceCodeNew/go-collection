@@ -141,20 +141,26 @@ else
   rm '/usr/local/bin/mosdns'
 fi
 
-curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_shadowsocks:=yes}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
+  curl_to_dest "https://github.com/IceCodeNew/v2ray-plugin/releases/latest/download/v2ray-plugin_linux_amd64" '/usr/local/bin/v2ray-plugin'
 
-tmp_dir=$(mktemp -d)
-pushd "$tmp_dir" || exit 1
-# ss_rust_file_name='4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz'
-if curl "https://github.com/IceCodeNew/rust-collection/releases/latest/download/${ss_rust_file_name:=ss-rust-linux-gnu-x64.tar.xz}" | bsdtar -xf-; then
-  [[ -f ./sslocal ]] && sudo "$(type -P install)" -pvD './sslocal' '/usr/local/bin/sslocal'
-  sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
-  sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver'
-  [[ -f ./ssurl ]] && sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
+  tmp_dir=$(mktemp -d)
+  pushd "$tmp_dir" || exit 1
+  # ss_rust_file_name='4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz'
+  if curl "https://github.com/IceCodeNew/rust-collection/releases/latest/download/${ss_rust_file_name:=ss-rust-linux-gnu-x64.tar.xz}" | bsdtar -xf-; then
+    [[ -f ./sslocal ]] && sudo "$(type -P install)" -pvD './sslocal' '/usr/local/bin/sslocal'
+    sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
+    sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver'
+    [[ -f ./ssurl ]] && sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
+  fi
+  popd || exit 1
+  /bin/rm -rf "$tmp_dir"
+  dirs -c
+else
+  rm '/usr/local/bin/go-shadowsocks2' '/usr/local/bin/sslocal' '/usr/local/bin/ssmanager' '/usr/local/bin/ssserver' '/usr/local/bin/ssurl'
 fi
-popd || exit 1
-/bin/rm -rf "$tmp_dir"
-dirs -c
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/frpc" '/usr/local/bin/frpc'
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/frps" '/usr/local/bin/frps'
@@ -187,8 +193,6 @@ curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/down
 curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/rsign" '/usr/local/bin/rsign'
 
 curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/b3sum" '/usr/local/bin/b3sum'
-
-curl_to_dest "https://github.com/IceCodeNew/v2ray-plugin/releases/latest/download/v2ray-plugin_linux_amd64" '/usr/local/bin/v2ray-plugin'
 
 curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/nali" '/usr/local/bin/nali'
 
