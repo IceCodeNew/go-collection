@@ -349,4 +349,4 @@ fi
 ################
 
 checksec --dir=/usr/local/bin
-checksec --listfile=<(echo -e '/usr/bin/bat\n/usr/bin/fd\n/usr/bin/hexyl\n/usr/bin/caddy\n/usr/bin/minify')
+checksec --listfile=<(echo -e '/usr/bin/bat\n/usr/bin/fd\n/usr/bin/hexyl\n/usr/bin/caddy\n/usr/bin/minify\n/usr/local/sbin/haproxy')
