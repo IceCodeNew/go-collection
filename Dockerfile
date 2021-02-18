@@ -201,6 +201,19 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS mmp-go
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/Qv2ray/mmp-go/commits?per_page=1
+ARG mmp_go_latest_commit_hash='92ace24d84b98c00a219d1eeb3c602466b9a5c4a'
+WORKDIR '/go/src/mmp-go'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go env -w GO111MODULE=on \
+    && git_clone 'https://github.com/Qv2ray/mmp-go.git' '/go/src/mmp-go' \
+    && go build -trimpath -ldflags="-linkmode=external -X 'github.com/Qv2ray/mmp-go/config.Version=$(git describe --tags --long --always)' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/mmp-go -v . \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS piknik
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jedisct1/piknik/commits?per_page=1
@@ -244,6 +257,7 @@ COPY --from=dnslookup /go/bin /go/bin/
 COPY --from=wuzz /go/bin /go/bin/
 COPY --from=httpstat /go/bin /go/bin/
 COPY --from=wgcf /go/bin /go/bin/
+COPY --from=mmp-go /go/bin /go/bin/
 COPY --from=piknik /go/bin /go/bin/
 COPY --from=apk-file /go/bin /go/bin/
 RUN apk update; apk --no-progress --no-cache add \
