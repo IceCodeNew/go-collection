@@ -64,6 +64,7 @@ curl -o 'ripgrep_amd64.deb' \
 popd || exit 1
 /bin/rm -rf "$tmp_dir"
 dirs -c
+curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/ripgrep" '/usr/bin/rg'
 
 tmp_dir=$(mktemp -d)
 pushd "$tmp_dir" || exit 1
