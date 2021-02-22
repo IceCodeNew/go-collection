@@ -291,6 +291,13 @@ else
   rm '/usr/local/bin/boringtun'
 fi
 
+# shellcheck disable=SC2154
+if [[ x"$(echo "${install_cfnts:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/cfnts" '/usr/local/bin/cfnts'
+else
+  rm '/usr/local/bin/cfnts'
+fi
+
 ################
 
 # curl_to_dest "https://github.com/IceCodeNew/haproxy_static/releases/latest/download/haproxy" '/usr/local/sbin/haproxy'
