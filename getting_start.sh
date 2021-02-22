@@ -136,6 +136,13 @@ else
 fi
 
 # shellcheck disable=SC2154
+if [[ x"$(echo "${install_nfpm:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/nfpm" '/usr/local/bin/nfpm'
+else
+  rm '/usr/local/bin/nfpm'
+fi
+
+# shellcheck disable=SC2154
 if [[ x"$(echo "${install_mosdns:=no}" | cut -c1)" = x'y' ]]; then
   curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/mosdns" '/usr/local/bin/mosdns'
 else

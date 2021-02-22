@@ -8,6 +8,21 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS nfpm
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/goreleaser/nfpm/commits?per_page=1
+ARG nfpm_latest_commit_hash='4a81c34939f8dd4a287bc378858dea70ca8e1b35'
+WORKDIR '/go/src/nfpm'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go env -w GO111MODULE=on \
+    && git_clone 'https://github.com/goreleaser/nfpm.git' '/go/src/nfpm' \
+    && go mod download \
+    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -o /go/bin/nfpm -v cmd/nfpm/main.go \
+    && strip "/go/bin"/* \
+    && /go/bin/nfpm --version \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS caddy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
@@ -255,6 +270,7 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 COPY --from=github-release /go/bin /go/bin/
+COPY --from=nfpm /go/bin /go/bin/
 COPY --from=caddy /go/bin /go/bin/
 COPY --from=mtg /go/bin /go/bin/
 COPY --from=got /go/bin /go/bin/
