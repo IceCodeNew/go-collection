@@ -13,7 +13,7 @@ RUN apk update; apk --no-progress --no-cache add \
     apk-tools autoconf automake bash binutils build-base ca-certificates coreutils curl dos2unix dpkg file gettext-tiny-dev git grep libarchive-tools libedit-dev libedit-static linux-headers lld musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl perl pkgconf util-linux; \
     apk --no-progress --no-cache upgrade; \
     rm -rf /var/cache/apk/*; \
-    update-alternatives --install /usr/local/bin/ld ld /usr/bin/lld 100; \
+    update-alternatives --install /usr/local/bin/ld ld /usr/bin/ld.lld 100; \
     update-alternatives --auto ld; \
     curl -sSL4q --retry 5 --retry-delay 10 --retry-max-time 60 -o '/usr/bin/checksec' "https://raw.githubusercontent.com/slimm609/checksec.sh/${checksec_latest_tag_name}/checksec"; \
     chmod +x '/usr/bin/checksec'; \
