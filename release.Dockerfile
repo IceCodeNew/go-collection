@@ -158,6 +158,18 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "CloudflareST" \
+    --file "/go/bin/CloudflareST"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "CloudflareST.exe" \
+    --file "/go/bin/CloudflareST.exe"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "piknik" \
     --file "/go/bin/piknik"; \
     "/go/bin/github-release" upload \

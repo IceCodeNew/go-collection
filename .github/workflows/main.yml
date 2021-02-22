@@ -108,6 +108,9 @@ jobs:
           echo "mmp_go_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/Qv2ray/mmp-go/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "cloudflarespeedtest_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/XIU2/CloudflareSpeedTest/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "piknik_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/jedisct1/piknik/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -155,6 +158,7 @@ jobs:
           sed -i -E "s/^ARG httpstat_latest_commit_hash=.+/ARG httpstat_latest_commit_hash=${httpstat_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG wgcf_latest_commit_hash=.+/ARG wgcf_latest_commit_hash=${wgcf_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG mmp_go_latest_commit_hash=.+/ARG mmp_go_latest_commit_hash=${mmp_go_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG cloudflarespeedtest_latest_commit_hash=.+/ARG cloudflarespeedtest_latest_commit_hash=${cloudflarespeedtest_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG piknik_latest_commit_hash=.+/ARG piknik_latest_commit_hash=${piknik_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG apk_file_latest_tag_name=.+/ARG apk_file_latest_tag_name=${apk_file_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
