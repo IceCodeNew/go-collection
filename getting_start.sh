@@ -156,13 +156,18 @@ if [[ x"$(echo "${install_shadowsocks:=yes}" | cut -c1)" = x'y' ]]; then
 
   tmp_dir=$(mktemp -d)
   pushd "$tmp_dir" || exit 1
-  # ss_rust_file_name='4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz'
-  if curl "https://github.com/IceCodeNew/rust-collection/releases/latest/download/${ss_rust_file_name:=ss-rust-linux-gnu-x64.tar.xz}" | bsdtar -xf-; then
-    [[ -f ./sslocal ]] && sudo "$(type -P install)" -pvD './sslocal' '/usr/local/bin/sslocal'
+  if grep -qw avx2 /proc/cpuinfo && grep -qw fma /proc/cpuinfo; then
+    export ss_rust_file_name='ss-rust-linux-gnu-x64.tar.xz';
+  else
+    export ss_rust_file_name='4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz';
+  fi;
+  if curl "https://github.com/IceCodeNew/rust-collection/releases/latest/download/${ss_rust_file_name}" | bsdtar -xf-; then
+    [[ x"$ss_rust_file_name" = x'ss-rust-linux-gnu-x64.tar.xz' ]] && \
+    sudo "$(type -P install)" -pvD './sslocal' '/usr/local/bin/sslocal' && \
+    sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl';
     sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
-    sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver'
-    [[ -f ./ssurl ]] && sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
-  fi
+    sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver';
+  fi;
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
   dirs -c
