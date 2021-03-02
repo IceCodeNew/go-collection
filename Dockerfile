@@ -43,12 +43,12 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie'" -u -v github.com/caddyserver/xcaddy/cmd/xcaddy \
     && "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-and-l4" \
-    --with github.com/caddy-dns/cloudflare \
-    --with github.com/caddyserver/jsonc-adapter \
-    --with github.com/caddyserver/nginx-adapter \
-    --with github.com/porech/caddy-maxmind-geolocation \
-    --with github.com/mastercactapus/caddy2-proxyprotocol \
-    --with github.com/mholt/caddy-l4 \
+    --with github.com/caddy-dns/cloudflare@master \
+    --with github.com/caddyserver/jsonc-adapter@master \
+    --with github.com/caddyserver/nginx-adapter@master \
+    --with github.com/porech/caddy-maxmind-geolocation@master \
+    --with github.com/mastercactapus/caddy2-proxyprotocol@master \
+    --with github.com/mholt/caddy-l4@master \
     && strip "/go/bin"/* \
     && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
