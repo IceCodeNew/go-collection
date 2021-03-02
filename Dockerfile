@@ -26,7 +26,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS caddy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
-ARG caddy_latest_commit_hash='b6e96d6f4a55f96ccbb69f112822f0a923942246'
+ARG CADDY_VERSION='b6e96d6f4a55f96ccbb69f112822f0a923942246'
 # https://api.github.com/repos/caddy-dns/cloudflare/commits?per_page=1
 ARG caddydns_cloudflare_latest_commit_hash='eda8e5aa22232e9c279b0df7531f20c331b331c6'
 # https://api.github.com/repos/caddyserver/jsonc-adapter/commits?per_page=1
