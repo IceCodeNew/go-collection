@@ -11,6 +11,7 @@ on:
       - "**/LICENSE"
       - "**/README.md"
       - "**/getting_start.sh"
+      - "**/alpine_getting_start.sh"
   # pull_request:
   #   branches:
   #     - master
