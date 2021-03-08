@@ -297,6 +297,13 @@ else
 fi
 
 # shellcheck disable=SC2154
+if [[ x"$(echo "${install_netflix_verify:=no}" | cut -c1)" = x'y' ]]; then
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/nf" '/usr/local/bin/nf'
+else
+  rm '/usr/local/bin/nf'
+fi
+
+# shellcheck disable=SC2154
 if [[ x"$(echo "${install_piknik:=no}" | cut -c1)" = x'y' ]]; then
   curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/piknik" '/usr/local/bin/piknik'
 else

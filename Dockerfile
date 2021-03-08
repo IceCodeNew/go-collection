@@ -246,6 +246,20 @@ RUN source "/root/.bashrc" \
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/CloudflareST.exe -v . \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS netflix-verify
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/sjlleo/netflix-verify/commits?per_page=1
+ARG netflix_verify_latest_commit_hash='8ee2a91086d1e723fb506ca37ae1edfaf044abc5'
+WORKDIR '/go/src/netflix-verify'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && git_clone 'https://github.com/sjlleo/netflix-verify.git' '/go/src/netflix-verify' \
+    && go mod init \
+    && go mod tidy \
+    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/nf -v . \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS piknik
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jedisct1/piknik/commits?per_page=1
@@ -292,6 +306,7 @@ COPY --from=httpstat /go/bin /go/bin/
 COPY --from=wgcf /go/bin /go/bin/
 COPY --from=mmp-go /go/bin /go/bin/
 COPY --from=cloudflarespeedtest /go/bin /go/bin/
+COPY --from=netflix-verify /go/bin /go/bin/
 COPY --from=piknik /go/bin /go/bin/
 COPY --from=apk-file /go/bin /go/bin/
 RUN apk update; apk --no-progress --no-cache add \
