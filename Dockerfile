@@ -91,7 +91,8 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG shfmt_latest_commit_hash='c5ff78f0d68e4067c7218775c2ff4cef6a1d23fc'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
-    && GO111MODULE=on go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v mvdan.cc/sh/v3/cmd/shfmt \
+    && go env -w GO111MODULE=on \
+    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v mvdan.cc/sh/v3/cmd/shfmt \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
@@ -102,11 +103,12 @@ ARG croc_latest_commit_hash='0bafce5efe88bbf39f6ec05cb27ae7242478f43b'
 WORKDIR '/go/src/croc'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
+    && go env -w GO111MODULE=on \
     && git_clone 'https://github.com/schollz/croc.git' '/go/src/croc' \
     && sed -i -E 's/(const MAXBYTES =).+/\1 40000000/' 'src/comm/comm.go' \
-    && GO111MODULE=on go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/croc -v . \
+    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/croc -v . \
     && strip "/go/bin"/*
-RUN GO111MODULE=on GOOS=windows GOARCH=amd64 go build -trimpath -o /go/bin/croc.exe -v . \
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -o /go/bin/croc.exe -v . \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS mosdns
@@ -179,6 +181,7 @@ ARG dnslookup_latest_commit_hash='a20f98f33d92f88c10231536b77e4b8013aeecac'
 WORKDIR '/go/src/dnslookup'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
+    && go env -w GO111MODULE=on \
     && git_clone 'https://github.com/ameshkov/dnslookup.git' '/go/src/dnslookup' \
     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/dnslookup -v . \
     && strip "/go/bin"/* \
