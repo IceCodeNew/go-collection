@@ -184,7 +184,8 @@ RUN source "/root/.bashrc" \
     && go env -w GO111MODULE=on \
     && git_clone 'https://github.com/ameshkov/dnslookup.git' '/go/src/dnslookup' \
     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/dnslookup -v . \
-    && strip "/go/bin"/* \
+    && strip "/go/bin"/*
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/dnslookup.exe -v . \
     && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS wuzz

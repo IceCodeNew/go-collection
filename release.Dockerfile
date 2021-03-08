@@ -134,6 +134,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "dnslookup.exe" \
+    --file "/go/bin/dnslookup.exe"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "shfmt" \
     --file "/go/bin/shfmt"; \
     "/go/bin/github-release" upload \
