@@ -49,7 +49,14 @@ RUN source "/root/.bashrc" \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
-    && strip "/go/bin"/* \
+    && strip "/go/bin"/*
+RUN GOOS=windows GOARCH=amd64 "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-and-l4.exe" \
+    --with github.com/caddy-dns/cloudflare@master \
+    --with github.com/caddyserver/jsonc-adapter@master \
+    --with github.com/caddyserver/nginx-adapter@master \
+    --with github.com/porech/caddy-maxmind-geolocation@master \
+    --with github.com/mastercactapus/caddy2-proxyprotocol@master \
+    --with github.com/mholt/caddy-l4@master \
     && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS mtg
