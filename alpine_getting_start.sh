@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 4c20b92 (1 commit after this ref)
+# Version : 302f8cf (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh
-readonly local_script_version='4c20b92'
+readonly local_script_version='302f8cf'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -347,14 +347,13 @@ install_binaries() {
     # fi
     # popd || exit 1
     # /bin/rm -rf "$tmp_dir"
-    # dirs -c
     # [[ -f /usr/share/caddy/index.html ]] && minify -o /usr/share/caddy/index.html /usr/share/caddy/index.html
   fi
 
   ################
 
   checksec --dir=/usr/local/bin
-  checksec --listfile=<(echo -e '/usr/bin/bat\n/usr/bin/fd\n/usr/bin/hexyl\n/usr/bin/minify\n/usr/local/sbin/haproxy\n/usr/sbin/local/caddy')
+  checksec --listfile=<(echo -e '/usr/bin/bat\n/usr/bin/fd\n/usr/bin/hexyl\n/usr/bin/minify\n/usr/local/sbin/haproxy\n/usr/local/sbin/caddy')
 
   exit 0
 }
