@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : add76889 (1 commit after this ref)
+# Version : 20db5da (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='add76889'
+readonly local_script_version='20db5da'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -64,21 +64,20 @@ git_clone() {
 self_update() {
   remote_script_version="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/IceCodeNew/go-collection/commits?per_page=2&path=getting_start.sh' |
-      jq .[1] | grep -Fm1 'sha' | cut -d'"' -f4 | head -c8)"
+      jq .[1] | grep -Fm1 'sha' | cut -d'"' -f4 | head -c7)"
   readonly remote_script_version
   # Should any error occured during quering `api.github.com`, do not execute this script.
-  [[ x"$local_script_version" = x"$remote_script_version" ]] && main
+  [[ x"$local_script_version" = x"$remote_script_version" ]] && install_binaries
   if [[ x"$geoip_is_cn" = x'yes' ]]; then
     curl -o "$HOME/getting_start.sh.tmp" -- 'https://raw.fastgit.org/IceCodeNew/go-collection/master/getting_start.sh'
     sed -i -E -e 's!raw.githubusercontent.com!raw.fastgit.org!g' -e 's!github.com(/.+/download)!download.fastgit.org\1!g' -e 's!github.com(/.+\.git)!hub.fastgit.org\1!g' "$HOME/getting_start.sh.tmp"
   else
     curl -o "$HOME/getting_start.sh.tmp" -- 'https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh'
   fi
-  mv -f "$HOME/getting_start.sh.tmp" "$HOME/getting_start.sh"
-  exit 1
+  mv -f "$HOME/getting_start.sh.tmp" "$HOME/getting_start.sh" && echo 'Upgrade successful!' && exit 1
 }
 
-main() {
+install_binaries() {
   # sudo mkdir -p /usr/local/bin /usr/local/sbin
   sudo mkdir -p /usr/local/bin
 
@@ -412,4 +411,8 @@ main() {
 
   checksec --dir=/usr/local/bin
   checksec --listfile=<(echo -e '/usr/bin/bat\n/usr/bin/fd\n/usr/bin/hexyl\n/usr/bin/caddy\n/usr/bin/minify\n/usr/local/sbin/haproxy')
+
+  exit 0
 }
+
+self_update
