@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 curl_path="$(type -P curl)"
-geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
-[[ x"$geo_country" = x'CN' ]] && curl_path="$(type -P curl) --retry-connrefused"
+# geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
+# [[ x"$geo_country" = x'CN' ]] && curl_path="$(type -P curl) --retry-connrefused"
+myip_ipip_response="$(curl -sS 'http://myip.ipip.net' | grep -E '来自于：中国' | grep -vE '香港|澳门|台湾')"
+echo "$myip_ipip_response" | grep -qE '来自于：中国' && readonly geoip_is_cn='yes' && curl_path="$(type -P curl) --retry-connrefused"
 curl() {
   $curl_path -LRq --retry 5 --retry-delay 10 --retry-max-time 60 "$@"
 }
