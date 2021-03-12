@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 20db5da (1 commit after this ref)
+# Version : 4c20b92 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh
-readonly local_script_version='20db5da'
+readonly local_script_version='4c20b92'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -25,7 +25,6 @@ curl_to_dest() {
     fi
     popd || exit 1
     /bin/rm -rf "$tmp_dir"
-    dirs -c
   fi
 }
 git_clone() {
@@ -69,19 +68,18 @@ install_binaries() {
   # cp doc/* /usr/share/doc/ripgrep/
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
-  dirs -c
   curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/ripgrep" '/usr/bin/rg'
 
   tmp_dir=$(mktemp -d)
   pushd "$tmp_dir" || exit 1
   curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/bat" '/usr/bin/bat'
   git_clone https://github.com/eth-p/bat-extras.git &&
-    cd bat-extras &&
+    pushd bat-extras || exit 1
     chmod +x build.sh &&
     ./build.sh --install --no-manuals
+    popd || exit 1
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
-  dirs -c
 
   tmp_dir=$(mktemp -d)
   pushd "$tmp_dir" || exit 1
@@ -93,7 +91,6 @@ install_binaries() {
   cp autocomplete/fd.bash-completion /usr/share/bash-completion/completions/
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
-  dirs -c
   curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/fd" '/usr/bin/fd'
 
   tmp_dir=$(mktemp -d)
@@ -105,7 +102,6 @@ install_binaries() {
     bsdtar -xf- --strip-components 1
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
-  dirs -c
   curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/hexyl" '/usr/bin/hexyl'
 
   # shellcheck disable=SC2154
@@ -121,7 +117,6 @@ install_binaries() {
     sudo "$(type -P install)" -pvD './hugo' '/usr/local/bin/hugo'
     popd || exit 1
     /bin/rm -rf "$tmp_dir"
-    dirs -c
   fi
 
   ################
@@ -173,7 +168,6 @@ install_binaries() {
     fi
     popd || exit 1
     /bin/rm -rf "$tmp_dir"
-    dirs -c
   else
     rm '/usr/local/bin/go-shadowsocks2' '/usr/local/bin/sslocal' '/usr/local/bin/ssmanager' '/usr/local/bin/ssserver' '/usr/local/bin/ssurl'
   fi

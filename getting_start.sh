@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 20db5da (1 commit after this ref)
+# Version : 4c20b92 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='20db5da'
+readonly local_script_version='4c20b92'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -101,9 +101,10 @@ install_binaries() {
       grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')" &&
     sudo dpkg -i 'bat-musl_amd64.deb'
   git_clone https://github.com/eth-p/bat-extras.git &&
-    cd bat-extras &&
+    pushd bat-extras || exit 1
     chmod +x build.sh &&
     ./build.sh --install --no-manuals
+    popd || exit 1
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
   dirs -c
