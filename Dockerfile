@@ -6,7 +6,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/github-release/github-release \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS nfpm
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -21,7 +21,7 @@ RUN source "/root/.bashrc" \
     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/nfpm -v cmd/nfpm/main.go \
     && strip "/go/bin"/* \
     && /go/bin/nfpm --version \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS caddy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -57,7 +57,7 @@ RUN GOOS=windows GOARCH=amd64 "/go/bin/xcaddy" build --output "/go/bin/caddy-wit
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
-    && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS mtg
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -70,7 +70,7 @@ RUN source "/root/.bashrc" \
     && git_clone 'https://github.com/9seconds/mtg.git' '/go/src/mtg' \
     && go build -trimpath -ldflags="-linkmode=external -X 'main.version=$(git describe --tags --long --always) ($(go version)) [$(date -Ru)]' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/mtg -v . \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS got
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -80,7 +80,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/melbahja/got/cmd/got \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS duf
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -90,7 +90,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/muesli/duf \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS shfmt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -101,7 +101,7 @@ RUN source "/root/.bashrc" \
     && go env -w GO111MODULE=on \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v mvdan.cc/sh/v3/cmd/shfmt \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS croc
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -116,7 +116,7 @@ RUN source "/root/.bashrc" \
     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/croc -v . \
     && strip "/go/bin"/*
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/croc.exe -v . \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS mosdns
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -129,7 +129,7 @@ RUN source "/root/.bashrc" \
     && go build -trimpath -ldflags="-linkmode=external -X main.version=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/mosdns -v . \
     && strip "/go/bin"/*
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=$(git describe --tags --long --always) -buildid=" -o /go/bin/mosdns.exe -v . \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS go-shadowsocks2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -140,7 +140,7 @@ RUN source "/root/.bashrc" \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/shadowsocks/go-shadowsocks2 \
     && strip "/go/bin"/*
 RUN GOOS=windows GOARCH=amd64 go get -trimpath -ldflags="-s -w -buildid=" -u -v github.com/shadowsocks/go-shadowsocks2 \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS frp
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -156,7 +156,7 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/*
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/frpc.exe -v ./cmd/frpc \
     && GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/frps.exe -v ./cmd/frps \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS chisel
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -169,7 +169,7 @@ RUN source "/root/.bashrc" \
     && go build -trimpath -ldflags="-linkmode=external -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/chisel -v . \
     && strip "/go/bin"/*
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -buildid=" -o /go/bin/chisel.exe -v . \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS nali
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -179,7 +179,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/zu1k/nali \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS dnslookup
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -193,7 +193,7 @@ RUN source "/root/.bashrc" \
     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/dnslookup -v . \
     && strip "/go/bin"/*
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/dnslookup.exe -v . \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS wuzz
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -203,7 +203,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/asciimoo/wuzz \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS httpstat
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -213,7 +213,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/davecheney/httpstat \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS wgcf
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -225,7 +225,7 @@ RUN source "/root/.bashrc" \
     && git_clone 'https://github.com/ViRb3/wgcf.git' '/go/src/wgcf' \
     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/wgcf -v . \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS mmp-go
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -238,7 +238,7 @@ RUN source "/root/.bashrc" \
     && git_clone 'https://github.com/Qv2ray/mmp-go.git' '/go/src/mmp-go' \
     && go build -trimpath -ldflags="-linkmode=external -X 'github.com/Qv2ray/mmp-go/config.Version=$(git describe --tags --long --always)' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/mmp-go -v . \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS cloudflarespeedtest
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -251,7 +251,7 @@ RUN source "/root/.bashrc" \
     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/CloudflareST -v . \
     && strip "/go/bin"/*
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/CloudflareST.exe -v . \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS netflix-verify
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -265,7 +265,7 @@ RUN source "/root/.bashrc" \
     && go mod tidy \
     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/nf -v . \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS piknik
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -276,7 +276,7 @@ RUN source "/root/.bashrc" \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/jedisct1/piknik \
     && strip "/go/bin"/*
 RUN GOOS=windows GOARCH=amd64 go get -trimpath -ldflags="-s -w -buildid=" -u -v github.com/jedisct1/piknik \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS apk-file
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -286,7 +286,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/genuinetools/apk-file \
     && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/alpine:latest AS collection
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
