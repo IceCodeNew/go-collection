@@ -50,6 +50,18 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "age-linux-amd64.tar.gz" \
+    --file "/go/bin/age-linux-amd64.tar.gz"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "age-windows-amd64.zip" \
+    --file "/go/bin/age-windows-amd64.zip"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "mtg" \
     --file "/go/bin/mtg"; \
     "/go/bin/github-release" upload \

@@ -59,6 +59,23 @@ RUN GOOS=windows GOARCH=amd64 "/go/bin/xcaddy" build --output "/go/bin/caddy-wit
     --with github.com/mholt/caddy-l4@master \
     && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS age
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/FiloSottile/age/commits?per_page=1
+ARG age_latest_commit_hash='53f0ebda67901013bddf1a6bd59c946574c87d0b'
+WORKDIR '/go/src/age'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && git_clone 'https://github.com/FiloSottile/age.git' '/go/src/age' \
+    && go build -trimpath -ldflags="-linkmode=external -X 'main.Version=$(git describe --tags --long --always) ($(go version))' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/ -v ./cmd/... \
+    && strip "/go/bin"/* \
+    && mv "/go/bin"/* ./ \
+    && bsdtar --no-xattrs -a -cf /go/bin/age-linux-amd64.tar.gz ./age ./age-keygen
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X 'main.Version=$(git describe --tags --long --always) ($(go version))' -buildid=" -o /go/bin/ -v ./cmd/... \
+    && mv "/go/bin"/* ./ \
+    && bsdtar --no-xattrs -a -cf /go/bin/age-windows-amd64.zip ./age.exe ./age-keygen.exe \
+    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS mtg
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/9seconds/mtg/commits?per_page=1
@@ -297,6 +314,7 @@ ENV DEFAULT_TZ ${TZ}
 COPY --from=github-release /go/bin /go/bin/
 COPY --from=nfpm /go/bin /go/bin/
 COPY --from=caddy /go/bin /go/bin/
+COPY --from=age /go/bin /go/bin/
 COPY --from=mtg /go/bin /go/bin/
 COPY --from=got /go/bin /go/bin/
 COPY --from=duf /go/bin /go/bin/

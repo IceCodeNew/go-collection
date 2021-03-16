@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 4c20b92 (1 commit after this ref)
+# Version : 302f8cf (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='4c20b92'
+readonly local_script_version='302f8cf'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -281,6 +281,21 @@ install_binaries() {
   fi
 
   [[ -n "$(type -P apk)" ]] && curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/apk-file" '/usr/local/bin/apk-file'
+
+  # shellcheck disable=SC2154
+  if [[ x"$(echo "${install_age:=yes}" | cut -c1)" = x'y' ]]; then
+    tmp_dir=$(mktemp -d)
+    pushd "$tmp_dir" || exit 1
+    if curl "https://github.com/IceCodeNew/go-collection/releases/latest/download/age-linux-amd64.tar.gz" | bsdtar -xf-; then
+      sudo "$(type -P install)" -pvD './age' '/usr/local/bin/age'
+      sudo "$(type -P install)" -pvD './age-keygen' '/usr/local/bin/age-keygen'
+    fi
+    popd || exit 1
+    /bin/rm -rf "$tmp_dir"
+    dirs -c
+  else
+    rm '/usr/local/bin/age' '/usr/local/bin/age-keygen'
+  fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_mtg:=no}" | cut -c1)" = x'y' ]]; then
