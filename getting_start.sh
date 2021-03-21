@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 302f8cf (1 commit after this ref)
+# Version : bcd66aa (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='302f8cf'
+readonly local_script_version='bcd66aa'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -67,7 +67,9 @@ self_update() {
       jq .[1] | grep -Fm1 'sha' | cut -d'"' -f4 | head -c7)"
   readonly remote_script_version
   # Should any error occured during quering `api.github.com`, do not execute this script.
-  [[ x"$local_script_version" = x"$remote_script_version" ]] && install_binaries
+  [[ x"$local_script_version" = x"$remote_script_version" ]] &&
+    sed -i -E -e 's!raw.githubusercontent.com!raw.fastgit.org!g' -e 's!github.com(/.+/download)!download.fastgit.org\1!g' -e 's!github.com(/.+\.git)!hub.fastgit.org\1!g' "$HOME/getting_start.sh" &&
+    install_binaries
   if [[ x"$geoip_is_cn" = x'yes' ]]; then
     curl -o "$HOME/getting_start.sh.tmp" -- 'https://raw.fastgit.org/IceCodeNew/go-collection/master/getting_start.sh'
     sed -i -E -e 's!raw.githubusercontent.com!raw.fastgit.org!g' -e 's!github.com(/.+/download)!download.fastgit.org\1!g' -e 's!github.com(/.+\.git)!hub.fastgit.org\1!g' "$HOME/getting_start.sh.tmp"
