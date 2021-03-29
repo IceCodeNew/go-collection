@@ -69,12 +69,12 @@ RUN source "/root/.bashrc" \
     && git_clone 'https://github.com/FiloSottile/age.git' '/go/src/age' \
     && go build -trimpath -ldflags="-linkmode=external -X 'main.Version=$(git describe --tags --long --always) ($(go version))' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/ -v ./cmd/... \
     && strip "/go/bin"/* \
-    && mv "/go/bin"/* ./ \
+    && mv "/go/bin/age" "/go/bin/age-keygen" ./ \
     && bsdtar --no-xattrs -a -cf /go/bin/age-linux-amd64.tar.gz ./age ./age-keygen
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X 'main.Version=$(git describe --tags --long --always) ($(go version))' -buildid=" -o /go/bin/ -v ./cmd/... \
-    && mv "/go/bin"/* ./ \
+    && mv "/go/bin/age.exe" "/go/bin/age-keygen.exe" ./ \
     && bsdtar --no-xattrs -a -cf /go/bin/age-windows-amd64.zip ./age.exe ./age-keygen.exe \
-    && rm -rf "/root/.cache/go-build" "/root/go/pkg" "/root/go/src" || exit 0
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS mtg
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
