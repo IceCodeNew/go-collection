@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : bcd66aa (1 commit after this ref)
+# Version : 71584b9 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh
-readonly local_script_version='bcd66aa'
+readonly local_script_version='71584b9'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -29,9 +29,9 @@ curl_to_dest() {
 }
 git_clone() {
   if [[ -z "$GIT_PROXY" ]]; then
-    $(type -P git) clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch "$@"
+    $(type -P git) clone -v -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch "$@"
   else
-    $(type -P git) -c "$GIT_PROXY" clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch "$@"
+    $(type -P git) -c "$GIT_PROXY" clone -v -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch "$@"
   fi
 }
 
@@ -52,7 +52,8 @@ self_update() {
   else
     curl -o "$HOME/alpine_getting_start.sh.tmp" -- 'https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh'
   fi
-  mv -f "$HOME/alpine_getting_start.sh.tmp" "$HOME/alpine_getting_start.sh" && echo 'Upgrade successful!' && exit 1
+  dos2unix "$HOME/alpine_getting_start.sh.tmp" && mv -f "$HOME/alpine_getting_start.sh.tmp" "$HOME/alpine_getting_start.sh" &&
+  echo 'Upgrade successful!' && exit 1
 }
 
 install_binaries() {
