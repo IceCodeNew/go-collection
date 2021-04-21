@@ -84,6 +84,7 @@ WORKDIR '/go/src/mtg'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GO111MODULE=on \
+    # && git_clone 'https://github.com/9seconds/mtg.git' --branch 'stable' '/go/src/mtg' \
     && git_clone 'https://github.com/9seconds/mtg.git' '/go/src/mtg' \
     && go build -trimpath -ldflags="-linkmode=external -X 'main.version=$(git describe --tags --long --always) ($(go version)) [$(date -Ru)]' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/mtg -v . \
     && strip "/go/bin"/* \
