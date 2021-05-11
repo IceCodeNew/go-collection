@@ -158,6 +158,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "dive" \
+    --file "/go/bin/dive"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "duf" \
     --file "/go/bin/duf"; \
     "/go/bin/github-release" upload \

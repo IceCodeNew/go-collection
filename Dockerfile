@@ -214,6 +214,19 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS dive
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/wagoodman/dive/commits?per_page=1
+ARG dive_latest_tag_name='v0.10.0'
+ARG dive_latest_commit_hash='64880972b0726ec2ff2b005b0cc97801067c1bb5'
+WORKDIR '/go/src/dive'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && git_clone 'https://github.com/wagoodman/dive.git' '/go/src/dive' \
+    && go build -trimpath -ldflags="-linkmode=external -X main.version=${dive_latest_tag_name} -X 'main.commit=${dive_latest_commit_hash} -X main.buildTime=$(date -u --rfc-3339=seconds)' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/dive -v . \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS duf
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/muesli/duf/commits?per_page=1&path=go.mod
@@ -326,6 +339,7 @@ COPY --from=frp /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
 COPY --from=dnslookup /go/bin /go/bin/
 COPY --from=wgcf /go/bin /go/bin/
+COPY --from=dive /go/bin /go/bin/
 COPY --from=duf /go/bin /go/bin/
 COPY --from=wuzz /go/bin /go/bin/
 COPY --from=httpstat /go/bin /go/bin/

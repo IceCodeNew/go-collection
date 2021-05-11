@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 71584b9 (1 commit after this ref)
+# Version : 095b14b (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='71584b9'
+readonly local_script_version='095b14b'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -222,6 +222,13 @@ install_binaries() {
   fi
 
   curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/got" '/usr/local/bin/got'
+
+  # shellcheck disable=SC2154
+  if [[ x"$(echo "${install_dive:=yes}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/dive" '/usr/local/bin/dive'
+  else
+    rm '/usr/local/bin/dive'
+  fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_duf:=no}" | cut -c1)" = x'y' ]]; then
