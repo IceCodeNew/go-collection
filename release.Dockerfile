@@ -38,6 +38,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "mmp-go" \
+    --file "/go/bin/mmp-go"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "caddy" \
     --file "/go/bin/caddy-with-geoip-proxyproto-and-l4"; \
     "/go/bin/github-release" upload \
@@ -116,26 +122,8 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
-    --name "chisel" \
-    --file "/go/bin/chisel"; \
-    "/go/bin/github-release" upload \
-    --user IceCodeNew \
-    --repo go-collection \
-    --tag "$tag_name" \
-    --name "chisel.exe" \
-    --file "/go/bin/chisel.exe"; \
-    "/go/bin/github-release" upload \
-    --user IceCodeNew \
-    --repo go-collection \
-    --tag "$tag_name" \
     --name "got" \
     --file "/go/bin/got"; \
-    "/go/bin/github-release" upload \
-    --user IceCodeNew \
-    --repo go-collection \
-    --tag "$tag_name" \
-    --name "duf" \
-    --file "/go/bin/duf"; \
     "/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
@@ -164,6 +152,18 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "wgcf" \
+    --file "/go/bin/wgcf"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
+    --name "duf" \
+    --file "/go/bin/duf"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "wuzz" \
     --file "/go/bin/wuzz"; \
     "/go/bin/github-release" upload \
@@ -176,14 +176,14 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
-    --name "wgcf" \
-    --file "/go/bin/wgcf"; \
+    --name "chisel" \
+    --file "/go/bin/chisel"; \
     "/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
-    --name "mmp-go" \
-    --file "/go/bin/mmp-go"; \
+    --name "chisel.exe" \
+    --file "/go/bin/chisel.exe"; \
     "/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \

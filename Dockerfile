@@ -23,6 +23,19 @@ RUN source "/root/.bashrc" \
     && /go/bin/nfpm --version \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS mmp-go
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/Qv2ray/mmp-go/commits?per_page=1
+ARG mmp_go_latest_commit_hash='92ace24d84b98c00a219d1eeb3c602466b9a5c4a'
+WORKDIR '/go/src/mmp-go'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go env -w GO111MODULE=on \
+    && git_clone 'https://github.com/Qv2ray/mmp-go.git' '/go/src/mmp-go' \
+    && go build -trimpath -ldflags="-linkmode=external -X 'github.com/Qv2ray/mmp-go/config.Version=$(git describe --tags --long --always)' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/mmp-go -v . \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS caddy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
@@ -100,16 +113,6 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-FROM quay.io/icecodenew/go-collection:build_base AS duf
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/muesli/duf/commits?per_page=1&path=go.mod
-ARG duf_latest_commit_hash='02161643e0fb8530aa13bfbcfefad79bd8ffdf3c'
-RUN source "/root/.bashrc" \
-    && go env -w CGO_ENABLED=0 \
-    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/muesli/duf \
-    && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
-
 FROM quay.io/icecodenew/go-collection:build_base AS shfmt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod
@@ -175,19 +178,6 @@ RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /
     && GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/frps.exe -v ./cmd/frps \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-FROM quay.io/icecodenew/go-collection:build_base AS chisel
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/jpillora/chisel/commits?per_page=1
-ARG chisel_latest_commit_hash='20921074b5827147b1a24d4ef4f5cba174856430'
-WORKDIR '/go/src/chisel'
-RUN source "/root/.bashrc" \
-    && go env -w CGO_ENABLED=0 \
-    && git_clone 'https://github.com/jpillora/chisel.git' '/go/src/chisel' \
-    && go build -trimpath -ldflags="-linkmode=external -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/chisel -v . \
-    && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -buildid=" -o /go/bin/chisel.exe -v . \
-    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
-
 FROM quay.io/icecodenew/go-collection:build_base AS nali
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/zu1k/nali/commits?per_page=1&path=go.mod
@@ -212,6 +202,28 @@ RUN source "/root/.bashrc" \
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/dnslookup.exe -v . \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS wgcf
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/ViRb3/wgcf/commits?per_page=1
+ARG wgcf_latest_commit_hash='d3850639fe43559370b9575b35fca0167ac5689d'
+WORKDIR '/go/src/wgcf'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && git_clone 'https://github.com/ViRb3/wgcf.git' '/go/src/wgcf' \
+    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/wgcf -v . \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
+
+FROM quay.io/icecodenew/go-collection:build_base AS duf
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/muesli/duf/commits?per_page=1&path=go.mod
+ARG duf_latest_commit_hash='02161643e0fb8530aa13bfbcfefad79bd8ffdf3c'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/muesli/duf \
+    && strip "/go/bin"/* \
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS wuzz
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/asciimoo/wuzz/commits?per_page=1
@@ -232,29 +244,17 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-FROM quay.io/icecodenew/go-collection:build_base AS wgcf
+FROM quay.io/icecodenew/go-collection:build_base AS chisel
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/ViRb3/wgcf/commits?per_page=1
-ARG wgcf_latest_commit_hash='d3850639fe43559370b9575b35fca0167ac5689d'
-WORKDIR '/go/src/wgcf'
+# https://api.github.com/repos/jpillora/chisel/commits?per_page=1
+ARG chisel_latest_commit_hash='20921074b5827147b1a24d4ef4f5cba174856430'
+WORKDIR '/go/src/chisel'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
-    && git_clone 'https://github.com/ViRb3/wgcf.git' '/go/src/wgcf' \
-    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/wgcf -v . \
-    && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
-
-FROM quay.io/icecodenew/go-collection:build_base AS mmp-go
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/Qv2ray/mmp-go/commits?per_page=1
-ARG mmp_go_latest_commit_hash='92ace24d84b98c00a219d1eeb3c602466b9a5c4a'
-WORKDIR '/go/src/mmp-go'
-RUN source "/root/.bashrc" \
-    && go env -w CGO_ENABLED=0 \
-    && go env -w GO111MODULE=on \
-    && git_clone 'https://github.com/Qv2ray/mmp-go.git' '/go/src/mmp-go' \
-    && go build -trimpath -ldflags="-linkmode=external -X 'github.com/Qv2ray/mmp-go/config.Version=$(git describe --tags --long --always)' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/mmp-go -v . \
-    && strip "/go/bin"/* \
+    && git_clone 'https://github.com/jpillora/chisel.git' '/go/src/chisel' \
+    && go build -trimpath -ldflags="-linkmode=external -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/chisel -v . \
+    && strip "/go/bin"/*
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -buildid=" -o /go/bin/chisel.exe -v . \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS cloudflarespeedtest
@@ -313,23 +313,23 @@ ARG TZ='Asia/Taipei'
 ENV DEFAULT_TZ ${TZ}
 COPY --from=github-release /go/bin /go/bin/
 COPY --from=nfpm /go/bin /go/bin/
+COPY --from=mmp-go /go/bin /go/bin/
 COPY --from=caddy /go/bin /go/bin/
 COPY --from=age /go/bin /go/bin/
 COPY --from=mtg /go/bin /go/bin/
 COPY --from=got /go/bin /go/bin/
-COPY --from=duf /go/bin /go/bin/
 COPY --from=shfmt /go/bin /go/bin/
 COPY --from=croc /go/bin /go/bin/
 COPY --from=mosdns /go/bin /go/bin/
 COPY --from=go-shadowsocks2 /go/bin /go/bin/
 COPY --from=frp /go/bin /go/bin/
-COPY --from=chisel /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
 COPY --from=dnslookup /go/bin /go/bin/
+COPY --from=wgcf /go/bin /go/bin/
+COPY --from=duf /go/bin /go/bin/
 COPY --from=wuzz /go/bin /go/bin/
 COPY --from=httpstat /go/bin /go/bin/
-COPY --from=wgcf /go/bin /go/bin/
-COPY --from=mmp-go /go/bin /go/bin/
+COPY --from=chisel /go/bin /go/bin/
 COPY --from=cloudflarespeedtest /go/bin /go/bin/
 COPY --from=netflix-verify /go/bin /go/bin/
 COPY --from=piknik /go/bin /go/bin/

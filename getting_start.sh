@@ -223,7 +223,12 @@ install_binaries() {
 
   curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/got" '/usr/local/bin/got'
 
-  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/duf" '/usr/local/bin/duf'
+  # shellcheck disable=SC2154
+  if [[ x"$(echo "${install_duf:=no}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/duf" '/usr/local/bin/duf'
+  else
+    rm '/usr/local/bin/duf'
+  fi
 
   curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/dnslookup" '/usr/local/bin/dnslookup'
 
