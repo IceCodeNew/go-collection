@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 095b14b (1 commit after this ref)
+# Version : e09fea2 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh
-readonly local_script_version='095b14b'
+readonly local_script_version='e09fea2'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -128,6 +128,8 @@ install_binaries() {
   curl_to_dest 'https://raw.githubusercontent.com/schollz/croc/master/src/install/bash_autocomplete' '/usr/share/bash-completion/completions/croc'
 
   curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/shfmt" '/usr/local/bin/shfmt'
+
+  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/sd" '/usr/local/bin/sd'
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_github_release:=no}" | cut -c1)" = x'y' ]]; then
