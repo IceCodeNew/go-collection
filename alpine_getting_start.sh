@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 419eaf3 (1 commit after this ref)
+# Version : b907474 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh
-readonly local_script_version='419eaf3'
+readonly local_script_version='b907474'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -14,7 +14,9 @@ curl_path="$(type -P curl)"
 myip_ipip_response="$(curl -sS 'http://myip.ipip.net' | grep -E '来自于：中国' | grep -vE '香港|澳门|台湾')"
 echo "$myip_ipip_response" | grep -qE '来自于：中国' && readonly geoip_is_cn='yes' && curl_path="$(type -P curl) --retry-connrefused"
 curl() {
-  $curl_path -LRq --retry 5 --retry-delay 10 --retry-max-time 60 "$@"
+  # It is OK for the system which has cURL's version greater than `7.76.0` to use `--fail-with-body` instead of `-f`.
+  ## Refer to: https://superuser.com/a/1626376
+  $curl_path -LRq --retry 5 --retry-delay 10 --retry-max-time 60 --fail-with-body "$@"
 }
 curl_to_dest() {
   if [[ $# -eq 2 ]]; then
