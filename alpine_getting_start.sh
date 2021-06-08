@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : b907474 (1 commit after this ref)
+# Version : 1fee791 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh
-readonly local_script_version='b907474'
+readonly local_script_version='1fee791'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -48,8 +48,7 @@ self_update() {
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
     sed -i -E -e 's!raw.githubusercontent.com!raw.fastgit.org!g' -e 's!github.com(/.+/download)!download.fastgit.org\1!g' "$HOME/alpine_getting_start.sh" &&
     git config --global url."https://hub.fastgit.org".insteadOf https://github.com &&
-    install_binaries;
-    git config --global --unset url.https://hub.fastgit.org.insteadof
+    install_binaries
   if [[ x"${geoip_is_cn:0:1}" = x'y' ]]; then
     curl -o "$HOME/alpine_getting_start.sh.tmp" -- 'https://raw.fastgit.org/IceCodeNew/go-collection/master/alpine_getting_start.sh'
     sed -i -E -e 's!raw.githubusercontent.com!raw.fastgit.org!g' -e 's!github.com(/.+/download)!download.fastgit.org\1!g' "$HOME/alpine_getting_start.sh.tmp"
@@ -389,8 +388,9 @@ install_binaries() {
 
   checksec --dir=/usr/local/bin
   checksec --listfile=<(echo -e '/usr/bin/bat\n/usr/bin/fd\n/usr/bin/hexyl\n/usr/bin/minify\n/usr/local/sbin/haproxy\n/usr/local/sbin/caddy')
-  git config --global --list
 
+  git config --global --unset url.https://hub.fastgit.org.insteadof
+  git config --global --list
   exit 0
 }
 
