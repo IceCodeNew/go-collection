@@ -2,11 +2,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 1fee791 (1 commit after this ref)
+# Version : 545513f (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='1fee791'
+readonly local_script_version='545513f'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -69,13 +69,14 @@ self_update() {
       jq .[1] | grep -Fm1 'sha' | cut -d'"' -f4 | head -c7)"
   readonly remote_script_version
   # Should any error occured during quering `api.github.com`, do not execute this script.
+  [[ x"${geoip_is_cn:0:1}" = x'y' ]] &&
+    sed -i -E -e 's!raw.githubusercontent.com!raw.githubusercontents.com!g' -e 's!(https://github.com/.+/download)!https://gh.api.99988866.xyz/\1!g' "$HOME/getting_start.sh" &&
+    git config --global url."https://hub.fastgit.org".insteadOf https://github.com
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
-    sed -i -E -e 's!raw.githubusercontent.com!raw.fastgit.org!g' -e 's!github.com(/.+/download)!download.fastgit.org\1!g' "$HOME/getting_start.sh" &&
-    git config --global url."https://hub.fastgit.org".insteadOf https://github.com &&
     install_binaries
   if [[ x"${geoip_is_cn:0:1}" = x'y' ]]; then
-    curl -o "$HOME/getting_start.sh.tmp" -- 'https://raw.fastgit.org/IceCodeNew/go-collection/master/getting_start.sh'
-    sed -i -E -e 's!raw.githubusercontent.com!raw.fastgit.org!g' -e 's!github.com(/.+/download)!download.fastgit.org\1!g' "$HOME/getting_start.sh.tmp"
+    curl -o "$HOME/getting_start.sh.tmp" -- 'https://raw.githubusercontents.com/IceCodeNew/go-collection/master/getting_start.sh'
+    sed -i -E -e 's!raw.githubusercontent.com!raw.githubusercontents.com!g' -e 's!(https://github.com/.+/download)!https://gh.api.99988866.xyz/\1!g' "$HOME/getting_start.sh.tmp"
   else
     curl -o "$HOME/getting_start.sh.tmp" -- 'https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh'
   fi
