@@ -1,7 +1,7 @@
 FROM quay.io/icecodenew/go-collection:build_base AS github-release
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/github-release/github-release/releases/latest
-ARG github_release_latest_tag_name='v0.9.0'
+ARG github_release_latest_tag_name=v0.10.0
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/github-release/github-release \
@@ -11,7 +11,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS nfpm
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/goreleaser/nfpm/commits?per_page=1
-ARG nfpm_latest_commit_hash='4a81c34939f8dd4a287bc378858dea70ca8e1b35'
+ARG nfpm_latest_commit_hash=36a847b2f85bb74b68ffd7997d27678160838ef6
 WORKDIR '/go/src/nfpm'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -26,7 +26,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS mmp-go
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/Qv2ray/mmp-go/commits?per_page=1
-ARG mmp_go_latest_commit_hash='92ace24d84b98c00a219d1eeb3c602466b9a5c4a'
+ARG mmp_go_latest_commit_hash=427f95274f185a0d906e06d1d2bafecb653d5475
 WORKDIR '/go/src/mmp-go'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -39,19 +39,19 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS caddy
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
-ARG CADDY_VERSION='b6e96d6f4a55f96ccbb69f112822f0a923942246'
+ARG CADDY_VERSION=124ba1ba714220322c65625012c564f89b75bfc9
 # https://api.github.com/repos/caddy-dns/cloudflare/commits?per_page=1
-ARG caddydns_cloudflare_latest_commit_hash='eda8e5aa22232e9c279b0df7531f20c331b331c6'
+ARG caddydns_cloudflare_latest_commit_hash=91cf700356a1cd0127bcc4e784dd50ed85794af5
 # https://api.github.com/repos/caddyserver/jsonc-adapter/commits?per_page=1
-ARG caddy_jsoncadapter_latest_commit_hash='825ee096306c2af9a28858f0db87fb982795cbea'
+ARG caddy_jsoncadapter_latest_commit_hash=825ee096306c2af9a28858f0db87fb982795cbea
 # https://api.github.com/repos/caddyserver/nginx-adapter/commits?per_page=1
-ARG caddy_nginxadapter_latest_commit_hash='77eae3ff99cb283fd474a9a59f7b652de3d6b61d'
+ARG caddy_nginxadapter_latest_commit_hash=50635ac4cf58f1a0f7d6f8a8ae059c3681fc4088
 # https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1
-ARG caddy_geoip_latest_commit_hash='d500cc3ca64b734da42e0f0446003f437c915ac8'
+ARG caddy_geoip_latest_commit_hash=088c2173a3676a4956b220af619fa1c586ac7be6
 # https://api.github.com/repos/mastercactapus/caddy2-proxyprotocol/commits?per_page=1
-ARG caddy_proxyprotocol_latest_commit_hash='8cd17723e0ed50a258a2f8b498155cd9a5ece941'
+ARG caddy_proxyprotocol_latest_commit_hash=27e19628361b50aa252290d3982d2354dc6f93e5
 # https://api.github.com/repos/mholt/caddy-l4/commits?per_page=1
-ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
+ARG caddy_l4_latest_commit_hash=3cfcafe708834b071dae82a5f75224e55baef230
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/caddyserver/xcaddy/cmd/xcaddy \
@@ -75,7 +75,7 @@ RUN GOOS=windows GOARCH=amd64 "/go/bin/xcaddy" build --output "/go/bin/caddy-wit
 FROM quay.io/icecodenew/go-collection:build_base AS age
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/FiloSottile/age/commits?per_page=1
-ARG age_latest_commit_hash='53f0ebda67901013bddf1a6bd59c946574c87d0b'
+ARG age_latest_commit_hash=e08055f4e519032f67c9a6740d8e97ed53749c6d
 WORKDIR '/go/src/age'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -92,7 +92,7 @@ RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X 'main.Versio
 FROM quay.io/icecodenew/go-collection:build_base AS mtg
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/9seconds/mtg/commits?per_page=1
-ARG mtg_latest_commit_hash='e075169dd4e9fc4c2b1453668f85f5099c4fb895'
+ARG mtg_latest_commit_hash=889ab6c227818e92383a286b0dafc95ccb603a85
 WORKDIR '/go/src/mtg'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -106,7 +106,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS got
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/melbahja/got/releases/latest
-ARG got_latest_tag_name='v0.5.0'
+ARG got_latest_tag_name=v0.5.0
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/melbahja/got/cmd/got \
@@ -116,7 +116,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS shfmt
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod
-ARG shfmt_latest_commit_hash='c5ff78f0d68e4067c7218775c2ff4cef6a1d23fc'
+ARG shfmt_latest_commit_hash=e25bb494d7752cb31f7a41dc1369bf84048e3e49
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GO111MODULE=on \
@@ -127,7 +127,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS croc
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/schollz/croc/commits?per_page=1
-ARG croc_latest_commit_hash='0bafce5efe88bbf39f6ec05cb27ae7242478f43b'
+ARG croc_latest_commit_hash=d922808fd8bfc97571bdc4ddd6d115d979bc9ba7
 WORKDIR '/go/src/croc'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -141,7 +141,7 @@ RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /
 FROM quay.io/icecodenew/go-collection:build_base AS mosdns
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/IrineSistiana/mosdns/commits?per_page=1
-ARG mosdns_latest_commit_hash='5ee263d0b686404c93016351076851861a854eb4'
+ARG mosdns_latest_commit_hash=da960f396224cc3476d7e1b757a007e4f6cc3a94
 WORKDIR '/go/src/mosdns'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -154,7 +154,7 @@ RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version
 FROM quay.io/icecodenew/go-collection:build_base AS go-shadowsocks2
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/shadowsocks/go-shadowsocks2/commits?per_page=1
-ARG go_ss2_latest_commit_hash='75d43273f5a50373be2a70e91372a3a6afc53a54'
+ARG go_ss2_latest_commit_hash=acdbac05f5a55fd360edb1978c6a23c4988313a6
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/shadowsocks/go-shadowsocks2 \
@@ -165,7 +165,7 @@ RUN GOOS=windows GOARCH=amd64 go get -trimpath -ldflags="-s -w -buildid=" -u -v 
 FROM quay.io/icecodenew/go-collection:build_base AS frp
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/fatedier/frp/commits?per_page=1
-ARG frp_latest_commit_hash='72595b2da84f7eaceac735dbe8fd45ff9668d92c'
+ARG frp_latest_commit_hash=2a68c1152f4d20b07f112cdcd4ee84151a859a1f
 WORKDIR '/go/src/frp'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -181,7 +181,7 @@ RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /
 FROM quay.io/icecodenew/go-collection:build_base AS nali
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/zu1k/nali/commits?per_page=1&path=go.mod
-ARG nali_latest_commit_hash='9b0aa92bd4a677a9e61f27be5e1cce30b8040fc9'
+ARG nali_latest_commit_hash=10b36ef0701af9c1e85902ad681ac237019bc2f8
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/zu1k/nali \
@@ -191,7 +191,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS dnslookup
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/ameshkov/dnslookup/commits?per_page=1
-ARG dnslookup_latest_commit_hash='a20f98f33d92f88c10231536b77e4b8013aeecac'
+ARG dnslookup_latest_commit_hash=b0feb9b2afa3fed00bd19fd2d21935b4d666d75d
 WORKDIR '/go/src/dnslookup'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -205,7 +205,7 @@ RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /
 FROM quay.io/icecodenew/go-collection:build_base AS wgcf
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/ViRb3/wgcf/commits?per_page=1
-ARG wgcf_latest_commit_hash='d3850639fe43559370b9575b35fca0167ac5689d'
+ARG wgcf_latest_commit_hash=0c454559694de66e4e1e98ac3bc0b4885b6f73d3
 WORKDIR '/go/src/wgcf'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -217,8 +217,8 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS dive
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/wagoodman/dive/commits?per_page=1
-ARG dive_latest_tag_name='v0.10.0'
-ARG dive_latest_commit_hash='64880972b0726ec2ff2b005b0cc97801067c1bb5'
+ARG dive_latest_tag_name=v0.10.0
+ARG dive_latest_commit_hash=c7d121b3d72aeaded26d5731819afaf49b686df6
 WORKDIR '/go/src/dive'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -230,7 +230,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS duf
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/muesli/duf/commits?per_page=1&path=go.mod
-ARG duf_latest_commit_hash='02161643e0fb8530aa13bfbcfefad79bd8ffdf3c'
+ARG duf_latest_commit_hash=c170db441864787fa6ea7a1f87487a8a74c39f4c
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/muesli/duf \
@@ -240,7 +240,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS wuzz
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/asciimoo/wuzz/commits?per_page=1
-ARG wuzz_latest_commit_hash='0935ebdf55d223abbf0fd10cb8f0f9c0a323ccb7'
+ARG wuzz_latest_commit_hash=66176b6ef86c4879975d4075d784135d56ee3e82
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/asciimoo/wuzz \
@@ -250,7 +250,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS httpstat
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/davecheney/httpstat/commits?per_page=1
-ARG httpstat_latest_commit_hash='48531c3e2d3e4cd51f04c33002898d81d61e0c93'
+ARG httpstat_latest_commit_hash=6fb037431c4fad2f5d0d173e931d48e78a495911
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/davecheney/httpstat \
@@ -260,7 +260,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS chisel
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jpillora/chisel/commits?per_page=1
-ARG chisel_latest_commit_hash='20921074b5827147b1a24d4ef4f5cba174856430'
+ARG chisel_latest_commit_hash=60d62c6f20e93f4932703d2fccfec86af5e4161c
 WORKDIR '/go/src/chisel'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -273,7 +273,7 @@ RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X github.com/j
 FROM quay.io/icecodenew/go-collection:build_base AS cloudflarespeedtest
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/XIU2/CloudflareSpeedTest/commits?per_page=1
-ARG cloudflarespeedtest_latest_commit_hash='7ece9d6cda56f42c4c44c9c2e39991a318e5731d'
+ARG cloudflarespeedtest_latest_commit_hash=9bab2944b14109487edbcb5849a00b224aeee87a
 WORKDIR '/go/src/CloudflareSpeedTest'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -286,7 +286,7 @@ RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /
 FROM quay.io/icecodenew/go-collection:build_base AS netflix-verify
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/sjlleo/netflix-verify/commits?per_page=1
-ARG netflix_verify_latest_commit_hash='8ee2a91086d1e723fb506ca37ae1edfaf044abc5'
+ARG netflix_verify_latest_commit_hash=d4ce663a1e06ccc18427cea268c03b587a1a6636
 WORKDIR '/go/src/netflix-verify'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
@@ -300,7 +300,7 @@ RUN source "/root/.bashrc" \
 FROM quay.io/icecodenew/go-collection:build_base AS piknik
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/jedisct1/piknik/commits?per_page=1
-ARG piknik_latest_commit_hash='00ee34cd9fe6c6c3fca2ba954c93e2a3b129f45c'
+ARG piknik_latest_commit_hash=d6b7f77256f52cdc37941736f9de9c15c2248a10
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/jedisct1/piknik \
@@ -311,7 +311,7 @@ RUN GOOS=windows GOARCH=amd64 go get -trimpath -ldflags="-s -w -buildid=" -u -v 
 FROM quay.io/icecodenew/go-collection:build_base AS apk-file
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/genuinetools/apk-file/releases/latest
-ARG apk_file_latest_tag_name='v0.3.6'
+ARG apk_file_latest_tag_name=v0.3.6
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/genuinetools/apk-file \
