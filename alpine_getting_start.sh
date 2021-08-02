@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : eecdaab (1 commit after this ref)
+# Version : c28581a (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh
-readonly local_script_version='eecdaab'
+readonly local_script_version='c28581a'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -78,16 +78,19 @@ install_binaries() {
   /bin/rm -rf "$tmp_dir"
   curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/ripgrep" '/usr/bin/rg'
 
-  tmp_dir=$(mktemp -d)
-  pushd "$tmp_dir" || exit 1
-  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/bat" '/usr/bin/bat'
-  git_clone https://github.com/eth-p/bat-extras.git &&
-    pushd bat-extras || exit 1
-    chmod +x build.sh &&
-    ./build.sh --install --no-manuals
+  # shellcheck disable=SC2154
+  if [[ x"${install_bat:0:1}" = x'y' ]]; then
+    tmp_dir=$(mktemp -d)
+    pushd "$tmp_dir" || exit 1
+    curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/bat" '/usr/bin/bat'
+    git_clone https://github.com/eth-p/bat-extras.git &&
+      pushd bat-extras || exit 1
+      chmod +x build.sh &&
+      ./build.sh --install --no-manuals
+      popd || exit 1
     popd || exit 1
-  popd || exit 1
-  /bin/rm -rf "$tmp_dir"
+    /bin/rm -rf "$tmp_dir"
+  fi
 
   tmp_dir=$(mktemp -d)
   pushd "$tmp_dir" || exit 1
@@ -101,16 +104,19 @@ install_binaries() {
   /bin/rm -rf "$tmp_dir"
   curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/fd" '/usr/bin/fd'
 
-  tmp_dir=$(mktemp -d)
-  pushd "$tmp_dir" || exit 1
-  download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-    'https://api.github.com/repos/sharkdp/hexyl/releases/latest' |
-      grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'hexyl.*x86_64.*linux-musl.tar.gz$')"
-  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
-  curl "$download_url" | bsdtar -xf- --strip-components 1
-  popd || exit 1
-  /bin/rm -rf "$tmp_dir"
-  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/hexyl" '/usr/bin/hexyl'
+  # shellcheck disable=SC2154
+  if [[ x"${install_hexyl:0:1}" = x'y' ]]; then
+    tmp_dir=$(mktemp -d)
+    pushd "$tmp_dir" || exit 1
+    download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+      'https://api.github.com/repos/sharkdp/hexyl/releases/latest' |
+        grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'hexyl.*x86_64.*linux-musl.tar.gz$')"
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    curl "$download_url" | bsdtar -xf- --strip-components 1
+    popd || exit 1
+    /bin/rm -rf "$tmp_dir"
+    curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/hexyl" '/usr/bin/hexyl'
+  fi
 
   # shellcheck disable=SC2154
   if [[ x"${install_hugo_extended:0:1}" = x'y' ]] && date +%u | grep -qF '7'; then
