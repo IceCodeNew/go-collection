@@ -12,6 +12,7 @@ on:
       - "**/README.md"
       - "**/getting_start.sh"
       - "**/alpine_getting_start.sh"
+      - "**/void_getting_start.sh"
   # pull_request:
   #   branches:
   #     - master
@@ -184,7 +185,7 @@ jobs:
           sed -i -E "s/^ARG apk_file_latest_tag_name=.+/ARG apk_file_latest_tag_name=${apk_file_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG cachebust=.+/ARG cachebust=${cachebust:?empty value}/" Dockerfile
           git add Dockerfile
-          git rm getting_start.sh alpine_getting_start.sh release.Dockerfile build_base.Dockerfile
+          git rm getting_start.sh alpine_getting_start.sh void_getting_start.sh release.Dockerfile build_base.Dockerfile
           git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
           git push -f -u origin release
@@ -199,7 +200,7 @@ jobs:
           sed -i -E "s/^ARG golang_latest_tag_name=.+/ARG golang_latest_tag_name=${golang_latest_tag_name:?empty value}/" build_base.Dockerfile
           sed -i -E "s/^ARG build_base_date=.+/ARG build_base_date=${build_base_date:?empty value}/" build_base.Dockerfile
           git add build_base.Dockerfile
-          git rm getting_start.sh alpine_getting_start.sh release.Dockerfile Dockerfile
+          git rm getting_start.sh alpine_getting_start.sh void_getting_start.sh release.Dockerfile Dockerfile
           git rm -r .github
           git commit -m "${{ env.RELEASE_NAME }}"
           git push -f -u origin build_base
