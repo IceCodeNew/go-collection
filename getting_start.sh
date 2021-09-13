@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 8ed0b6c (1 commit after this ref)
+# Version : 748540b (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='8ed0b6c'
+readonly local_script_version='748540b'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -223,6 +223,18 @@ install_binaries() {
   else
     sudo rm '/usr/local/bin/go-shadowsocks2' '/usr/local/bin/sslocal' '/usr/local/bin/ssmanager' '/usr/local/bin/ssserver' '/usr/local/bin/ssurl'
   fi
+
+  tmp_dir=$(mktemp -d)
+  pushd "$tmp_dir" || exit 1
+  download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    'https://api.github.com/repos/klzgrad/naiveproxy/releases/latest' |
+      grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-x64.tar.xz$')"
+  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+  curl "$download_url" | bsdtar -xf- --strip-components 1
+  # Need glibc runtime.
+  sudo "$(type -P install)" -pvD './naive' '/usr/local/bin/naive'
+  popd || exit 1
+  /bin/rm -rf "$tmp_dir"
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_frp:=no}" | cut -c1)" = x'y' ]]; then
