@@ -98,6 +98,12 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
+    --name "overmind" \
+    --file "/go/bin/overmind"; \
+    "/go/bin/github-release" upload \
+    --user IceCodeNew \
+    --repo go-collection \
+    --tag "$tag_name" \
     --name "frpc" \
     --file "/go/bin/frpc"; \
     "/go/bin/github-release" upload \

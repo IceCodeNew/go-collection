@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : 748540b (1 commit after this ref)
+# Version : 02b77f4 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/void_getting_start.sh
-readonly local_script_version='748540b'
+readonly local_script_version='02b77f4'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -140,6 +140,13 @@ install_binaries() {
   # else
   #   sudo rm '/usr/local/bin/age' '/usr/local/bin/age-keygen'
   # fi
+
+  # shellcheck disable=SC2154
+  if [[ x"$(echo "${install_overmind:=no}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/overmind" '/usr/local/bin/overmind'
+  else
+    sudo rm '/usr/local/bin/overmind'
+  fi
 
   ################
 

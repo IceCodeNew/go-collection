@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 748540b (1 commit after this ref)
+# Version : 02b77f4 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='748540b'
+readonly local_script_version='02b77f4'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -235,6 +235,13 @@ install_binaries() {
   sudo "$(type -P install)" -pvD './naive' '/usr/local/bin/naive'
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
+
+  # shellcheck disable=SC2154
+  if [[ x"$(echo "${install_overmind:=no}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/overmind" '/usr/local/bin/overmind'
+  else
+    sudo rm '/usr/local/bin/overmind'
+  fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_frp:=no}" | cut -c1)" = x'y' ]]; then
