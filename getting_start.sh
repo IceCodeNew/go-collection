@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 02b77f4 (1 commit after this ref)
+# Version : eb156f6 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='02b77f4'
+readonly local_script_version='eb156f6'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -232,7 +232,7 @@ install_binaries() {
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
   curl "$download_url" | bsdtar -xf- --strip-components 1
   # Need glibc runtime.
-  sudo "$(type -P install)" -pvD './naive' '/usr/local/bin/naive'
+  sudo strip './naive' -o '/usr/local/bin/naive'
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
 
