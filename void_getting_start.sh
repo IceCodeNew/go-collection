@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : af5cd7d (1 commit after this ref)
+# Version : 6a1a34d (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/void_getting_start.sh
-readonly local_script_version='af5cd7d'
+readonly local_script_version='6a1a34d'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -154,7 +154,9 @@ install_binaries() {
   sudo xbps-install -Su &&
   sudo xbps-install -y haproxy &&
   ln -s /etc/sv/haproxy /var/service/;
-  curl_to_dest "https://github.com/IceCodeNew/haproxy_static/releases/latest/download/haproxy" '/usr/local/sbin/haproxy'
+  curl_to_dest "https://github.com/IceCodeNew/haproxy_static/releases/latest/download/haproxy" '/usr/local/sbin/haproxy' &&
+      sudo rm -f /usr/bin/haproxy &&
+      sudo ln -s /usr/local/sbin/haproxy /usr/bin/
 
   if ! [[ -f /usr/bin/caddy ]] || date +%u | grep -qF '6'; then
     sudo xbps-install -Su &&
@@ -168,7 +170,9 @@ install_binaries() {
       sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
     fi
     sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
-    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/caddy" '/usr/local/sbin/caddy'
+    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/caddy" '/usr/local/sbin/caddy' &&
+      sudo rm -f /usr/bin/caddy &&
+      sudo ln -s /usr/local/sbin/caddy /usr/bin/
 
     # tmp_dir=$(mktemp -d)
     # pushd "$tmp_dir" || exit 1
