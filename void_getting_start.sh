@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : 6a1a34d (1 commit after this ref)
+# Version : 17af0c0 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/void_getting_start.sh
-readonly local_script_version='6a1a34d'
+readonly local_script_version='17af0c0'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -146,6 +146,34 @@ install_binaries() {
     curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/overmind" '/usr/local/bin/overmind'
   else
     sudo rm '/usr/local/bin/overmind'
+  fi
+
+  ################
+
+  tmp_dir=$(mktemp -d)
+  pushd "$tmp_dir" || exit 1
+  download_url="https://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip"
+  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+  curl "$download_url" | bsdtar -xf- &&
+    sudo "$(type -P install)" -pvD './v2ctl' '/usr/bin/v2ctl' &&
+    sudo "$(type -P install)" -pvD './v2ray' '/usr/bin/v2ray' &&
+    sudo setcap 'CAP_NET_ADMIN=+ep CAP_NET_BIND_SERVICE=+ep' '/usr/bin/v2ray' &&
+    sudo "$(type -P install)" -pvD -o nobody -g nogroup -m 644 './geoip-only-cn-private.dat' '/usr/local/share/v2ray/geoip.dat'
+  popd || exit 1
+  /bin/rm -rf "$tmp_dir"
+
+  if ! [[ -f /etc/sv/v2ray/run ]]; then
+    sudo rm -rf /etc/sv/v2ray && sudo mkdir -p /etc/sv/v2ray && sudo mkdir -p /var/log/v2ray &&
+    cat > /etc/sv/v2ray/run << 'END_TEXT'
+#!/bin/sh
+ulimit -n ${MAX_OPEN_FILES:-65535}
+
+# exec chpst -u nobody:nogroup v2ray -config /usr/local/etc/v2ray/config.json
+exec chpst -u nobody:nogroup v2ray -confdir /usr/local/etc/v2ray/conf.d
+END_TEXT
+
+    chmod +x /etc/sv/v2ray/run &&
+    ln -s /etc/sv/v2ray /var/service/;
   fi
 
   ################
