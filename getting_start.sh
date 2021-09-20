@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : eb156f6 (1 commit after this ref)
+# Version : af5cd7d (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='eb156f6'
+readonly local_script_version='af5cd7d'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.

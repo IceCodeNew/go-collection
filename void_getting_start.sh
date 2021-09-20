@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : eb156f6 (1 commit after this ref)
+# Version : af5cd7d (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/void_getting_start.sh
-readonly local_script_version='eb156f6'
+readonly local_script_version='af5cd7d'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -179,6 +179,9 @@ install_binaries() {
     # popd || exit 1
     # /bin/rm -rf "$tmp_dir"
     # [[ -f /usr/share/caddy/index.html ]] && minify -o /usr/share/caddy/index.html /usr/share/caddy/index.html
+    sudo rm -f '/usr/share/caddy/index.html' &&
+      sudo mkdir -p '/usr/share/caddy' &&
+      sudo curl -o '/usr/share/caddy/index.html' -- 'https://raw.githubusercontent.com/IceCodeNew/go-collection/master/usr/share/caddy/index.html'
   fi
 
   ################
