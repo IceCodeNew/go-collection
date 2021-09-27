@@ -52,24 +52,28 @@ ARG caddy_geoip_latest_commit_hash='d500cc3ca64b734da42e0f0446003f437c915ac8'
 ARG caddy_proxyprotocol_latest_commit_hash='8cd17723e0ed50a258a2f8b498155cd9a5ece941'
 # https://api.github.com/repos/mholt/caddy-l4/commits?per_page=1
 ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
+# https://api.github.com/repos/klzgrad/forwardproxy/commits?per_page=1&sha=naive
+ARG caddy_naiveproxy_latest_commit_hash='ff60d3bb5ad18a21551acbe20419cb88e70f198e'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go get -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -u -v github.com/caddyserver/xcaddy/cmd/xcaddy \
-    && "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-and-l4" \
+    && "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
     --with github.com/caddyserver/nginx-adapter@master \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
+    --with github.com/caddyserver/forwardproxy@caddy2=github.com/klzgrad/forwardproxy@naive \
     && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-and-l4.exe" \
+RUN GOOS=windows GOARCH=amd64 "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy.exe" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
     --with github.com/caddyserver/nginx-adapter@master \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
+    --with github.com/caddyserver/forwardproxy@caddy2=github.com/klzgrad/forwardproxy@naive \
     && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS age

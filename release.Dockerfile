@@ -45,13 +45,13 @@ RUN --mount=type=secret,id=GIT_AUTH_TOKEN,dst=/tmp/secret_token export GITHUB_TO
     --repo go-collection \
     --tag "$tag_name" \
     --name "caddy" \
-    --file "/go/bin/caddy-with-geoip-proxyproto-and-l4"; \
+    --file "/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy"; \
     "/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
     --tag "$tag_name" \
     --name "caddy.exe" \
-    --file "/go/bin/caddy-with-geoip-proxyproto-and-l4.exe"; \
+    --file "/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy.exe"; \
     "/go/bin/github-release" upload \
     --user IceCodeNew \
     --repo go-collection \
