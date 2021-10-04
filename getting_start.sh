@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 3583e60 (1 commit after this ref)
+# Version : 52bb411 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/getting_start.sh
-readonly local_script_version='3583e60'
+readonly local_script_version='52bb411'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -216,10 +216,7 @@ install_binaries() {
   fi
 
   # shellcheck disable=SC2154
-  if [[ x"$(echo "${install_shadowsocks:=yes}" | cut -c1)" = x'y' ]]; then
-    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
-    curl_to_dest "https://github.com/IceCodeNew/v2ray-plugin/releases/latest/download/v2ray-plugin_linux_amd64" '/usr/local/bin/v2ray-plugin'
-
+  if [[ x"$(echo "${install_ss_rust:=yes}" | cut -c1)" = x'y' ]]; then
     tmp_dir=$(mktemp -d)
     pushd "$tmp_dir" || exit 1
     if grep -qw avx2 /proc/cpuinfo && grep -qw sha /proc/cpuinfo; then
@@ -238,7 +235,14 @@ install_binaries() {
     /bin/rm -rf "$tmp_dir"
     dirs -c
   else
-    sudo rm '/usr/local/bin/go-shadowsocks2' '/usr/local/bin/sslocal' '/usr/local/bin/ssmanager' '/usr/local/bin/ssserver' '/usr/local/bin/ssurl'
+    sudo rm '/usr/local/bin/sslocal' '/usr/local/bin/ssmanager' '/usr/local/bin/ssserver' '/usr/local/bin/ssurl'
+  fi
+
+  if [[ x"$(echo "${install_go_shadowsocks:=no}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
+    curl_to_dest "https://github.com/IceCodeNew/v2ray-plugin/releases/latest/download/v2ray-plugin_linux_amd64" '/usr/local/bin/v2ray-plugin'
+  else
+    sudo rm '/usr/local/bin/go-shadowsocks2' '/usr/local/bin/v2ray-plugin'
   fi
 
   tmp_dir=$(mktemp -d)
