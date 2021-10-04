@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 52bb411 (1 commit after this ref)
+# Version : ae6df5d (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh
-readonly local_script_version='52bb411'
+readonly local_script_version='ae6df5d'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -81,22 +81,23 @@ install_binaries() {
 
   ########
 
-  tmp_dir=$(mktemp -d)
-  pushd "$tmp_dir" || exit 1
-  download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-    'https://api.github.com/repos/BurntSushi/ripgrep/releases/latest' |
-      grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'ripgrep.*x86_64.*linux-musl.tar.gz$')"
-  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
-  curl "$download_url" | bsdtar -xf- --strip-components 1
-  cp complete/rg.bash /usr/share/bash-completion/completions/
-  # mkdir /usr/share/doc/ripgrep/
-  # cp doc/* /usr/share/doc/ripgrep/
-  popd || exit 1
-  /bin/rm -rf "$tmp_dir"
-  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/ripgrep" '/usr/bin/rg'
+  if [[ x"$(echo "${install_ripgrep:=yes}" | cut -c1)" = x'y' ]]; then
+    tmp_dir=$(mktemp -d)
+    pushd "$tmp_dir" || exit 1
+    download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+      'https://api.github.com/repos/BurntSushi/ripgrep/releases/latest' |
+        grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'ripgrep.*x86_64.*linux-musl.tar.gz$')"
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    curl "$download_url" | bsdtar -xf- --strip-components 1
+    cp complete/rg.bash /usr/share/bash-completion/completions/
+    # mkdir /usr/share/doc/ripgrep/
+    # cp doc/* /usr/share/doc/ripgrep/
+    popd || exit 1
+    /bin/rm -rf "$tmp_dir"
+    curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/ripgrep" '/usr/bin/rg'
+  fi
 
-  # shellcheck disable=SC2154
-  if [[ x"${install_bat:0:1}" = x'y' ]]; then
+  if [[ x"$(echo "${install_bat:=yes}" | cut -c1)" = x'y' ]]; then
     tmp_dir=$(mktemp -d)
     pushd "$tmp_dir" || exit 1
     curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/bat" '/usr/bin/bat'
@@ -109,20 +110,21 @@ install_binaries() {
     /bin/rm -rf "$tmp_dir"
   fi
 
-  tmp_dir=$(mktemp -d)
-  pushd "$tmp_dir" || exit 1
-  download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-    'https://api.github.com/repos/sharkdp/fd/releases/latest' |
-      grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'fd.*x86_64.*linux-musl.tar.gz$')"
-  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
-  curl "$download_url" | bsdtar -xf- --strip-components 1
-  cp autocomplete/fd.bash-completion /usr/share/bash-completion/completions/
-  popd || exit 1
-  /bin/rm -rf "$tmp_dir"
-  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/fd" '/usr/bin/fd'
+  if [[ x"$(echo "${install_fd:=yes}" | cut -c1)" = x'y' ]]; then
+    tmp_dir=$(mktemp -d)
+    pushd "$tmp_dir" || exit 1
+    download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+      'https://api.github.com/repos/sharkdp/fd/releases/latest' |
+        grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'fd.*x86_64.*linux-musl.tar.gz$')"
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    curl "$download_url" | bsdtar -xf- --strip-components 1
+    cp autocomplete/fd.bash-completion /usr/share/bash-completion/completions/
+    popd || exit 1
+    /bin/rm -rf "$tmp_dir"
+    curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/fd" '/usr/bin/fd'
+  fi
 
-  # shellcheck disable=SC2154
-  if [[ x"${install_hexyl:0:1}" = x'y' ]]; then
+  if [[ x"$(echo "${install_hexyl:=yes}" | cut -c1)" = x'y' ]]; then
     tmp_dir=$(mktemp -d)
     pushd "$tmp_dir" || exit 1
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
@@ -135,8 +137,7 @@ install_binaries() {
     curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/hexyl" '/usr/bin/hexyl'
   fi
 
-  # shellcheck disable=SC2154
-  if [[ x"${install_hugo_extended:0:1}" = x'y' ]] && date +%u | grep -qF '7'; then
+  if [[ x"$(echo "${install_hugo_extended:=no}" | cut -c1)" = x'y' ]]; then
     tmp_dir=$(mktemp -d)
     pushd "$tmp_dir" || exit 1
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
@@ -153,11 +154,20 @@ install_binaries() {
   ################
 
   curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/croc" '/usr/local/bin/croc'
-  curl_to_dest 'https://raw.githubusercontent.com/schollz/croc/master/src/install/bash_autocomplete' '/usr/share/bash-completion/completions/croc'
+  curl_to_dest 'https://raw.githubusercontent.com/schollz/croc/master/src/install/bash_autocomplete' '/usr/share/bash-completion/completions/croc' &&
+    sudo chmod -x '/usr/share/bash-completion/completions/croc'
 
-  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/shfmt" '/usr/local/bin/shfmt'
+  if [[ x"$(echo "${install_shfmt:=yes}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/shfmt" '/usr/local/bin/shfmt'
+  else
+    sudo rm '/usr/local/bin/shfmt'
+  fi
 
-  curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/sd" '/usr/local/bin/sd'
+  if [[ x"$(echo "${install_sd:=yes}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/sd" '/usr/local/bin/sd'
+  else
+    sudo rm '/usr/local/bin/sd'
+  fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_github_release:=no}" | cut -c1)" = x'y' ]]; then
@@ -209,17 +219,21 @@ install_binaries() {
     sudo rm '/usr/local/bin/go-shadowsocks2' '/usr/local/bin/v2ray-plugin'
   fi
 
-  tmp_dir=$(mktemp -d)
-  pushd "$tmp_dir" || exit 1
-  download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-    'https://api.github.com/repos/klzgrad/naiveproxy/releases/latest' |
-      grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-x64.tar.xz$')"
-  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
-  curl "$download_url" | bsdtar -xf- --strip-components 1
-  # Need glibc runtime.
-  sudo strip './naive' -o '/usr/local/bin/naive'
-  popd || exit 1
-  /bin/rm -rf "$tmp_dir"
+  if [[ x"$(echo "${install_naiveproxy:=yes}" | cut -c1)" = x'y' ]]; then
+    tmp_dir=$(mktemp -d)
+    pushd "$tmp_dir" || exit 1
+    download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+      'https://api.github.com/repos/klzgrad/naiveproxy/releases/latest' |
+        grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-x64.tar.xz$')"
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    curl "$download_url" | bsdtar -xf- --strip-components 1
+    # Need glibc runtime.
+    sudo strip './naive' -o '/usr/local/bin/naive'
+    popd || exit 1
+    /bin/rm -rf "$tmp_dir"
+  else
+    sudo rm '/usr/local/bin/naive'
+  fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_overmind:=no}" | cut -c1)" = x'y' ]]; then
@@ -243,7 +257,11 @@ install_binaries() {
     sudo rm '/usr/local/bin/chisel'
   fi
 
-  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/got" '/usr/local/bin/got'
+  if [[ x"$(echo "${install_got:=yes}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/got" '/usr/local/bin/got'
+  else
+    sudo rm '/usr/local/bin/got'
+  fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_dive:=yes}" | cut -c1)" = x'y' ]]; then
@@ -259,12 +277,16 @@ install_binaries() {
     sudo rm '/usr/local/bin/duf'
   fi
 
-  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/dnslookup" '/usr/local/bin/dnslookup'
+  if [[ x"$(echo "${install_dnslookup:=yes}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/dnslookup" '/usr/local/bin/dnslookup'
+  else
+    sudo rm '/usr/local/bin/dnslookup'
+  fi
 
   dog_latest_tag_name="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/ogham/dog/tags?per_page=100' |
-    grep 'name' | cut -d'"' -f4 | grep -vE 'alpha|beta|rc|test|week|pre' |
-    sort -rV | head -1)"
+      grep 'name' | cut -d'"' -f4 | grep -vE 'alpha|beta|rc|test|week|pre' |
+      sort -rV | head -1)"
   curl "https://github.com/ogham/dog/releases/download/${dog_latest_tag_name}/dog-${dog_latest_tag_name}-x86_64-unknown-linux-gnu.zip" | bsdtar -xf- -P -C /usr/local
   curl_to_dest "https://github.com/IceCodeNew/rust-collection/releases/latest/download/dog" '/usr/local/bin/dog'
 
@@ -411,33 +433,30 @@ install_binaries() {
       sudo rm -f /usr/bin/haproxy &&
       sudo ln -s /usr/local/sbin/haproxy /usr/bin/
 
-  if ! [[ -f /usr/bin/caddy ]] || date +%u | grep -qF '6'; then
-    apk add caddy caddy-openrc
-    rc-update add caddy
-    # shellcheck disable=SC2154
-    if [[ x"${donot_need_caddy_autorun:0:1}" = x'y' ]]; then
-      rc-update del caddy
-    else
-      sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
-    fi
-    sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
-    curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/caddy" '/usr/local/sbin/caddy' &&
-      sudo rm -f /usr/bin/caddy &&
-      sudo ln -s /usr/local/sbin/caddy /usr/bin/
-
-    # tmp_dir=$(mktemp -d)
-    # pushd "$tmp_dir" || exit 1
-    # if curl "https://github.com/tdewolff/minify/releases/latest/download/minify_linux_amd64.tar.gz" | bsdtar -xf-; then
-    #   sudo "$(type -P install)" -pvD './minify' '/usr/bin/minify'
-    #   sudo "$(type -P install)" -pvDm 644 './bash_completion' '/usr/share/bash-completion/completions/minify'
-    # fi
-    # popd || exit 1
-    # /bin/rm -rf "$tmp_dir"
-    # [[ -f /usr/share/caddy/index.html ]] && minify -o /usr/share/caddy/index.html /usr/share/caddy/index.html
-    sudo rm -f '/usr/share/caddy/index.html' &&
-      sudo mkdir -p '/usr/share/caddy' &&
-      sudo curl -o '/usr/share/caddy/index.html' -- 'https://raw.githubusercontent.com/IceCodeNew/go-collection/master/usr/share/caddy/index.html'
+  apk add caddy caddy-openrc
+  rc-update add caddy
+  if [[ x"$(echo "${donot_need_caddy_autorun:=no}" | cut -c1)" = x'y' ]]; then
+    rc-update del caddy
+  else
+    sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
   fi
+  sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/caddy" '/usr/local/sbin/caddy' &&
+    sudo rm -f /usr/bin/caddy &&
+    sudo ln -s /usr/local/sbin/caddy /usr/bin/
+
+  # tmp_dir=$(mktemp -d)
+  # pushd "$tmp_dir" || exit 1
+  # if curl "https://github.com/tdewolff/minify/releases/latest/download/minify_linux_amd64.tar.gz" | bsdtar -xf-; then
+  #   sudo "$(type -P install)" -pvD './minify' '/usr/bin/minify'
+  #   sudo "$(type -P install)" -pvDm 644 './bash_completion' '/usr/share/bash-completion/completions/minify'
+  # fi
+  # popd || exit 1
+  # /bin/rm -rf "$tmp_dir"
+  # [[ -f /usr/share/caddy/index.html ]] && minify -o /usr/share/caddy/index.html /usr/share/caddy/index.html
+  sudo rm -f '/usr/share/caddy/index.html' &&
+    sudo mkdir -p '/usr/share/caddy' &&
+    sudo curl -o '/usr/share/caddy/index.html' -- 'https://raw.githubusercontent.com/IceCodeNew/go-collection/master/usr/share/caddy/index.html'
 
   ################
 
