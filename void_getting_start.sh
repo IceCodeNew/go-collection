@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : 0a97946 (1 commit after this ref)
+# Version : 7182f6e (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/void_getting_start.sh
-readonly local_script_version='0a97946'
+readonly local_script_version='7182f6e'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -70,8 +70,9 @@ install_binaries() {
   download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/aristocratos/btop/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-x86_64.tbz$')" && \
-  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g') && \
-    curl -- "$download_url" | bsdtar -xf- && \
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+  curl -- "$download_url" | bsdtar -xf- && \
     sudo make install PREFIX=/usr && \
     sudo make setuid PREFIX=/usr && \
     sudo strip /usr/bin/btop && \
