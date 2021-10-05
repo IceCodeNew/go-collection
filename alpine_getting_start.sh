@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 7182f6e (1 commit after this ref)
+# Version : 42801a0 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
-# Download: https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh
-readonly local_script_version='7182f6e'
+# Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection/master/@alpine_getting_start.sh
+readonly local_script_version='42801a0'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -47,15 +47,15 @@ self_update() {
   readonly remote_script_version
   # Should any error occured during quering `api.github.com`, do not execute this script.
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] &&
-    sed -i -E -e 's!raw.githubusercontent.com!raw.githubusercontents.com!g' -e 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g' "$HOME/alpine_getting_start.sh" &&
+    sed -i -E -e 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g' "$HOME/alpine_getting_start.sh" &&
     git config --global url."https://hub.fastgit.org".insteadOf https://github.com
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
     install_binaries
   if [[ x"${geoip_is_cn:0:1}" = x'y' ]]; then
-    curl -o "$HOME/alpine_getting_start.sh.tmp" -- 'https://raw.githubusercontents.com/IceCodeNew/go-collection/master/alpine_getting_start.sh'
-    sed -i -E -e 's!raw.githubusercontent.com!raw.githubusercontents.com!g' -e 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g' "$HOME/alpine_getting_start.sh.tmp"
+    curl -o "$HOME/alpine_getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection/master/@alpine_getting_start.sh'
+    sed -i -E -e 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g' "$HOME/alpine_getting_start.sh.tmp"
   else
-    curl -o "$HOME/alpine_getting_start.sh.tmp" -- 'https://raw.githubusercontent.com/IceCodeNew/go-collection/master/alpine_getting_start.sh'
+    curl -o "$HOME/alpine_getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection/master/@alpine_getting_start.sh'
   fi
   dos2unix "$HOME/alpine_getting_start.sh.tmp" && mv -f "$HOME/alpine_getting_start.sh.tmp" "$HOME/alpine_getting_start.sh" &&
   echo 'Upgrade successful!' && exit 1
@@ -155,7 +155,7 @@ install_binaries() {
   ################
 
   curl_to_dest "https://github.com/IceCodeNew/go-collection/releases/latest/download/croc" '/usr/local/bin/croc'
-  curl_to_dest 'https://raw.githubusercontent.com/schollz/croc/master/src/install/bash_autocomplete' '/usr/share/bash-completion/completions/croc' &&
+  curl_to_dest 'https://cdn.jsdelivr.net/gh/schollz/croc@master/src/install/bash_autocomplete' '/usr/share/bash-completion/completions/croc' &&
     sudo chmod -x '/usr/share/bash-completion/completions/croc'
 
   if [[ x"$(echo "${install_shfmt:=yes}" | cut -c1)" = x'y' ]]; then
@@ -457,7 +457,7 @@ install_binaries() {
   # [[ -f /usr/share/caddy/index.html ]] && minify -o /usr/share/caddy/index.html /usr/share/caddy/index.html
   sudo rm -f '/usr/share/caddy/index.html' &&
     sudo mkdir -p '/usr/share/caddy' &&
-    sudo "$(type -P curl)" -o '/usr/share/caddy/index.html' -- 'https://raw.githubusercontent.com/IceCodeNew/go-collection/master/usr/share/caddy/index.html'
+    sudo "$(type -P curl)" -o '/usr/share/caddy/index.html' -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection/master/usr/share/caddy/@index.html'
 
   ################
 
