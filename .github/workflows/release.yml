@@ -35,7 +35,7 @@ jobs:
             git push -d origin "$(head -n 1 ./releases.txt)"
             sed -i '1d' ./releases.txt
           done
-          echo "$(date -Iseconds)" >> ./releases.txt
+          echo "$(TZ='Asia/Taipei' date +%F-%H-%M-%S-%Z)" >> ./releases.txt
           popd
           mkdir -p ./publish/usr/share/caddy/
           cp -f ./oldrelease/releases.txt ./publish/
@@ -52,12 +52,12 @@ jobs:
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$(date -Iseconds)"
+          git checkout -b "$(TZ='Asia/Taipei' date +%F-%H-%M-%S-%Z)"
           git add -A
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add go-collection "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f go-collection HEAD:latest-release
-          git push -f go-collection HEAD:"$(date -Iseconds)"
+          git push -f go-collection HEAD:"$(TZ='Asia/Taipei' date +%F-%H-%M-%S-%Z)"
       - name: Purge jsdelivr CDN
         run: |
           cd publish || exit 1
