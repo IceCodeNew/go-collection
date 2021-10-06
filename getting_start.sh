@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : d074c1d (1 commit after this ref)
+# Version : 4dbb31a (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh
-readonly local_script_version='d074c1d'
+readonly local_script_version='4dbb31a'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -75,6 +75,7 @@ self_update() {
     git config --global url."https://hub.fastgit.org".insteadOf https://github.com
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
     install_binaries
+  sleep $(( ( RANDOM % 10 ) + 1 ))s && curl -i "https://purge.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh"
   if [[ x"${geoip_is_cn:0:1}" = x'y' ]]; then
     curl -o "$HOME/getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh'
     sed -i -E -e 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g' "$HOME/getting_start.sh.tmp"
