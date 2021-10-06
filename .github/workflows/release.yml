@@ -19,74 +19,86 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
-          ref: 'release'
+          ref: 'latest-release'
           path: './oldrelease'
           fetch-depth: 0
       - name: Set some variables
         run: |
-          echo "RELEASE_COMMIT_SHA=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+          echo "RELEASE_NAME=$(TZ='Asia/Taipei' date --rfc-3339=seconds) [""$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/IceCodeNew/go-collection/commits?per_page=1&sha=release' |
-                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "RELEASE_NAME=$(TZ='Asia/Taipei' date --rfc-3339=seconds) [${RELEASE_COMMIT_SHA}]" >> $GITHUB_ENV
+                grep -Fm1 'sha' | cut -d'"' -f4)""]" >> $GITHUB_ENV
         shell: bash
       - name: Move files to publish directory
         run: |
-          mkdir -p publish
-          cp -f ./oldrelease/usr/share/caddy/index.html ./oldrelease/Dockerfile ./publish/
+          pushd oldrelease || exit 1
+          while [[ $(wc -l < ./releases.txt) -ge 15 ]]; do
+            git push -d origin "$(head -n 1 ./releases.txt)"
+            sed -i '1d' ./releases.txt
+          done
+          echo "$(date --rfc-3339=date)" >> ./releases.txt
+          popd
+          mkdir -p ./publish/usr/share/caddy/
+          mkdir -p ./publish/assets/
+          cp -f ./oldrelease/releases.txt ./publish/
+          cp -f ./oldrelease/usr/share/caddy/index.html ./publish/usr/share/caddy/index.html
           docker create -it --name dummy quay.io/icecodenew/go-collection:latest bash
-          docker cp dummy:/go/bin/croc ./publish/
-          docker cp dummy:/go/bin/croc.exe ./publish/
-          docker cp dummy:/go/bin/github-release ./publish/
-          docker cp dummy:/go/bin/nfpm ./publish/
-          docker cp dummy:/go/bin/mmp-go ./publish/
-          docker cp dummy:/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy ./publish/caddy
-          docker cp dummy:/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy.exe ./publish/caddy.exe
-          docker cp dummy:/go/bin/age-linux-amd64.tar.gz ./publish/
-          docker cp dummy:/go/bin/age-windows-amd64.zip ./publish/
-          docker cp dummy:/go/bin/mtg ./publish/
-          docker cp dummy:/go/bin/mosdns ./publish/
-          docker cp dummy:/go/bin/mosdns.exe ./publish/
-          docker cp dummy:/go/bin/go-shadowsocks2 ./publish/
-          docker cp dummy:/go/bin/go-shadowsocks2.exe ./publish/
-          docker cp dummy:/go/bin/overmind ./publish/
-          docker cp dummy:/go/bin/frpc ./publish/
-          docker cp dummy:/go/bin/frps ./publish/
-          docker cp dummy:/go/bin/frpc.exe ./publish/
-          docker cp dummy:/go/bin/frps.exe ./publish/
-          docker cp dummy:/go/bin/got ./publish/
-          docker cp dummy:/go/bin/nali ./publish/
-          docker cp dummy:/go/bin/dnslookup ./publish/
-          docker cp dummy:/go/bin/dnslookup.exe ./publish/
-          docker cp dummy:/go/bin/shfmt ./publish/
-          docker cp dummy:/go/bin/wgcf ./publish/
-          docker cp dummy:/go/bin/dive ./publish/
-          docker cp dummy:/go/bin/duf ./publish/
-          docker cp dummy:/go/bin/wuzz ./publish/
-          docker cp dummy:/go/bin/httpstat ./publish/
-          docker cp dummy:/go/bin/chisel ./publish/
-          docker cp dummy:/go/bin/chisel.exe ./publish/
-          docker cp dummy:/go/bin/CloudflareST ./publish/
-          docker cp dummy:/go/bin/CloudflareST.exe ./publish/
-          docker cp dummy:/go/bin/nf ./publish/
-          docker cp dummy:/go/bin/piknik ./publish/
-          docker cp dummy:/go/bin/piknik.exe ./publish/
-          docker cp dummy:/go/bin/apk-file ./publish/
+          docker cp dummy:/go/bin/croc ./publish/assets/
+          docker cp dummy:/go/bin/croc.exe ./publish/assets/
+          docker cp dummy:/go/bin/github-release ./publish/assets/
+          docker cp dummy:/go/bin/nfpm ./publish/assets/
+          docker cp dummy:/go/bin/mmp-go ./publish/assets/
+          docker cp dummy:/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy ./publish/assets/caddy
+          docker cp dummy:/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy.exe ./publish/assets/caddy.exe
+          docker cp dummy:/go/bin/age-linux-amd64.tar.gz ./publish/assets/
+          docker cp dummy:/go/bin/age-windows-amd64.zip ./publish/assets/
+          docker cp dummy:/go/bin/mtg ./publish/assets/
+          docker cp dummy:/go/bin/mosdns ./publish/assets/
+          docker cp dummy:/go/bin/mosdns.exe ./publish/assets/
+          docker cp dummy:/go/bin/go-shadowsocks2 ./publish/assets/
+          docker cp dummy:/go/bin/go-shadowsocks2.exe ./publish/assets/
+          docker cp dummy:/go/bin/overmind ./publish/assets/
+          docker cp dummy:/go/bin/frpc ./publish/assets/
+          docker cp dummy:/go/bin/frps ./publish/assets/
+          docker cp dummy:/go/bin/frpc.exe ./publish/assets/
+          docker cp dummy:/go/bin/frps.exe ./publish/assets/
+          docker cp dummy:/go/bin/got ./publish/assets/
+          docker cp dummy:/go/bin/nali ./publish/assets/
+          docker cp dummy:/go/bin/dnslookup ./publish/assets/
+          docker cp dummy:/go/bin/dnslookup.exe ./publish/assets/
+          docker cp dummy:/go/bin/shfmt ./publish/assets/
+          docker cp dummy:/go/bin/wgcf ./publish/assets/
+          docker cp dummy:/go/bin/dive ./publish/assets/
+          docker cp dummy:/go/bin/duf ./publish/assets/
+          docker cp dummy:/go/bin/wuzz ./publish/assets/
+          docker cp dummy:/go/bin/httpstat ./publish/assets/
+          docker cp dummy:/go/bin/chisel ./publish/assets/
+          docker cp dummy:/go/bin/chisel.exe ./publish/assets/
+          docker cp dummy:/go/bin/CloudflareST ./publish/assets/
+          docker cp dummy:/go/bin/CloudflareST.exe ./publish/assets/
+          docker cp dummy:/go/bin/nf ./publish/assets/
+          docker cp dummy:/go/bin/piknik ./publish/assets/
+          docker cp dummy:/go/bin/piknik.exe ./publish/assets/
+          docker cp dummy:/go/bin/apk-file ./publish/assets/
           docker rm -f dummy
           docker rmi -f quay.io/icecodenew/go-collection:latest
-      - name: Git push assets to "release" branch
+      - name: Git push assets to "latest-release" branch
         run: |
           cd publish || exit 1
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b release
+          git checkout -b latest-release
           git add -A
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add go-collection "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -f -u go-collection release
+          git push -f -u go-collection latest-release
+          git checkout -b "$(date --rfc-3339=date)"
+          git add -A
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git push -f -u go-collection "$(date --rfc-3339=date)"
       - name: Purge jsdelivr CDN
         run: |
           cd publish || exit 1
           for file in $(ls); do
-            curl -i "https://purge.jsdelivr.net/gh/${{ github.repository }}@release/${file}"
+            curl -i "https://purge.jsdelivr.net/gh/${{ github.repository }}@latest-release/${file}"
           done
