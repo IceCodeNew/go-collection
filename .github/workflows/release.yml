@@ -87,15 +87,12 @@ jobs:
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b latest-release
-          git add -A
-          git commit -m "${{ env.RELEASE_NAME }}"
-          git remote add go-collection "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
-          git push -f -u go-collection latest-release
           git checkout -b "$(date --rfc-3339=date)"
           git add -A
           git commit -m "${{ env.RELEASE_NAME }}"
-          git push -f -u go-collection "$(date --rfc-3339=date)"
+          git remote add go-collection "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git push -f go-collection HEAD:latest-release
+          git push -f go-collection HEAD:"$(date --rfc-3339=date)"
       - name: Purge jsdelivr CDN
         run: |
           cd publish || exit 1
