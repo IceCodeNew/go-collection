@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : e962373 (1 commit after this ref)
+# Version : 4eaf8a5 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh
-readonly local_script_version='e962373'
+readonly local_script_version='4eaf8a5'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -308,7 +308,10 @@ END_TEXT
     sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
   fi
   sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
-  curl_to_dest "https://github.com/IceCodeNew/go-collection/raw/latest-release/assets/caddy" '/usr/local/sbin/caddy' &&
+
+  curl -L "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/caddy.zst" | unzstd -q --no-progress -o './caddy' &&
+    sudo "$(type -P install)" -pvD './caddy' '/usr/local/sbin/caddy' &&
+  # curl_to_dest "https://github.com/IceCodeNew/go-collection/raw/latest-release/assets/caddy" '/usr/local/sbin/caddy' &&
     sudo rm -f /usr/bin/caddy &&
     sudo ln -s /usr/local/sbin/caddy /usr/bin/
 
