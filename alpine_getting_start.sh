@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 4dbb31a (1 commit after this ref)
+# Version : ded0d1b (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='4dbb31a'
+readonly local_script_version='ded0d1b'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -443,7 +443,7 @@ install_binaries() {
     sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
   fi
   sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
-  curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/caddy" '/usr/local/sbin/caddy' &&
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/raw/latest-release/assets/caddy" '/usr/local/sbin/caddy' &&
     sudo rm -f /usr/bin/caddy &&
     sudo ln -s /usr/local/sbin/caddy /usr/bin/
 

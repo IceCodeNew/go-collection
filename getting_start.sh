@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 4dbb31a (1 commit after this ref)
+# Version : ded0d1b (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh
-readonly local_script_version='4dbb31a'
+readonly local_script_version='ded0d1b'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -504,7 +504,7 @@ install_binaries() {
     sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
   fi
   sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
-  curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/caddy" '/usr/bin/caddy'
+  curl_to_dest "https://github.com/IceCodeNew/go-collection/raw/latest-release/assets/caddy" '/usr/bin/caddy'
 
   if [[ x"$(echo "${install_minify:=no}" | cut -c1)" = x'y' ]]; then
     sudo apt-get update
