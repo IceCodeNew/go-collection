@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : ded0d1b (1 commit after this ref)
+# Version : e962373 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh
-readonly local_script_version='ded0d1b'
+readonly local_script_version='e962373'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -47,14 +47,14 @@ self_update() {
   readonly remote_script_version
   # Should any error occured during quering `api.github.com`, do not execute this script.
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] &&
-    sed -i -E -e 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g' "$HOME/void_getting_start.sh" &&
+    sed -i -E -e 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g' "$HOME/void_getting_start.sh" &&
     git config --global url."https://hub.fastgit.org".insteadOf https://github.com
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
     install_binaries
   sleep $(( ( RANDOM % 10 ) + 1 ))s && curl -i "https://purge.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh"
   if [[ x"${geoip_is_cn:0:1}" = x'y' ]]; then
     curl -o "$HOME/void_getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh'
-    sed -i -E -e 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g' "$HOME/void_getting_start.sh.tmp"
+    sed -i -E -e 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g' "$HOME/void_getting_start.sh.tmp"
   else
     curl -o "$HOME/void_getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh'
   fi
@@ -72,7 +72,7 @@ install_binaries() {
     'https://api.github.com/repos/aristocratos/btop/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-x86_64.tbz$')" && \
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
   curl -- "$download_url" | bsdtar -xf- && \
     sudo make install PREFIX=/usr && \
     sudo make setuid PREFIX=/usr && \
@@ -135,7 +135,8 @@ install_binaries() {
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/klzgrad/naiveproxy/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-x64.tar.xz$')"
-    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
     curl "$download_url" | bsdtar -xf- --strip-components 1
     # Need glibc runtime.
     sudo strip './naive' -o '/usr/local/bin/naive'
@@ -263,7 +264,8 @@ install_binaries() {
   tmp_dir=$(mktemp -d)
   pushd "$tmp_dir" || exit 1
   download_url="https://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip"
-  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+    sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
   curl "$download_url" | bsdtar -xf- &&
     sudo "$(type -P install)" -pvD './v2ctl' '/usr/bin/v2ctl' &&
     sudo "$(type -P install)" -pvD './v2ray' '/usr/bin/v2ray' &&

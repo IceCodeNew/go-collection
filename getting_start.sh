@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : ded0d1b (1 commit after this ref)
+# Version : e962373 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : March 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh
-readonly local_script_version='ded0d1b'
+readonly local_script_version='e962373'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -71,14 +71,14 @@ self_update() {
   readonly remote_script_version
   # Should any error occured during quering `api.github.com`, do not execute this script.
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] &&
-    sed -i -E -e 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g' "$HOME/getting_start.sh" &&
+    sed -i -E -e 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g' "$HOME/getting_start.sh" &&
     git config --global url."https://hub.fastgit.org".insteadOf https://github.com
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
     install_binaries
   sleep $(( ( RANDOM % 10 ) + 1 ))s && curl -i "https://purge.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh"
   if [[ x"${geoip_is_cn:0:1}" = x'y' ]]; then
     curl -o "$HOME/getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh'
-    sed -i -E -e 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g' "$HOME/getting_start.sh.tmp"
+    sed -i -E -e 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g' "$HOME/getting_start.sh.tmp"
   else
     curl -o "$HOME/getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh'
   fi
@@ -97,7 +97,7 @@ install_binaries() {
     'https://api.github.com/repos/aristocratos/btop/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-x86_64.tbz$')" && \
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
   curl -- "$download_url" | bsdtar -xf- && \
     sudo make install PREFIX=/usr && \
     sudo make setuid PREFIX=/usr && \
@@ -114,7 +114,8 @@ install_binaries() {
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/BurntSushi/ripgrep/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'amd64.deb$')"
-    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
     curl -o 'ripgrep_amd64.deb' -- "$download_url" &&
       sudo dpkg -i 'ripgrep_amd64.deb' && apt-mark hold ripgrep
     popd || exit 1
@@ -129,7 +130,8 @@ install_binaries() {
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/sharkdp/bat/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
-    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
     curl -o 'bat-musl_amd64.deb' -- "$download_url" &&
       sudo dpkg -i 'bat-musl_amd64.deb'
     git_clone https://github.com/eth-p/bat-extras.git &&
@@ -149,7 +151,8 @@ install_binaries() {
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/sharkdp/fd/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
-    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
     curl -o 'fd-musl_amd64.deb' -- "$download_url" &&
       sudo dpkg -i 'fd-musl_amd64.deb'
     popd || exit 1
@@ -164,7 +167,8 @@ install_binaries() {
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/sharkdp/hexyl/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
-    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
     curl -o 'hexyl-musl_amd64.deb' -- "$download_url" &&
       sudo dpkg -i 'hexyl-musl_amd64.deb'
     popd || exit 1
@@ -179,7 +183,8 @@ install_binaries() {
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/gohugoio/hugo/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'extended.+linux-64bit.deb$')"
-    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
     curl -o 'hugo_extended_Linux-64bit.deb' -- "$download_url" &&
       sudo dpkg -i 'hugo_extended_Linux-64bit.deb'
     popd || exit 1
@@ -262,7 +267,8 @@ install_binaries() {
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/klzgrad/naiveproxy/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-x64.tar.xz$')"
-    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
     curl "$download_url" | bsdtar -xf- --strip-components 1
     # Need glibc runtime.
     sudo strip './naive' -o '/usr/local/bin/naive'
@@ -471,12 +477,14 @@ install_binaries() {
   download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/haproxy_.+?amd64.deb$')"
-  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+    sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
   curl -o 'haproxy_amd64.deb'  -- "$download_url" &&
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/jemalloc_.+?amd64.deb$')"
-    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
     curl -o 'jemalloc_amd64.deb' -- "$download_url" &&
     sudo dpkg -i 'jemalloc_amd64.deb' && sudo dpkg -i 'haproxy_amd64.deb'
   curl -LROJ 'https://github.com/IceCodeNew/haproxy_static/releases/latest/download/haproxy.service' &&
@@ -492,7 +500,8 @@ install_binaries() {
   download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
       grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d'"' -f4)"
-  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" | sed -E 's!(https://github.com/.+/download/)!https://gh.api.99988866.xyz/\1!g')
+  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+    sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
   curl -o 'caddy_linux_amd64.deb' -- "$download_url" &&
     sudo dpkg -i 'caddy_linux_amd64.deb' && sudo rm 'caddy_linux_amd64.deb'
   popd || exit 1
