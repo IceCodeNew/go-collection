@@ -27,6 +27,7 @@ jobs:
           echo "RELEASE_NAME=$(TZ='Asia/Taipei' date --rfc-3339=seconds) [""$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/IceCodeNew/go-collection/commits?per_page=1&sha=release' |
                 grep -Fm1 'sha' | cut -d'"' -f4)""]" >> $GITHUB_ENV
+          echo "BRANCH_NAME=$(TZ='Asia/Taipei' date +%F-%H-%M-%S-%Z)" >> $GITHUB_ENV
         shell: bash
       - name: Move files to publish directory
         run: |
@@ -35,7 +36,7 @@ jobs:
             git push -d origin "$(head -n 1 ./releases.txt)"
             sed -i '1d' ./releases.txt
           done
-          echo "$(TZ='Asia/Taipei' date +%F-%H-%M-%S-%Z)" >> ./releases.txt
+          echo "$BRANCH_NAME" >> ./releases.txt
           popd
           mkdir -p ./publish/usr/share/caddy/
           cp -f ./oldrelease/releases.txt ./publish/
@@ -56,12 +57,12 @@ jobs:
           git init
           git config --local user.name "github-actions[bot]"
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$(TZ='Asia/Taipei' date +%F-%H-%M-%S-%Z)"
+          git checkout -b "$BRANCH_NAME"
           git add -A
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add go-collection "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git push -f go-collection HEAD:latest-release
-          git push -f go-collection HEAD:"$(TZ='Asia/Taipei' date +%F-%H-%M-%S-%Z)"
+          git push -f go-collection HEAD:"$BRANCH_NAME"
       - name: Purge jsdelivr CDN
         run: |
           cd publish || exit 1
