@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 4eaf8a5 (1 commit after this ref)
+# Version : 71f746f (1 commit after this ref)
 # Author  : IceCodeNew
-# Date    : March 2021
+# Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='4eaf8a5'
+readonly local_script_version='71f746f'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -70,7 +70,7 @@ install_binaries() {
   tmp_dir=$(mktemp -d) && pushd "$tmp_dir" || exit 1
   download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/aristocratos/btop/releases/latest' |
-      grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-x86_64.tbz$')" && \
+      grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-musl.tbz$' | grep -iE 'x86_64')" && \
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
       sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
   curl -- "$download_url" | bsdtar -xf- && \
