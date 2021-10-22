@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 71f746f (1 commit after this ref)
+# Version : 39f2a0a (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='71f746f'
+readonly local_script_version='39f2a0a'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -440,20 +440,24 @@ install_binaries() {
       sudo rm -f /usr/bin/haproxy &&
       sudo ln -s /usr/local/sbin/haproxy /usr/bin/
 
-  apk add caddy caddy-openrc
-  rc-update add caddy
-  if [[ x"$(echo "${donot_need_caddy_autorun:=no}" | cut -c1)" = x'y' ]]; then
-    rc-update del caddy
-  else
-    sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
+  tmp_dir=$(mktemp -d)
+  pushd "$tmp_dir" || exit 1
+  if [[ ! -f /etc/caddy/Caddyfile ]]; then
+    apk add caddy caddy-openrc
+    rc-update add caddy
+    if [[ x"$(echo "${donot_need_caddy_autorun:=no}" | cut -c1)" = x'y' ]]; then
+      rc-update del caddy
+    else
+      sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
+    fi
   fi
-  sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
 
-  curl -L "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/caddy.zst" | unzstd -q --no-progress -o './caddy' &&
-    sudo "$(type -P install)" -pvD './caddy' '/usr/local/sbin/caddy' &&
-  # curl_to_dest "https://github.com/IceCodeNew/go-collection/raw/latest-release/assets/caddy" '/usr/local/sbin/caddy' &&
-    sudo rm -f /usr/bin/caddy &&
-    sudo ln -s /usr/local/sbin/caddy /usr/bin/
+  sudo rm -f '/usr/sbin/caddy' '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
+  curl -L "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/caddy.zst" |
+    unzstd -q --no-progress -o './caddy' && sudo "$(type -P install)" -pvD './caddy' '/usr/local/sbin/caddy' &&
+    sudo rm -f '/usr/bin/caddy' && sudo ln -s /usr/local/sbin/caddy /usr/bin/
+  popd || exit 1
+  /bin/rm -rf "$tmp_dir"
 
   # tmp_dir=$(mktemp -d)
   # pushd "$tmp_dir" || exit 1

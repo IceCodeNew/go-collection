@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 71f746f (1 commit after this ref)
+# Version : 39f2a0a (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh
-readonly local_script_version='71f746f'
+readonly local_script_version='39f2a0a'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -497,26 +497,27 @@ install_binaries() {
 
   tmp_dir=$(mktemp -d)
   pushd "$tmp_dir" || exit 1
-  download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-    'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
-      grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d'"' -f4)"
-  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-    sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
-  curl -o 'caddy_linux_amd64.deb' -- "$download_url" &&
-    sudo dpkg -i 'caddy_linux_amd64.deb' && sudo rm 'caddy_linux_amd64.deb'
+  if [[ ! -f /lib/systemd/system/caddy.service ]]; then
+    download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+      'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
+        grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d'"' -f4)"
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+    curl -o 'caddy_linux_amd64.deb' -- "$download_url" &&
+      sudo dpkg -i 'caddy_linux_amd64.deb' && sudo rm 'caddy_linux_amd64.deb'
+    if [[ x"$(echo "${donot_need_caddy_autorun:=no}" | cut -c1)" = x'y' ]]; then
+      sudo systemctl disable --now caddy
+    else
+      sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
+    fi
+  fi
+
+  sudo rm -f '/usr/local/bin/caddy' '/usr/local/bin/xcaddy' &&
+    curl -L "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/caddy.zst" |
+    unzstd -q --no-progress -o './caddy' && sudo "$(type -P install)" -pvD './caddy' '/usr/bin/caddy'
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
   dirs -c
-  if [[ x"$(echo "${donot_need_caddy_autorun:=no}" | cut -c1)" = x'y' ]]; then
-    sudo systemctl disable --now caddy
-  else
-    sudo sed -i -E 's/^:80/:19600/' /etc/caddy/Caddyfile
-  fi
-  sudo rm '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
-
-  curl -L "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/caddy.zst" | unzstd -q --no-progress -o './caddy' &&
-    sudo "$(type -P install)" -pvD './caddy' '/usr/bin/caddy'
-  # curl_to_dest "https://github.com/IceCodeNew/go-collection/raw/latest-release/assets/caddy" '/usr/bin/caddy'
 
   if [[ x"$(echo "${install_minify:=no}" | cut -c1)" = x'y' ]]; then
     sudo apt-get update
