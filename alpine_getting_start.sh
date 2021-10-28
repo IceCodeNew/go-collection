@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 39f2a0a (1 commit after this ref)
+# Version : aff87d8 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='39f2a0a'
+readonly local_script_version='aff87d8'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -319,7 +319,7 @@ install_binaries() {
   fi
 
   # shellcheck disable=SC2154
-  if [[ x"$(echo "${install_fnm:=yes}" | cut -c1)" = x'y' ]]; then
+  if [[ x"$(echo "${install_fnm:=no}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/rust-collection@latest-release/assets/fnm" '/usr/local/bin/fnm'
   else
     sudo rm '/usr/local/bin/fnm'
