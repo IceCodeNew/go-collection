@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 7031d3d (1 commit after this ref)
+# Version : 560ee9f (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='7031d3d'
+readonly local_script_version='560ee9f'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -200,7 +200,7 @@ install_binaries() {
   if [[ x"$(echo "${install_ss_rust:=yes}" | cut -c1)" = x'y' ]]; then
     tmp_dir=$(mktemp -d)
     pushd "$tmp_dir" || exit 1
-    if grep -qw avx2 /proc/cpuinfo && grep -qw sha /proc/cpuinfo; then
+    if grep -qw avx2 /proc/cpuinfo; then
       export ss_rust_file_name='ss-rust-linux-gnu-x64.tar.xz'
     else
       export ss_rust_file_name='4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz'
