@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : aff87d8 (1 commit after this ref)
+# Version : 7031d3d (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='aff87d8'
+readonly local_script_version='7031d3d'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -206,11 +206,16 @@ install_binaries() {
       export ss_rust_file_name='4limit-mem-server-only-ss-rust-linux-gnu-x64.tar.gz'
     fi
     if curl "https://cdn.jsdelivr.net/gh/IceCodeNew/rust-collection@latest-release/assets/${ss_rust_file_name}" | bsdtar -xf-; then
-      [[ x"$ss_rust_file_name" = x'ss-rust-linux-gnu-x64.tar.xz' ]] &&
-        sudo "$(type -P install)" -pvD './sslocal' '/usr/local/bin/sslocal' &&
+      if [[ x"$ss_rust_file_name" = x'ss-rust-linux-gnu-x64.tar.xz' ]]; then
+        sudo "$(type -P install)" -pvD './ssservice' '/usr/local/bin/ssservice' &&
+        sudo rm -f '/usr/local/bin/sslocal' && ln -s '/usr/local/bin/ssservice' '/usr/local/bin/sslocal' &&
+        sudo rm -f '/usr/local/bin/ssmanager' && ln -s '/usr/local/bin/ssservice' '/usr/local/bin/ssmanager' &&
+        sudo rm -f '/usr/local/bin/ssserver' && ln -s '/usr/local/bin/ssservice' '/usr/local/bin/ssserver' &&
         sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
-      sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
-      sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver'
+      else
+        sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
+        sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver'
+      fi
     fi
     popd || exit 1
     /bin/rm -rf "$tmp_dir"
