@@ -56,6 +56,7 @@ ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
 ARG caddy_naiveproxy_latest_commit_hash='ff60d3bb5ad18a21551acbe20419cb88e70f198e'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
+    && go env -w GOFLAGS=-compat=1.17 \
     && go install -trimpath -v github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
     && /go/bin/xcaddy build --output "/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy" \
     --with github.com/caddy-dns/cloudflare@master \
