@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : e1f3469 (1 commit after this ref)
+# Version : 99c3c22 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='e1f3469'
+readonly local_script_version='99c3c22'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -254,20 +254,20 @@ install_binaries() {
     sudo rm '/usr/local/bin/overmind'
   fi
 
-  # shellcheck disable=SC2154
-  if [[ x"$(echo "${install_frp:=no}" | cut -c1)" = x'y' ]]; then
-    curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/frpc" '/usr/local/bin/frpc'
-    curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/frps" '/usr/local/bin/frps'
-  else
-    sudo rm '/usr/local/bin/frpc' '/usr/local/bin/frps'
-  fi
+  # # shellcheck disable=SC2154
+  # if [[ x"$(echo "${install_frp:=no}" | cut -c1)" = x'y' ]]; then
+  #   curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/frpc" '/usr/local/bin/frpc'
+  #   curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/frps" '/usr/local/bin/frps'
+  # else
+  sudo rm '/usr/local/bin/frpc' '/usr/local/bin/frps'
+  # fi
 
-  # shellcheck disable=SC2154
-  if [[ x"$(echo "${install_chisel:=no}" | cut -c1)" = x'y' ]]; then
-    curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/chisel" '/usr/local/bin/chisel'
-  else
-    sudo rm '/usr/local/bin/chisel'
-  fi
+  # # shellcheck disable=SC2154
+  # if [[ x"$(echo "${install_chisel:=no}" | cut -c1)" = x'y' ]]; then
+  #   curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/chisel" '/usr/local/bin/chisel'
+  # else
+  sudo rm '/usr/local/bin/chisel'
+  # fi
 
   if [[ x"$(echo "${install_got:=yes}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/got" '/usr/local/bin/got'
