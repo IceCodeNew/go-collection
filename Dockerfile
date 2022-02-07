@@ -56,8 +56,8 @@ ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
 ARG caddy_naiveproxy_latest_commit_hash='ff60d3bb5ad18a21551acbe20419cb88e70f198e'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
-    && "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy" \
+    && go install -trimpath -v github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
+    && /go/bin/xcaddy build --output "/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
     --with github.com/caddyserver/nginx-adapter@master \
@@ -66,7 +66,7 @@ RUN source "/root/.bashrc" \
     --with github.com/mholt/caddy-l4@master \
     --with github.com/caddyserver/forwardproxy@caddy2=github.com/klzgrad/forwardproxy@naive \
     && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 "/go/bin/xcaddy" build --output "/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy.exe" \
+RUN GOOS=windows GOARCH=amd64 /go/bin/xcaddy build --output "/go/bin/caddy-with-geoip-proxyproto-l4-naiveproxy.exe" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
     --with github.com/caddyserver/nginx-adapter@master \
