@@ -166,17 +166,6 @@ RUN source "/root/.bashrc" \
 RUN GOOS=windows GOARCH=amd64 go install -trimpath -ldflags="-s -w -buildid=" -v github.com/shadowsocks/go-shadowsocks2@latest \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-FROM quay.io/icecodenew/go-collection:build_base AS overmind
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/DarthSim/overmind/commits?per_page=1
-ARG overmind_latest_commit_hash='e654d50f630d7b44192f3bb22ef0d5889854d110'
-RUN source "/root/.bashrc" \
-    && go env -w CGO_ENABLED=0 \
-    && go env -w GO111MODULE=on \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/DarthSim/overmind/v2@latest \
-    && strip "/go/bin"/* \
-    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
-
 # FROM quay.io/icecodenew/go-collection:build_base AS frp
 # SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # # https://api.github.com/repos/fatedier/frp/commits?per_page=1
@@ -350,7 +339,6 @@ COPY --from=shfmt /go/bin /go/bin/
 COPY --from=croc /go/bin /go/bin/
 COPY --from=mosdns /go/bin /go/bin/
 COPY --from=go-shadowsocks2 /go/bin /go/bin/
-COPY --from=overmind /go/bin /go/bin/
 # COPY --from=frp /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
 COPY --from=dnslookup /go/bin /go/bin/
