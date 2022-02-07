@@ -4,6 +4,8 @@ SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 ARG checksec_latest_tag_name=2.4.0
 # https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc
 ARG bashrc_latest_commit_hash=6f332268abdbb7ef6c264a84691127778e3c6ef2
+# https://api.github.com/repos/rui314/mold/releases/latest
+ARG mold_latest_tag_name='v1.0.3'
 # https://api.github.com/repos/golang/go/tags?per_page=100&page=2
 ARG golang_latest_tag_name=go1.15.4
 ARG build_base_date='2020-12-03'
@@ -12,6 +14,8 @@ ARG build_base_date='2020-12-03'
 RUN apk update; apk --no-progress --no-cache add \
     apk-tools autoconf automake bash binutils build-base ca-certificates coreutils curl dos2unix dpkg file gettext-tiny-dev git grep libarchive-tools libedit-dev libedit-static linux-headers lld musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl perl pkgconf util-linux; \
     apk --no-progress --no-cache upgrade; \
+    apk --no-progress --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ add \
+    mold; \
     rm -rf /var/cache/apk/*; \
     update-alternatives --install /usr/local/bin/ld ld /usr/bin/ld.lld 100; \
     update-alternatives --auto ld; \
