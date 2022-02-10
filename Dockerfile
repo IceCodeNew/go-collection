@@ -44,8 +44,6 @@ ARG CADDY_VERSION='b6e96d6f4a55f96ccbb69f112822f0a923942246'
 ARG caddydns_cloudflare_latest_commit_hash='eda8e5aa22232e9c279b0df7531f20c331b331c6'
 # https://api.github.com/repos/caddyserver/jsonc-adapter/commits?per_page=1
 ARG caddy_jsoncadapter_latest_commit_hash='825ee096306c2af9a28858f0db87fb982795cbea'
-# https://api.github.com/repos/caddyserver/nginx-adapter/commits?per_page=1
-ARG caddy_nginxadapter_latest_commit_hash='77eae3ff99cb283fd474a9a59f7b652de3d6b61d'
 # https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1
 ARG caddy_geoip_latest_commit_hash='d500cc3ca64b734da42e0f0446003f437c915ac8'
 # https://api.github.com/repos/mastercactapus/caddy2-proxyprotocol/commits?per_page=1
@@ -63,7 +61,6 @@ RUN source "/root/.bashrc" \
     && /go/bin/xcaddy build --output "/go/bin/caddy-with-cfdns-geoip-proxyproto-l4-aaa-naiveproxy" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
-    --with github.com/caddyserver/nginx-adapter@master \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
@@ -74,7 +71,6 @@ RUN source "/root/.bashrc" \
     && GOOS=windows GOARCH=amd64 /go/bin/xcaddy build --output "/go/bin/caddy-with-cfdns-geoip-proxyproto-l4-aaa-naiveproxy.exe" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
-    --with github.com/caddyserver/nginx-adapter@master \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
