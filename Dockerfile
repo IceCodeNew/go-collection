@@ -69,8 +69,9 @@ RUN source "/root/.bashrc" \
     --with github.com/mholt/caddy-l4@master \
     --with github.com/greenpau/caddy-security@main \
     --with github.com/caddyserver/forwardproxy@caddy2=github.com/klzgrad/forwardproxy@naive \
-    && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 /go/bin/xcaddy build --output "/go/bin/caddy-with-cfdns-geoip-proxyproto-l4-aaa-naiveproxy.exe" \
+    && strip "/go/bin"/* \
+### Build for windows
+    && GOOS=windows GOARCH=amd64 /go/bin/xcaddy build --output "/go/bin/caddy-with-cfdns-geoip-proxyproto-l4-aaa-naiveproxy.exe" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
     --with github.com/caddyserver/nginx-adapter@master \
