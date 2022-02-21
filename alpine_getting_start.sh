@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 7dc7cb1 (1 commit after this ref)
+# Version : 1fce07e (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='7dc7cb1'
+readonly local_script_version='1fce07e'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -80,6 +80,15 @@ install_binaries() {
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
   dirs -c
+
+   ########
+
+   ### Even with the gcompat, pre-built mold still won't work on alpine.
+   # mold_latest_tag_name="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+   # 'https://api.github.com/repos/rui314/mold/releases/latest' |
+   # grep -F 'tag_name' | cut -d'"' -f4)" && \
+   # export mold_latest_tag_name && \
+   # curl -fsSL "https://github.com/rui314/mold/releases/download/${mold_latest_tag_name}/mold-${mold_latest_tag_name#v}-x86_64-linux. tar.gz" | bsdtar -xf- --strip-components 1 -C /usr
 
   ########
 
