@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : 1fce07e (1 commit after this ref)
+# Version : 13532ef (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh
-readonly local_script_version='1fce07e'
+readonly local_script_version='13532ef'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -88,6 +88,10 @@ install_binaries() {
    grep -F 'tag_name' | cut -d'"' -f4)" && \
    export mold_latest_tag_name && \
    curl -fsSL "https://github.com/rui314/mold/releases/download/${mold_latest_tag_name}/mold-${mold_latest_tag_name#v}-x86_64-linux. tar.gz" | bsdtar -xf- --strip-components 1 -C /usr
+
+  ########
+
+  curl_to_dest "https://github.com/haampie/libtree/releases/latest/download/libtree_x86_64" '/usr/bin/libtree'
 
   ########
 
