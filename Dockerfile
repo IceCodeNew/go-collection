@@ -109,13 +109,13 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-FROM quay.io/icecodenew/go-collection:build_base AS got
+FROM quay.io/icecodenew/go-collection:build_base AS pget
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/melbahja/got/releases/latest
-ARG got_latest_tag_name='v0.5.0'
+# https://api.github.com/repos/Code-Hex/pget/releases/latest
+ARG pget_latest_tag_name='v0.1.1'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/melbahja/got/cmd/got@latest \
+    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/Code-Hex/pget/cmd/pget@latest \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -336,7 +336,7 @@ COPY --from=mmp-go /go/bin /go/bin/
 COPY --from=caddy /go/bin /go/bin/
 COPY --from=age /go/bin /go/bin/
 COPY --from=mtg /go/bin /go/bin/
-COPY --from=got /go/bin /go/bin/
+COPY --from=pget /go/bin /go/bin/
 COPY --from=shfmt /go/bin /go/bin/
 COPY --from=croc /go/bin /go/bin/
 COPY --from=mosdns /go/bin /go/bin/
