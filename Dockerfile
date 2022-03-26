@@ -36,8 +36,8 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-FROM quay.io/icecodenew/go-collection:build_base AS caddy
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+FROM quay.io/icecodenew/golang:1.17-alpine AS caddy
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 # https://api.github.com/repos/caddyserver/caddy/commits?per_page=1
 ARG CADDY_VERSION='b6e96d6f4a55f96ccbb69f112822f0a923942246'
 # https://api.github.com/repos/caddy-dns/cloudflare/commits?per_page=1
@@ -54,9 +54,9 @@ ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
 ARG caddy_security_latest_commit_hash='f9f1ae33acdada511074d839471ffc011930af94'
 # https://api.github.com/repos/klzgrad/forwardproxy/commits?per_page=1&sha=naive
 ARG caddy_naiveproxy_latest_commit_hash='ff60d3bb5ad18a21551acbe20419cb88e70f198e'
-RUN source "/root/.bashrc" \
+RUN go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
     && go env -w CGO_ENABLED=0 \
-    && go env -w GOFLAGS=-compat=1.17 \
+    && go env -w GOFLAGS=-go=1.16 \
     && go install -trimpath -v github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
     && /go/bin/xcaddy build --output "/go/bin/caddy-with-cfdns-geoip-proxyproto-l4-aaa-naiveproxy" \
     --with github.com/caddy-dns/cloudflare@master \
