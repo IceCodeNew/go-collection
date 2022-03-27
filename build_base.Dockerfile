@@ -11,7 +11,7 @@ ARG golang_latest_tag_name=go1.15.4
 ARG build_base_date='2020-12-03'
     # echo 'http://dl-cdn.alpinelinux.org/alpine/edge/main' > /etc/apk/repositories; \
     # echo 'http://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories; \
-RUN apk update; apk --no-progress --no-cache add \
+RUN apk --no-progress --no-cache add \
     apk-tools autoconf automake bash binutils build-base ca-certificates coreutils curl dos2unix dpkg file gettext-tiny-dev git grep libarchive-tools libedit-dev libedit-static linux-headers lld musl musl-dev musl-libintl musl-utils ncurses ncurses-dev ncurses-static openssl perl pkgconf util-linux; \
     apk --no-progress --no-cache upgrade; \
     rm -rf /var/cache/apk/*; \

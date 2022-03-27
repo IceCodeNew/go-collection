@@ -54,7 +54,9 @@ ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
 ARG caddy_security_latest_commit_hash='f9f1ae33acdada511074d839471ffc011930af94'
 # https://api.github.com/repos/klzgrad/forwardproxy/commits?per_page=1&sha=naive
 ARG caddy_naiveproxy_latest_commit_hash='ff60d3bb5ad18a21551acbe20419cb88e70f198e'
-RUN go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
+RUN apk --no-progress --no-cache add \
+    binutils \
+    && go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOFLAGS=-go=1.16 \
     && go install -trimpath -v github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
