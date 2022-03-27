@@ -324,12 +324,7 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-FROM quay.io/icecodenew/alpine:latest AS collection
-SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
-# date +%s
-# ARG cachebust='1603527789'
-ARG TZ='Asia/Taipei'
-ENV DEFAULT_TZ ${TZ}
+FROM scratch AS assets
 COPY --from=github-release /go/bin /go/bin/
 COPY --from=nfpm /go/bin /go/bin/
 COPY --from=mmp-go /go/bin /go/bin/
@@ -354,9 +349,16 @@ COPY --from=cloudflarespeedtest /go/bin /go/bin/
 COPY --from=netflix-verify /go/bin /go/bin/
 COPY --from=piknik /go/bin /go/bin/
 COPY --from=apk-file /go/bin /go/bin/
+
+FROM quay.io/icecodenew/alpine:latest AS collection
+COPY --from=assets /go/bin/* /go/bin/windows_amd64/* /go/bin/
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+# date +%s
+# ARG cachebust='1603527789'
+ARG TZ='Asia/Taipei'
+ENV DEFAULT_TZ ${TZ}
 RUN apk update; apk --no-progress --no-cache add \
     bash tzdata; \
     apk --no-progress --no-cache upgrade; \
     rm -rf /var/cache/apk/*; \
-    cp -f /usr/share/zoneinfo/${DEFAULT_TZ} /etc/localtime; \
-    mv /go/bin/windows_amd64/* /go/bin/
+    cp -f /usr/share/zoneinfo/${DEFAULT_TZ} /etc/localtime
