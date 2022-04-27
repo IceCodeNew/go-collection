@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : 75a8adf (1 commit after this ref)
+# Version : 5ff1f58 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh
-readonly local_script_version='75a8adf'
+readonly local_script_version='5ff1f58'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -48,7 +48,7 @@ self_update() {
   # Should any error occured during quering `api.github.com`, do not execute this script.
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] &&
     sed -i -E -e 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g' "$HOME/void_getting_start.sh" &&
-    git config --global url."https://hub.fastgit.org".insteadOf https://github.com
+    git config --global url."https://hub.fastgit.xyz".insteadOf https://github.com
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
     install_binaries
   sleep $(( ( RANDOM % 10 ) + 1 ))s && curl -i "https://purge.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh"
@@ -350,7 +350,7 @@ END_TEXT
 
   ################
 
-  git config --global --unset url.https://hub.fastgit.org.insteadof
+  git config --global --unset url.https://hub.fastgit.xyz.insteadof
   git config --global --list
   exit 0
 }
