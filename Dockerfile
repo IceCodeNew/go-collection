@@ -56,20 +56,7 @@ ARG caddy_security_latest_commit_hash='f9f1ae33acdada511074d839471ffc011930af94'
 ARG caddy_naiveproxy_latest_commit_hash='fd36315f08f51e3253f10d3b98e8508f3f2a98b0'
 RUN apk --no-progress --no-cache add \
     binutils \
-    git
-RUN git clone \
-    -j "$(nproc)" --no-tags \
-    --shallow-submodules --recurse-submodules \
-    --depth 1 --single-branch \
-    https://github.com/SagerNet/forwardproxy.git \
-    /git/forwardproxy/
-RUN git clone \
-    -j "$(nproc)" --no-tags \
-    --shallow-submodules --recurse-submodules \
-    --depth 1 --single-branch \
-    https://github.com/nekohasekai/caddy.git \
-    /git/caddy/
-RUN go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
+    && go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOFLAGS=-go=1.16 \
     && go install -trimpath -v github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
@@ -80,8 +67,7 @@ RUN go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
     --with github.com/greenpau/caddy-security@main \
-    --with github.com/caddyserver/forwardproxy@caddy2=/git/forwardproxy/ \
-    --with github.com/caddyserver/caddy/v2=/git/caddy/ \
+    --with github.com/caddyserver/forwardproxy@caddy2=github.com/sagernet/forwardproxy@naive \
     && strip "/go/bin"/* \
 ### Build for windows
     && GOOS=windows GOARCH=amd64 /go/bin/xcaddy build --output "/go/bin/caddy-with-cfdns-geoip-proxyproto-l4-aaa-naiveproxy.exe" \
@@ -91,8 +77,7 @@ RUN go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
     --with github.com/greenpau/caddy-security@main \
-    --with github.com/caddyserver/forwardproxy@caddy2=/git/forwardproxy/ \
-    --with github.com/caddyserver/caddy/v2=/git/caddy/ \
+    --with github.com/caddyserver/forwardproxy@caddy2=github.com/sagernet/forwardproxy@naive \
     && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS age
