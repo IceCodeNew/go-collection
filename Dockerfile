@@ -58,7 +58,7 @@ RUN apk --no-progress --no-cache add \
     binutils \
     && go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
     && go env -w CGO_ENABLED=0 \
-    && go env -w GOFLAGS=-go=1.16 \
+    && go env -w GOFLAGS=-compat=1.17 \
     && go install -trimpath -v github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
     && /go/bin/xcaddy build --output "/go/bin/caddy-with-cfdns-geoip-proxyproto-l4-aaa-naiveproxy" \
     --with github.com/caddy-dns/cloudflare@master \
