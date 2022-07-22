@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : ae9303d (1 commit after this ref)
+# Version : adbdde5 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh
-readonly local_script_version='ae9303d'
+readonly local_script_version='adbdde5'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -283,7 +283,7 @@ install_binaries() {
     pushd "$tmp_dir" || exit 1
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/klzgrad/naiveproxy/releases/latest' |
-        grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-x64.tar.xz$')"
+        grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'naiveproxy-.+-linux-x64.tar.xz$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
       sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
     curl "$download_url" | bsdtar -xf- --strip-components 1
