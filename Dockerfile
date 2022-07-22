@@ -158,15 +158,17 @@ RUN source "/root/.bashrc" \
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=$(git describe --tags --long --always) -buildid=" -o /go/bin/mosdns.exe -v . \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-FROM quay.io/icecodenew/go-collection:build_base AS go-shadowsocks2
+FROM quay.io/icecodenew/go-collection:build_base AS shadowsocks-go
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/shadowsocks/go-shadowsocks2/commits?per_page=1
-ARG go_ss2_latest_commit_hash='75d43273f5a50373be2a70e91372a3a6afc53a54'
+# https://api.github.com/repos/database64128/shadowsocks-go/commits?per_page=1
+ARG shadowsocks_go_latest_commit_hash='af83c9e8b4cd2fdf77b1c8f71807fc577bbbd1e0'
+WORKDIR '/go/src/shadowsocks-go'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/shadowsocks/go-shadowsocks2@latest \
+    && git_clone 'https://github.com/database64128/shadowsocks-go.git' '/go/src/shadowsocks-go' \
+    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/ -v ./cmd/shadowsocks-go \
     && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 go install -trimpath -ldflags="-s -w -buildid=" -v github.com/shadowsocks/go-shadowsocks2@latest \
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/ -v ./cmd/shadowsocks-go \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 # FROM quay.io/icecodenew/go-collection:build_base AS frp
@@ -336,7 +338,7 @@ COPY --from=pget /go/bin /go/bin/
 COPY --from=shfmt /go/bin /go/bin/
 COPY --from=croc /go/bin /go/bin/
 COPY --from=mosdns /go/bin /go/bin/
-COPY --from=go-shadowsocks2 /go/bin /go/bin/
+COPY --from=shadowsocks-go /go/bin /go/bin/
 # COPY --from=frp /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
 COPY --from=dnslookup /go/bin /go/bin/

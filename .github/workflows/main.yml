@@ -95,7 +95,7 @@ jobs:
           echo "mosdns_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/IrineSistiana/mosdns/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "go_ss2_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+          echo "shadowsocks_go_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/shadowsocks/go-shadowsocks2/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           # echo "frp_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
@@ -175,7 +175,7 @@ jobs:
           sed -i -E "s/^ARG shfmt_latest_commit_hash=.+/ARG shfmt_latest_commit_hash=${shfmt_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG croc_latest_commit_hash=.+/ARG croc_latest_commit_hash=${croc_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG mosdns_latest_commit_hash=.+/ARG mosdns_latest_commit_hash=${mosdns_latest_commit_hash:?empty value}/" Dockerfile
-          sed -i -E "s/^ARG go_ss2_latest_commit_hash=.+/ARG go_ss2_latest_commit_hash=${go_ss2_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG shadowsocks_go_latest_commit_hash=.+/ARG shadowsocks_go_latest_commit_hash=${shadowsocks_go_latest_commit_hash:?empty value}/" Dockerfile
           # sed -i -E "s/^ARG frp_latest_commit_hash=.+/ARG frp_latest_commit_hash=${frp_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG nali_latest_commit_hash=.+/ARG nali_latest_commit_hash=${nali_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG dnslookup_latest_commit_hash=.+/ARG dnslookup_latest_commit_hash=${dnslookup_latest_commit_hash:?empty value}/" Dockerfile
