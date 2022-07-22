@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 5ff1f58 (1 commit after this ref)
+# Version : ae9303d (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh
-readonly local_script_version='5ff1f58'
+readonly local_script_version='ae9303d'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -271,12 +271,12 @@ install_binaries() {
     sudo rm '/usr/local/bin/sslocal' '/usr/local/bin/ssmanager' '/usr/local/bin/ssserver' '/usr/local/bin/ssurl'
   fi
 
-  if [[ x"$(echo "${install_go_shadowsocks:=no}" | cut -c1)" = x'y' ]]; then
-    curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/go-shadowsocks2" '/usr/local/bin/go-shadowsocks2'
-    curl_to_dest "https://github.com/IceCodeNew/v2ray-plugin/releases/latest/download/v2ray-plugin_linux_amd64" '/usr/local/bin/v2ray-plugin'
+  if [[ x"$(echo "${install_go_shadowsocks:=yes}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@latest-release/assets/shadowsocks-go" '/usr/local/bin/shadowsocks-go'
   else
-    sudo rm '/usr/local/bin/go-shadowsocks2' '/usr/local/bin/v2ray-plugin'
+    sudo rm '/usr/local/bin/shadowsocks-go'
   fi
+  sudo rm '/usr/local/bin/go-shadowsocks2' '/usr/local/bin/v2ray-plugin'
 
   if [[ x"$(echo "${install_naiveproxy:=yes}" | cut -c1)" = x'y' ]]; then
     tmp_dir=$(mktemp -d)
