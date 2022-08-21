@@ -210,20 +210,20 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-FROM quay.io/icecodenew/go-collection:build_base AS dnslookup
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/ameshkov/dnslookup/commits?per_page=1
-ARG dnslookup_latest_commit_hash='a20f98f33d92f88c10231536b77e4b8013aeecac'
-WORKDIR '/go/src/dnslookup'
-RUN source "/root/.bashrc" \
-    && go env -w CGO_ENABLED=0 \
-    && go env -w GO111MODULE=on \
-    && go env -w GOAMD64=v2 \
-    && git_clone 'https://github.com/ameshkov/dnslookup.git' '/go/src/dnslookup' \
-    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/dnslookup -v . \
-    && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/dnslookup.exe -v . \
-    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
+# FROM quay.io/icecodenew/go-collection:build_base AS dnslookup
+# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# # https://api.github.com/repos/ameshkov/dnslookup/commits?per_page=1
+# ARG dnslookup_latest_commit_hash='a20f98f33d92f88c10231536b77e4b8013aeecac'
+# WORKDIR '/go/src/dnslookup'
+# RUN source "/root/.bashrc" \
+#     && go env -w CGO_ENABLED=0 \
+#     && go env -w GO111MODULE=on \
+#     && go env -w GOAMD64=v2 \
+#     && git_clone 'https://github.com/ameshkov/dnslookup.git' '/go/src/dnslookup' \
+#     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/dnslookup -v . \
+#     && strip "/go/bin"/*
+# RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/dnslookup.exe -v . \
+#     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS wgcf
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -365,7 +365,7 @@ COPY --from=mosdns /go/bin /go/bin/
 COPY --from=shadowsocks-go /go/bin /go/bin/
 # COPY --from=frp /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
-COPY --from=dnslookup /go/bin /go/bin/
+# COPY --from=dnslookup /go/bin /go/bin/
 COPY --from=wgcf /go/bin /go/bin/
 COPY --from=dive /go/bin /go/bin/
 COPY --from=duf /go/bin /go/bin/
