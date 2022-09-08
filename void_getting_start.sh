@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : adbdde5 (1 commit after this ref)
+# Version : 8082442 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh
-readonly local_script_version='adbdde5'
+readonly local_script_version='8082442'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -87,7 +87,7 @@ install_binaries() {
    'https://api.github.com/repos/rui314/mold/releases/latest' |
    grep -F 'tag_name' | cut -d'"' -f4)" && \
    export mold_latest_tag_name && \
-   curl -fsSL "https://github.com/rui314/mold/releases/download/${mold_latest_tag_name}/mold-${mold_latest_tag_name#v}-x86_64-linux. tar.gz" | bsdtar -xf- --strip-components 1 -C /usr
+   curl -fsSL "https://github.com/rui314/mold/releases/download/${mold_latest_tag_name}/mold-${mold_latest_tag_name#v}-x86_64-linux. tar.gz" | sudo bsdtar -xf- --strip-components 1 -C /usr
 
   ########
 
@@ -124,9 +124,9 @@ install_binaries() {
     if curl "https://cdn.jsdelivr.net/gh/IceCodeNew/rust-collection@latest-release/assets/${ss_rust_file_name}" | bsdtar -xf-; then
       if [[ x"$ss_rust_file_name" = x'ss-rust-linux-gnu-x64.tar.xz' ]]; then
         sudo "$(type -P install)" -pvD './ssservice' '/usr/local/bin/ssservice' &&
-        sudo rm -f '/usr/local/bin/sslocal' && ln -s '/usr/local/bin/ssservice' '/usr/local/bin/sslocal' &&
-        sudo rm -f '/usr/local/bin/ssmanager' && ln -s '/usr/local/bin/ssservice' '/usr/local/bin/ssmanager' &&
-        sudo rm -f '/usr/local/bin/ssserver' && ln -s '/usr/local/bin/ssservice' '/usr/local/bin/ssserver' &&
+        sudo ln -fs '/usr/local/bin/ssservice' '/usr/local/bin/sslocal' &&
+        sudo ln -fs '/usr/local/bin/ssservice' '/usr/local/bin/ssmanager' &&
+        sudo ln -fs '/usr/local/bin/ssservice' '/usr/local/bin/ssserver' &&
         sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
       else
         sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
@@ -190,7 +190,7 @@ install_binaries() {
     'https://api.github.com/repos/ogham/dog/tags?per_page=100' |
       grep 'name' | cut -d'"' -f4 | grep -vE 'alpha|beta|rc|test|week|pre' |
       sort -rV | head -1)"
-  curl "https://github.com/ogham/dog/releases/download/${dog_latest_tag_name}/dog-${dog_latest_tag_name}-x86_64-unknown-linux-gnu.zip" | bsdtar -xf- -P -C /usr/local
+  curl "https://github.com/ogham/dog/releases/download/${dog_latest_tag_name}/dog-${dog_latest_tag_name}-x86_64-unknown-linux-gnu.zip" | sudo bsdtar -xf- -P -C /usr/local
   curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/rust-collection@latest-release/assets/dog" '/usr/local/bin/dog'
 
   # shellcheck disable=SC2154
