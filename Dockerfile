@@ -9,6 +9,22 @@ RUN source "/root/.bashrc" \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
+FROM quay.io/icecodenew/go-collection:build_base AS go-mmproxy
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+# https://api.github.com/repos/path-network/go-mmproxy/commits?per_page=1
+ARG go-mmproxy_latest_commit_hash='7197f99c984ec67018cc1ee4dfaacbd47a8e5c8c'
+WORKDIR '/go/src/go-mmproxy'
+RUN source "/root/.bashrc" \
+    && go env -w CGO_ENABLED=0 \
+    && go env -w GO111MODULE=on \
+    && go env -w GOAMD64=v2 \
+    && git_clone 'https://github.com/path-network/go-mmproxy.git' '/go/src/go-mmproxy' \
+    && go mod download \
+    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/go-mmproxy -v . \
+    && strip "/go/bin"/* \
+    && /go/bin/go-mmproxy --version \
+    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
+
 FROM quay.io/icecodenew/go-collection:build_base AS nfpm
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/goreleaser/nfpm/commits?per_page=1
@@ -353,6 +369,7 @@ RUN source "/root/.bashrc" \
 
 FROM scratch AS assets
 COPY --from=github-release /go/bin /go/bin/
+COPY --from=go-mmproxy /go/bin /go/bin/
 COPY --from=nfpm /go/bin /go/bin/
 COPY --from=mmp-go /go/bin /go/bin/
 COPY --from=caddy /go/bin /go/bin/

@@ -47,6 +47,9 @@ jobs:
           echo "github_release_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/github-release/github-release/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "go_mmproxy_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/goreleaser/nfpm/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "nfpm_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/goreleaser/nfpm/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -159,6 +162,7 @@ jobs:
           git checkout release
           git reset --hard origin/master
           sed -i -E "s/^ARG github_release_latest_tag_name=.+/ARG github_release_latest_tag_name=${github_release_latest_tag_name:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG go_mmproxy_latest_commit_hash=.+/ARG go_mmproxy_latest_commit_hash=${go_mmproxy_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG nfpm_latest_commit_hash=.+/ARG nfpm_latest_commit_hash=${nfpm_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG mmp_go_latest_commit_hash=.+/ARG mmp_go_latest_commit_hash=${mmp_go_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG CADDY_VERSION=.+/ARG CADDY_VERSION=${CADDY_VERSION:?empty value}/" Dockerfile
