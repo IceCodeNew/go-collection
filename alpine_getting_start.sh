@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 8082442 (1 commit after this ref)
+# Version : d15bc52 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='8082442'
+readonly local_script_version='d15bc52'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -310,6 +310,13 @@ install_binaries() {
       sort -rV | head -1)"
   curl "https://github.com/ogham/dog/releases/download/${dog_latest_tag_name}/dog-${dog_latest_tag_name}-x86_64-unknown-linux-gnu.zip" | sudo bsdtar -xf- -P -C /usr/local
   curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/rust-collection@latest-release/assets/dog" '/usr/local/bin/dog'
+
+  # shellcheck disable=SC2154
+  if [[ x"$(echo "${install_qft:=no}" | cut -c1)" = x'y' ]]; then
+    curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/rust-collection@latest-release/assets/qft" '/usr/local/bin/qft'
+  else
+    sudo rm '/usr/local/bin/qft'
+  fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_websocat:=no}" | cut -c1)" = x'y' ]]; then
