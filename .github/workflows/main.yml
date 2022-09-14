@@ -65,6 +65,9 @@ jobs:
           echo "caddy_jsoncadapter_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/caddyserver/jsonc-adapter/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
+          echo "caddy_nginxadapter_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
+                'https://api.github.com/repos/caddyserver/nginx-adapter/commits?per_page=1' |
+                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "caddy_geoip_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
@@ -168,6 +171,7 @@ jobs:
           sed -i -E "s/^ARG CADDY_VERSION=.+/ARG CADDY_VERSION=${CADDY_VERSION:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddydns_cloudflare_latest_commit_hash=.+/ARG caddydns_cloudflare_latest_commit_hash=${caddydns_cloudflare_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_jsoncadapter_latest_commit_hash=.+/ARG caddy_jsoncadapter_latest_commit_hash=${caddy_jsoncadapter_latest_commit_hash:?empty value}/" Dockerfile
+          sed -i -E "s/^ARG caddy_nginxadapter_latest_commit_hash=.+/ARG caddy_nginxadapter_latest_commit_hash=${caddy_nginxadapter_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_geoip_latest_commit_hash=.+/ARG caddy_geoip_latest_commit_hash=${caddy_geoip_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_proxyprotocol_latest_commit_hash=.+/ARG caddy_proxyprotocol_latest_commit_hash=${caddy_proxyprotocol_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG caddy_l4_latest_commit_hash=.+/ARG caddy_l4_latest_commit_hash=${caddy_l4_latest_commit_hash:?empty value}/" Dockerfile
