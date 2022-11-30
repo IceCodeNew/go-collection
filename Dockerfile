@@ -75,6 +75,11 @@ ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
 ARG caddy_security_latest_commit_hash='f9f1ae33acdada511074d839471ffc011930af94'
 # https://api.github.com/repos/sagernet/forwardproxy/commits?per_page=1&sha=naive
 ARG caddy_naiveproxy_latest_commit_hash='fd36315f08f51e3253f10d3b98e8508f3f2a98b0'
+
+WORKDIR /git/caddy-l4/
+RUN git clone -j "$(nproc)" --no-tags --shallow-submodules --recurse-submodules --depth 1 --single-branch \
+    https://github.com/IceCodeNew/caddy-l4.git .
+
 RUN apk --no-progress --no-cache add \
     binutils \
     && go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
@@ -89,7 +94,7 @@ RUN apk --no-progress --no-cache add \
     --with github.com/caddyserver/nginx-adapter@master \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
-    --with github.com/mholt/caddy-l4@master \
+    --with github.com/mholt/caddy-l4@master=./ \
     --with github.com/greenpau/caddy-security@main \
     --with github.com/caddyserver/forwardproxy@caddy2=github.com/sagernet/forwardproxy@naive \
     && strip "/go/bin"/* \
@@ -102,7 +107,7 @@ RUN apk --no-progress --no-cache add \
     --with github.com/caddyserver/nginx-adapter@master \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
-    --with github.com/mholt/caddy-l4@master \
+    --with github.com/mholt/caddy-l4@master=./ \
     --with github.com/greenpau/caddy-security@main \
     --with github.com/caddyserver/forwardproxy@caddy2=github.com/sagernet/forwardproxy@naive \
     && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
