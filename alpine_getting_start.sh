@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : f47df0e (1 commit after this ref)
+# Version : 150a88c (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='f47df0e'
+readonly local_script_version='150a88c'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -48,7 +48,7 @@ self_update() {
   # Should any error occured during quering `api.github.com`, do not execute this script.
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] &&
     sed -i -E -e 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g' "$HOME/alpine_getting_start.sh" &&
-    git config --global url."https://hub.fastgit.xyz".insteadOf https://github.com
+    git config --global url."https://ghproxy.com/https://github.com".insteadOf https://github.com
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
     install_binaries
   sleep $(( ( RANDOM % 10 ) + 1 ))s && curl -i "https://purge.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh"
@@ -505,7 +505,7 @@ install_binaries() {
   checksec --dir=/usr/local/bin
   checksec --listfile=<(echo -e '/usr/bin/bat\n/usr/bin/fd\n/usr/bin/hexyl\n/usr/bin/minify\n/usr/local/sbin/haproxy\n/usr/local/sbin/caddy')
 
-  git config --global --unset url.https://hub.fastgit.xyz.insteadof
+  git config --global --unset url.https://ghproxy.com/https://github.com.insteadof
   git config --global --list
   exit 0
 }
