@@ -90,7 +90,6 @@ RUN apk --no-progress --no-cache add \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
-    --with github.com/greenpau/caddy-security@main \
     --with github.com/caddyserver/forwardproxy@caddy2=github.com/sagernet/forwardproxy@naive \
     && strip "/go/bin"/* \
 ### Build for windows
@@ -103,7 +102,6 @@ RUN apk --no-progress --no-cache add \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
-    --with github.com/greenpau/caddy-security@main \
     --with github.com/caddyserver/forwardproxy@caddy2=github.com/sagernet/forwardproxy@naive \
     && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
