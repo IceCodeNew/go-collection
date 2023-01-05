@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : 150a88c (1 commit after this ref)
+# Version : 9b80dfe (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Wed Oct 20th, 2021
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh
-readonly local_script_version='150a88c'
+readonly local_script_version='9b80dfe'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -73,7 +73,7 @@ install_binaries() {
       grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-musl.tbz$' | grep -iE 'x86_64')" && \
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
       sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
-  curl -- "$download_url" | bsdtar -xf- && \
+  curl -- "$download_url" | bsdtar -xf- --strip-components 2 && \
     sudo make install PREFIX=/usr && \
     sudo make setuid PREFIX=/usr && \
     sudo strip /usr/bin/btop && \
