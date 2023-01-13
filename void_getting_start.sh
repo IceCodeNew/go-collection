@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : void_getting_start.sh
-# Version : 07103cf (1 commit after this ref)
+# Version : fb3c200 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Fri Jan 13th, 2023
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh
-readonly local_script_version='07103cf'
+readonly local_script_version='fb3c200'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -47,14 +47,14 @@ self_update() {
   readonly remote_script_version
   # Should any error occured during quering `api.github.com`, do not execute this script.
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] &&
-    sed -i -E -e 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g' "$HOME/void_getting_start.sh" &&
+    sed -i -E -e 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g' "$HOME/void_getting_start.sh" &&
     git config --global url."https://ghproxy.com/https://github.com".insteadOf https://github.com
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
     install_binaries
   sleep $(( ( RANDOM % 10 ) + 1 ))s && curl -i "https://purge.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh"
   if [[ x"${geoip_is_cn:0:1}" = x'y' ]]; then
     curl -o "$HOME/void_getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh'
-    sed -i -E -e 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g' "$HOME/void_getting_start.sh.tmp"
+    sed -i -E -e 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g' "$HOME/void_getting_start.sh.tmp"
   else
     curl -o "$HOME/void_getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh'
   fi
@@ -72,7 +72,7 @@ install_binaries() {
     'https://api.github.com/repos/aristocratos/btop/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-musl.tbz$' | grep -iE 'x86_64')" && \
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
   curl -- "$download_url" | bsdtar -xf- --strip-components 2 && \
     sudo make install PREFIX=/usr && \
     sudo make setuid PREFIX=/usr && \
@@ -98,6 +98,8 @@ install_binaries() {
   download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/tstack/lnav/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/lnav-.+?-x86_64-linux-musl.zip$')"
+  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+    sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
   if curl "$download_url" | bsdtar -xf- --strip-components 1; then
     sudo "$(type -P install)" -pvD './lnav' '/usr/local/bin/lnav'
   fi
@@ -174,7 +176,7 @@ install_binaries() {
       'https://api.github.com/repos/klzgrad/naiveproxy/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'naiveproxy-.+-linux-x64.tar.xz$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
     curl "$download_url" | bsdtar -xf- --strip-components 1
     # Need glibc runtime.
     sudo strip './naive' -o '/usr/local/bin/naive'
@@ -311,7 +313,7 @@ install_binaries() {
   pushd "$tmp_dir" || exit 1
   download_url="https://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip"
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-    sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+    sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
   curl "$download_url" | bsdtar -xf- &&
     sudo "$(type -P install)" -pvD './v2ctl' '/usr/bin/v2ctl' &&
     sudo "$(type -P install)" -pvD './v2ray' '/usr/bin/v2ray' &&

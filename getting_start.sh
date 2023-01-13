@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 07103cf (1 commit after this ref)
+# Version : fb3c200 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Fri Jan 13th, 2023
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh
-readonly local_script_version='07103cf'
+readonly local_script_version='fb3c200'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -71,14 +71,14 @@ self_update() {
   readonly remote_script_version
   # Should any error occured during quering `api.github.com`, do not execute this script.
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] &&
-    sed -i -E -e 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g' "$HOME/getting_start.sh" &&
+    sed -i -E -e 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g' "$HOME/getting_start.sh" &&
     git config --global url."https://ghproxy.com/https://github.com".insteadOf https://github.com
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
     install_binaries
   sleep $(( ( RANDOM % 10 ) + 1 ))s && curl -i "https://purge.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh"
   if [[ x"${geoip_is_cn:0:1}" = x'y' ]]; then
     curl -o "$HOME/getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh'
-    sed -i -E -e 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g' "$HOME/getting_start.sh.tmp"
+    sed -i -E -e 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g' "$HOME/getting_start.sh.tmp"
   else
     curl -o "$HOME/getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh'
   fi
@@ -97,7 +97,7 @@ install_binaries() {
     'https://api.github.com/repos/aristocratos/btop/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-musl.tbz$' | grep -iE 'x86_64')" && \
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
   curl -- "$download_url" | bsdtar -xf- --strip-components 2 && \
     sudo make install PREFIX=/usr && \
     sudo make setuid PREFIX=/usr && \
@@ -127,7 +127,7 @@ install_binaries() {
       'https://api.github.com/repos/BurntSushi/ripgrep/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'amd64.deb$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
     curl -o 'ripgrep_amd64.deb' -- "$download_url" &&
       sudo dpkg -i 'ripgrep_amd64.deb'
     # sudo apt-mark hold ripgrep
@@ -144,7 +144,7 @@ install_binaries() {
       'https://api.github.com/repos/sharkdp/bat/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
     curl -o 'bat-musl_amd64.deb' -- "$download_url" &&
       sudo dpkg -i 'bat-musl_amd64.deb'
     git_clone https://github.com/eth-p/bat-extras.git &&
@@ -165,7 +165,7 @@ install_binaries() {
       'https://api.github.com/repos/sharkdp/fd/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
     curl -o 'fd-musl_amd64.deb' -- "$download_url" &&
       sudo dpkg -i 'fd-musl_amd64.deb'
     popd || exit 1
@@ -181,7 +181,7 @@ install_binaries() {
       'https://api.github.com/repos/sharkdp/hexyl/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'musl.+amd64.deb$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
     curl -o 'hexyl-musl_amd64.deb' -- "$download_url" &&
       sudo dpkg -i 'hexyl-musl_amd64.deb'
     popd || exit 1
@@ -197,7 +197,7 @@ install_binaries() {
       'https://api.github.com/repos/gohugoio/hugo/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'extended.+linux-64bit.deb$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
     curl -o 'hugo_extended_Linux-64bit.deb' -- "$download_url" &&
       sudo dpkg -i 'hugo_extended_Linux-64bit.deb'
     popd || exit 1
@@ -210,6 +210,8 @@ install_binaries() {
   download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/tstack/lnav/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/lnav-.+?-x86_64-linux-musl.zip$')"
+  [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+    sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
   if curl "$download_url" | bsdtar -xf- --strip-components 1; then
     sudo "$(type -P install)" -pvD './lnav' '/usr/local/bin/lnav'
   fi
@@ -306,7 +308,7 @@ install_binaries() {
       'https://api.github.com/repos/klzgrad/naiveproxy/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'naiveproxy-.+-linux-x64.tar.xz$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
     curl "$download_url" | bsdtar -xf- --strip-components 1
     # Need glibc runtime.
     sudo strip './naive' -o '/usr/local/bin/naive'
@@ -519,13 +521,13 @@ install_binaries() {
     'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/haproxy_.+?amd64.deb$')"
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-    sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+    sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
   curl -o 'haproxy_amd64.deb'  -- "$download_url" &&
     download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
       'https://api.github.com/repos/IceCodeNew/haproxy_static/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/jemalloc_.+?amd64.deb$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
     curl -o 'jemalloc_amd64.deb' -- "$download_url" &&
     sudo dpkg -i 'jemalloc_amd64.deb' && sudo dpkg -i 'haproxy_amd64.deb'
   curl -LROJ 'https://github.com/IceCodeNew/haproxy_static/releases/latest/download/haproxy.service' &&
@@ -543,7 +545,7 @@ install_binaries() {
       'https://api.github.com/repos/caddyserver/caddy/releases/latest' |
         grep 'browser_download_url' | grep 'linux_amd64.deb' | cut -d'"' -f4)"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!github.com/(.+/download/)!github.com.mirror.icecode.xyz/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
     curl -o 'caddy_linux_amd64.deb' -- "$download_url" &&
       sudo dpkg -i 'caddy_linux_amd64.deb' && sudo rm 'caddy_linux_amd64.deb'
     if [[ x"$(echo "${donot_need_caddy_autorun:=no}" | cut -c1)" = x'y' ]]; then
