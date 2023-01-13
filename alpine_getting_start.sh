@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : fb3c200 (1 commit after this ref)
+# Version : 26a0530 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Fri Jan 13th, 2023
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='fb3c200'
+readonly local_script_version='26a0530'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -47,19 +47,13 @@ self_update() {
   readonly remote_script_version
   # Should any error occured during quering `api.github.com`, do not execute this script.
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] &&
-    sed -i -E -e 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g' "$HOME/alpine_getting_start.sh" &&
     git config --global url."https://ghproxy.com/https://github.com".insteadOf https://github.com
   [[ x"$local_script_version" = x"$remote_script_version" ]] &&
     install_binaries
   sleep $(( ( RANDOM % 10 ) + 1 ))s && curl -i "https://purge.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh"
-  if [[ x"${geoip_is_cn:0:1}" = x'y' ]]; then
-    curl -o "$HOME/alpine_getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh'
-    sed -i -E -e 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g' "$HOME/alpine_getting_start.sh.tmp"
-  else
-    curl -o "$HOME/alpine_getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh'
-  fi
-  dos2unix "$HOME/alpine_getting_start.sh.tmp" && mv -f "$HOME/alpine_getting_start.sh.tmp" "$HOME/alpine_getting_start.sh" &&
-  echo 'Upgrade successful!' && exit 1
+  curl -o "$HOME/alpine_getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh' &&
+    dos2unix "$HOME/alpine_getting_start.sh.tmp" && mv -f "$HOME/alpine_getting_start.sh.tmp" "$HOME/alpine_getting_start.sh" &&
+    echo 'Upgrade successful!' && exit 1
 }
 
 install_binaries() {
@@ -72,7 +66,7 @@ install_binaries() {
     'https://api.github.com/repos/aristocratos/btop/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'linux-musl.tbz$' | grep -iE 'x86_64')" && \
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
   curl -- "$download_url" | bsdtar -xf- --strip-components 2 && \
     sudo make install PREFIX=/usr && \
     sudo make setuid PREFIX=/usr && \
@@ -81,18 +75,12 @@ install_binaries() {
   /bin/rm -rf "$tmp_dir"
   dirs -c
 
-   ########
-
-   ### Even with the gcompat, pre-built mold still won't work on alpine.
-   # mold_latest_tag_name="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-   # 'https://api.github.com/repos/rui314/mold/releases/latest' |
-   # grep -F 'tag_name' | cut -d'"' -f4)" && \
-   # export mold_latest_tag_name && \
-   # curl -fsSL "https://github.com/rui314/mold/releases/download/${mold_latest_tag_name}/mold-${mold_latest_tag_name#v}-x86_64-linux. tar.gz" | sudo bsdtar -xf- --strip-components 1 -C /usr
-
   ########
 
-  curl_to_dest "https://github.com/haampie/libtree/releases/latest/download/libtree_x86_64" '/usr/bin/libtree'
+  download_url="https://github.com/haampie/libtree/releases/latest/download/libtree_x86_64" && \
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
+  curl_to_dest "$download_url" '/usr/bin/libtree'
 
   ########
 
@@ -103,7 +91,7 @@ install_binaries() {
       'https://api.github.com/repos/BurntSushi/ripgrep/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'ripgrep.*x86_64.*linux-musl.tar.gz$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
     curl "$download_url" | bsdtar -xf- --strip-components 1
     cp complete/rg.bash /usr/share/bash-completion/completions/
     # mkdir /usr/share/doc/ripgrep/
@@ -133,7 +121,7 @@ install_binaries() {
       'https://api.github.com/repos/sharkdp/fd/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'fd.*x86_64.*linux-musl.tar.gz$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
     curl "$download_url" | bsdtar -xf- --strip-components 1
     cp autocomplete/fd.bash-completion /usr/share/bash-completion/completions/
     popd || exit 1
@@ -148,7 +136,7 @@ install_binaries() {
       'https://api.github.com/repos/sharkdp/hexyl/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'hexyl.*x86_64.*linux-musl.tar.gz$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
     curl "$download_url" | bsdtar -xf- --strip-components 1
     popd || exit 1
     /bin/rm -rf "$tmp_dir"
@@ -162,7 +150,7 @@ install_binaries() {
       'https://api.github.com/repos/gohugoio/hugo/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'hugo_extended.*Linux-64bit.tar.gz$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
     curl "$download_url" | bsdtar -xf-
     # Need glibc runtime.
     sudo "$(type -P install)" -pvD './hugo' '/usr/local/bin/hugo'
@@ -176,7 +164,7 @@ install_binaries() {
     'https://api.github.com/repos/tstack/lnav/releases/latest' |
       grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/lnav-.+?-x86_64-linux-musl.zip$')"
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-    sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
+    sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
   if curl "$download_url" | bsdtar -xf- --strip-components 1; then
     sudo "$(type -P install)" -pvD './lnav' '/usr/local/bin/lnav'
   fi
@@ -272,7 +260,7 @@ install_binaries() {
       'https://api.github.com/repos/klzgrad/naiveproxy/releases/latest' |
         grep 'browser_download_url' | cut -d'"' -f4 | grep -iE 'naiveproxy-.+-linux-x64.tar.xz$')"
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://github.com/\1!g')
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
     curl "$download_url" | bsdtar -xf- --strip-components 1
     # Need glibc runtime.
     sudo strip './naive' -o '/usr/local/bin/naive'
@@ -326,12 +314,27 @@ install_binaries() {
     sudo rm '/usr/local/bin/dnslookup'
   fi
 
+  ################
+
+  tmp_dir=$(mktemp -d) && pushd "$tmp_dir" || exit 1
   dog_latest_tag_name="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
     'https://api.github.com/repos/ogham/dog/tags?per_page=100' |
       grep 'name' | cut -d'"' -f4 | grep -vE 'alpha|beta|rc|test|week|pre' |
-      sort -rV | head -1)"
-  curl "https://github.com/ogham/dog/releases/download/${dog_latest_tag_name}/dog-${dog_latest_tag_name}-x86_64-unknown-linux-gnu.zip" | sudo bsdtar -xf- -P -C /usr/local
+      sort -rV | head -1)" && \
+  export dog_latest_tag_name && \
+  download_url="https://github.com/ogham/dog/releases/download/${dog_latest_tag_name}/dog-${dog_latest_tag_name}-x86_64-unknown-linux-gnu.zip" && \
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+          sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
+  if curl "$download_url" | sudo bsdtar -xf-; then
+    \mv -vf -- * /usr/local/
+  fi
+  popd || exit 1
+  /bin/rm -rf "$tmp_dir"
+  dirs -c
+
   curl_to_dest "https://cdn.jsdelivr.net/gh/IceCodeNew/rust-collection@latest-release/assets/dog" '/usr/local/bin/dog'
+
+  ################
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_qft:=no}" | cut -c1)" = x'y' ]]; then
@@ -479,7 +482,11 @@ install_binaries() {
 
   apk add haproxy-openrc
   rc-update add haproxy
-  curl_to_dest "https://github.com/IceCodeNew/haproxy_static/releases/latest/download/haproxy" '/usr/local/sbin/haproxy' &&
+
+  download_url="https://github.com/IceCodeNew/haproxy_static/releases/latest/download/haproxy" && \
+    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
+      sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
+  curl_to_dest "$download_url" '/usr/local/sbin/haproxy' &&
       sudo rm -f /usr/bin/haproxy &&
       sudo ln -s /usr/local/sbin/haproxy /usr/bin/
 
@@ -502,15 +509,6 @@ install_binaries() {
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
 
-  # tmp_dir=$(mktemp -d)
-  # pushd "$tmp_dir" || exit 1
-  # if curl "https://github.com/tdewolff/minify/releases/latest/download/minify_linux_amd64.tar.gz" | bsdtar -xf-; then
-  #   sudo "$(type -P install)" -pvD './minify' '/usr/bin/minify'
-  #   sudo "$(type -P install)" -pvDm 644 './bash_completion' '/usr/share/bash-completion/completions/minify'
-  # fi
-  # popd || exit 1
-  # /bin/rm -rf "$tmp_dir"
-  # [[ -f /usr/share/caddy/index.html ]] && minify -o /usr/share/caddy/index.html /usr/share/caddy/index.html
   sudo rm -f '/usr/share/caddy/index.html' &&
     sudo mkdir -p '/usr/share/caddy' &&
     sudo "$(type -P curl)" -o '/usr/share/caddy/index.html' -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/usr/share/caddy/index.html'
@@ -518,7 +516,7 @@ install_binaries() {
   ################
 
   checksec --dir=/usr/local/bin
-  checksec --listfile=<(echo -e '/usr/bin/bat\n/usr/bin/fd\n/usr/bin/hexyl\n/usr/bin/minify\n/usr/local/sbin/haproxy\n/usr/local/sbin/caddy')
+  checksec --listfile=<(echo -e '/usr/bin/bat\n/usr/bin/fd\n/usr/bin/hexyl\n/usr/local/sbin/haproxy\n/usr/local/sbin/caddy')
 
   git config --global --unset url.https://ghproxy.com/https://github.com.insteadof
   git config --global --list
