@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : 26a0530 (1 commit after this ref)
+# Version : 8793cba (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Fri Jan 13th, 2023
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh
-readonly local_script_version='26a0530'
+readonly local_script_version='8793cba'
 
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
@@ -52,7 +52,7 @@ self_update() {
     install_binaries
   sleep $(( ( RANDOM % 10 ) + 1 ))s && curl -i "https://purge.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh"
   curl -o "$HOME/alpine_getting_start.sh.tmp" -- 'https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/alpine_getting_start.sh' &&
-    dos2unix "$HOME/alpine_getting_start.sh.tmp" && mv -f "$HOME/alpine_getting_start.sh.tmp" "$HOME/alpine_getting_start.sh" &&
+    dos2unix "$HOME/alpine_getting_start.sh.tmp" && /bin/mv -f "$HOME/alpine_getting_start.sh.tmp" "$HOME/alpine_getting_start.sh" &&
     echo 'Upgrade successful!' && exit 1
 }
 
@@ -326,7 +326,7 @@ install_binaries() {
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
           sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
   if curl "$download_url" | sudo bsdtar -xf-; then
-    \mv -vf -- * /usr/local/
+    /bin/cp -rfpv -- * /usr/local/
   fi
   popd || exit 1
   /bin/rm -rf "$tmp_dir"
@@ -523,4 +523,5 @@ install_binaries() {
   exit 0
 }
 
+git config --global --unset url.https://hub.fastgit.xyz/https://github.com.insteadof
 self_update
