@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : getting_start.sh
-# Version : 5e585fe (1 commit after this ref)
+# Version : 07103cf (1 commit after this ref)
 # Author  : IceCodeNew
-# Date    : Wed Oct 20th, 2021
+# Date    : Fri Jan 13th, 2023
 # Download: https://cdn.jsdelivr.net/gh/IceCodeNew/go-collection@master/getting_start.sh
-readonly local_script_version='5e585fe'
+readonly local_script_version='07103cf'
 
 # IMPORTANT!
 # `apt` does not have a stable CLI interface. Use with caution in scripts.
@@ -204,6 +204,18 @@ install_binaries() {
     /bin/rm -rf "$tmp_dir"
     dirs -c
   fi
+
+  tmp_dir=$(mktemp -d)
+  pushd "$tmp_dir" || exit 1
+  download_url="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    'https://api.github.com/repos/tstack/lnav/releases/latest' |
+      grep 'browser_download_url' | cut -d'"' -f4 | grep -E '[0-9]\/lnav-.+?-x86_64-linux-musl.zip$')"
+  if curl "$download_url" | bsdtar -xf- --strip-components 1; then
+    sudo "$(type -P install)" -pvD './lnav' '/usr/local/bin/lnav'
+  fi
+  popd || exit 1
+  /bin/rm -rf "$tmp_dir"
+  dirs -c
 
   ################
 
