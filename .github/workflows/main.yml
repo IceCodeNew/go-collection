@@ -35,16 +35,16 @@ jobs:
           echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "REPO_URL=github.com/${{ github.repository }}" >> $GITHUB_ENV
-          echo "checksec_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+          echo "checksec_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/slimm609/checksec.sh/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "bashrc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "mold_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+          echo "mold_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/rui314/mold/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "github_release_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+          echo "github_release_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/github-release/github-release/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "go_mmproxy_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
@@ -89,7 +89,7 @@ jobs:
           echo "mtg_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/9seconds/mtg/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "pget_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+          echo "pget_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/Code-Hex/pget/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "shfmt_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
@@ -116,7 +116,7 @@ jobs:
           echo "wgcf_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/ViRb3/wgcf/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "dive_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+          echo "dive_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/wagoodman/dive/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "dive_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
@@ -143,11 +143,11 @@ jobs:
           echo "piknik_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/jedisct1/piknik/commits?per_page=1' |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "apk_file_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+          echo "apk_file_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
                 'https://api.github.com/repos/genuinetools/apk-file/releases/latest' |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "golang_latest_tag_name=$(for i in {1..16}; do \
-                  if curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+                  if curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
                     "https://api.github.com/repos/golang/go/tags?per_page=100&page=$i" |
                     grep -F 'name' | cut -d'"' -f4 | grep -vE 'alpha|beta|rc|test|week' |
                     grep -Em1 '^go[0-9]+\.[0-9]+\.[0-9]+';
