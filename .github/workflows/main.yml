@@ -27,124 +27,137 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Set some variables
         run: |
+          set -x
+          GITHUB_API_BASEURL='https://api.github.com'
+          TMP_FILE=$(mktemp)
+          if curl -sS -i -I -H "Accept: application/vnd.github.v3+json" -o "$TMP_FILE" -- 'https://github-cache.yingmale.win/api/'; then
+            HTTP_STATUS_CODE=$(awk 'NR==1 {print $2}' "$TMP_FILE")
+            if [[ $HTTP_STATUS_CODE -ge 200 ]] && [[ $HTTP_STATUS_CODE -le 299 ]]; then
+              GITHUB_API_BASEURL='https://github-cache.yingmale.win/api'
+              echo "info: github cache is ready, will use ${GITHUB_API_BASEURL} as GITHUB_API_BASEURL."
+            fi
+          fi
+          "rm" -f "$TMP_FILE"
+
+          echo "GITHUB_API_BASEURL=${GITHUB_API_BASEURL}" >> $GITHUB_ENV
           echo "RELEASE_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
           echo "REPO_URL=github.com/${{ github.repository }}" >> $GITHUB_ENV
           echo "checksec_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/slimm609/checksec.sh/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/slimm609/checksec.sh/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "bashrc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc' |
+                "${GITHUB_API_BASEURL}/repos/IceCodeNew/myrc/commits?per_page=1&path=.bashrc" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "mold_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/rui314/mold/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/rui314/mold/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "github_release_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/github-release/github-release/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/github-release/github-release/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "go_mmproxy_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/goreleaser/nfpm/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/goreleaser/nfpm/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "nfpm_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/goreleaser/nfpm/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/goreleaser/nfpm/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "mmp_go_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/Qv2ray/mmp-go/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/Qv2ray/mmp-go/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "CADDY_VERSION=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/caddyserver/caddy/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/caddyserver/caddy/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "caddydns_cloudflare_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/caddy-dns/cloudflare/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/caddy-dns/cloudflare/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "caddy_jsoncadapter_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/caddyserver/jsonc-adapter/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/caddyserver/jsonc-adapter/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "caddy_nginxadapter_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/caddyserver/nginx-adapter/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/caddyserver/nginx-adapter/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "caddy_geoip_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/porech/caddy-maxmind-geolocation/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "caddy_proxyprotocol_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/mastercactapus/caddy2-proxyprotocol/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/mastercactapus/caddy2-proxyprotocol/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "caddy_l4_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/mholt/caddy-l4/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/mholt/caddy-l4/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "caddy_security_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/greenpau/caddy-security/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/greenpau/caddy-security/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "caddy_naiveproxy_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/klzgrad/forwardproxy/commits?per_page=1&sha=naive' |
+                "${GITHUB_API_BASEURL}/repos/klzgrad/forwardproxy/commits?per_page=1&sha=naive" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "age_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/FiloSottile/age/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/FiloSottile/age/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "mtg_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/9seconds/mtg/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/9seconds/mtg/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "pget_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/Code-Hex/pget/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/Code-Hex/pget/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "shfmt_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/mvdan/sh/commits?per_page=1&path=go.mod' |
+                "${GITHUB_API_BASEURL}/repos/mvdan/sh/commits?per_page=1&path=go.mod" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "croc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/schollz/croc/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/schollz/croc/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "mosdns_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/IrineSistiana/mosdns/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/IrineSistiana/mosdns/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "shadowsocks_go_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/shadowsocks/go-shadowsocks2/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/shadowsocks/go-shadowsocks2/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           # echo "frp_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-          #       'https://api.github.com/repos/fatedier/frp/commits?per_page=1' |
+          #       "${GITHUB_API_BASEURL}/repos/fatedier/frp/commits?per_page=1" |
           #       grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "nali_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/zu1k/nali/commits?per_page=1&path=go.mod' |
+                "${GITHUB_API_BASEURL}/repos/zu1k/nali/commits?per_page=1&path=go.mod" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "dnslookup_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/ameshkov/dnslookup/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/ameshkov/dnslookup/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "wgcf_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/ViRb3/wgcf/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/ViRb3/wgcf/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "dive_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/wagoodman/dive/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/wagoodman/dive/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "dive_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/wagoodman/dive/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/wagoodman/dive/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "duf_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/muesli/duf/commits?per_page=1&path=go.mod' |
+                "${GITHUB_API_BASEURL}/repos/muesli/duf/commits?per_page=1&path=go.mod" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "wuzz_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/asciimoo/wuzz/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/asciimoo/wuzz/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "httpstat_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/davecheney/httpstat/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/davecheney/httpstat/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           # echo "chisel_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-          #       'https://api.github.com/repos/jpillora/chisel/commits?per_page=1' |
+          #       "${GITHUB_API_BASEURL}/repos/jpillora/chisel/commits?per_page=1" |
           #       grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "cloudflarespeedtest_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/XIU2/CloudflareSpeedTest/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/XIU2/CloudflareSpeedTest/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "netflix_verify_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/sjlleo/netflix-verify/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/sjlleo/netflix-verify/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "piknik_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/jedisct1/piknik/commits?per_page=1' |
+                "${GITHUB_API_BASEURL}/repos/jedisct1/piknik/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "apk_file_latest_tag_name=$(curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
-                'https://api.github.com/repos/genuinetools/apk-file/releases/latest' |
+                "${GITHUB_API_BASEURL}/repos/genuinetools/apk-file/releases/latest" |
                 grep -F 'tag_name' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "golang_latest_tag_name=$(for i in {1..16}; do \
                   if curl -sSL --fail --retry 5 --retry-delay 10 --retry-max-time 60 -H 'Accept: application/vnd.github.v3+json' \
@@ -156,6 +169,7 @@ jobs:
                 done)" >> $GITHUB_ENV
           echo "build_base_date=$(TZ=':Asia/Taipei' date +%F)" >> $GITHUB_ENV
           echo "cachebust=$(date +%s)" >> $GITHUB_ENV
+          set +x
         shell: bash
       # Runs a set of commands using the runners shell
       - name: Force push `release` branch
