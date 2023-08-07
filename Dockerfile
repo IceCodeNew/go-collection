@@ -67,8 +67,6 @@ ARG caddy_jsoncadapter_latest_commit_hash='825ee096306c2af9a28858f0db87fb982795c
 ARG caddy_nginxadapter_latest_commit_hash='77eae3ff99cb283fd474a9a59f7b652de3d6b61d'
 # https://api.github.com/repos/porech/caddy-maxmind-geolocation/commits?per_page=1
 ARG caddy_geoip_latest_commit_hash='d500cc3ca64b734da42e0f0446003f437c915ac8'
-# https://api.github.com/repos/mastercactapus/caddy2-proxyprotocol/commits?per_page=1
-ARG caddy_proxyprotocol_latest_commit_hash='8cd17723e0ed50a258a2f8b498155cd9a5ece941'
 # https://api.github.com/repos/mholt/caddy-l4/commits?per_page=1
 ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
 # https://api.github.com/repos/greenpau/caddy-security/commits?per_page=1
@@ -83,12 +81,11 @@ RUN apk --no-progress --no-cache add \
     && go install -trimpath -v github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
     && /go/bin/xcaddy build \
     master \
-    --output "/go/bin/caddy-with-cfdns-geoip-proxyproto-l4-aaa-naiveproxy" \
+    --output "/go/bin/caddy-with-cfdns-geoip-l4-aaa-naiveproxy" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
     --with github.com/caddyserver/nginx-adapter@master \
     --with github.com/porech/caddy-maxmind-geolocation@master \
-    --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
     --with github.com/greenpau/caddy-security@main \
     --with github.com/caddyserver/forwardproxy@caddy2=github.com/sagernet/forwardproxy@naive \
@@ -96,12 +93,11 @@ RUN apk --no-progress --no-cache add \
 ### Build for windows
     && GOOS=windows GOARCH=amd64 /go/bin/xcaddy build \
     master \
-    --output "/go/bin/caddy-with-cfdns-geoip-proxyproto-l4-aaa-naiveproxy.exe" \
+    --output "/go/bin/caddy-with-cfdns-geoip-l4-aaa-naiveproxy.exe" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
     --with github.com/caddyserver/nginx-adapter@master \
     --with github.com/porech/caddy-maxmind-geolocation@master \
-    --with github.com/mastercactapus/caddy2-proxyprotocol@master \
     --with github.com/mholt/caddy-l4@master \
     --with github.com/greenpau/caddy-security@main \
     --with github.com/caddyserver/forwardproxy@caddy2=github.com/sagernet/forwardproxy@naive \
