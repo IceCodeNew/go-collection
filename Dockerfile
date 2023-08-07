@@ -71,8 +71,6 @@ ARG caddy_geoip_latest_commit_hash='d500cc3ca64b734da42e0f0446003f437c915ac8'
 ARG caddy_l4_latest_commit_hash='bf3444c4665a1d7e0df58c2f4e9fbafc2aa1ed29'
 # https://api.github.com/repos/greenpau/caddy-security/commits?per_page=1
 ARG caddy_security_latest_commit_hash='f9f1ae33acdada511074d839471ffc011930af94'
-# https://api.github.com/repos/sagernet/forwardproxy/commits?per_page=1&sha=naive
-ARG caddy_naiveproxy_latest_commit_hash='fd36315f08f51e3253f10d3b98e8508f3f2a98b0'
 RUN apk --no-progress --no-cache add \
     binutils \
     && go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
@@ -81,26 +79,24 @@ RUN apk --no-progress --no-cache add \
     && go install -trimpath -v github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
     && /go/bin/xcaddy build \
     master \
-    --output "/go/bin/caddy-with-cfdns-geoip-l4-aaa-naiveproxy" \
+    --output "/go/bin/caddy-with-cfdns-geoip-l4-aaa" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
     --with github.com/caddyserver/nginx-adapter@master \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mholt/caddy-l4@master \
     --with github.com/greenpau/caddy-security@main \
-    --with github.com/caddyserver/forwardproxy@caddy2=github.com/sagernet/forwardproxy@naive \
     && strip "/go/bin"/* \
 ### Build for windows
     && GOOS=windows GOARCH=amd64 /go/bin/xcaddy build \
     master \
-    --output "/go/bin/caddy-with-cfdns-geoip-l4-aaa-naiveproxy.exe" \
+    --output "/go/bin/caddy-with-cfdns-geoip-l4-aaa.exe" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
     --with github.com/caddyserver/nginx-adapter@master \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mholt/caddy-l4@master \
     --with github.com/greenpau/caddy-security@main \
-    --with github.com/caddyserver/forwardproxy@caddy2=github.com/sagernet/forwardproxy@naive \
     && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS age
