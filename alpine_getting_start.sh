@@ -372,12 +372,7 @@ install_binaries() {
     rm '/usr/local/bin/desed'
   fi
 
-  # shellcheck disable=SC2154
-  if [[ x"$(echo "${install_fnm:=no}" | cut -c1)" = x'y' ]]; then
-    curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/rust-collection/latest-release/assets/fnm" '/usr/local/bin/fnm'
-  else
-    rm '/usr/local/bin/fnm'
-  fi
+  rm '/usr/local/bin/fnm'
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_rsign:=yes}" | cut -c1)" = x'y' ]]; then
