@@ -3,11 +3,11 @@
 #
 # --- Script Version ---
 # Name    : alpine_getting_start.sh
-# Version : de3f7df (1 commit after this ref)
+# Version : 0b90cc9 (1 commit after this ref)
 # Author  : IceCodeNew
 # Date    : Fri Jan 13th, 2023
 # Download: https://raw.githubusercontents.com/IceCodeNew/go-collection/master/alpine_getting_start.sh
-readonly local_script_version='de3f7df'
+readonly local_script_version='0b90cc9'
 
 # Shell functions are only known to the shell. External commands like `find`, `xargs`, `su` and `sudo` do not recognize shell functions.
 # Instead, the function contents can be executed in a shell, either through sh -c or by creating a separate shell script as an executable file.
