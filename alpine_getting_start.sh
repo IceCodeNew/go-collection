@@ -302,22 +302,25 @@ install_binaries() {
   ################
 
   tmp_dir=$(mktemp -d) && pushd "$tmp_dir" || exit 1
-  dog_latest_tag_name="$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
-    'https://api.github.com/repos/ogham/dog/tags?per_page=100' |
-      grep 'name' | cut -d'"' -f4 | grep -vE 'alpha|beta|rc|test|week|pre' |
-      sort -rV | head -1)" && \
-  export dog_latest_tag_name && \
-  download_url="https://github.com/ogham/dog/releases/download/${dog_latest_tag_name}/dog-${dog_latest_tag_name}-x86_64-unknown-linux-gnu.zip" && \
-    [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
-          sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
-  if curl "$download_url" | sudo bsdtar -xf-; then
-    /bin/cp -rfpv -- * /usr/local/
-  fi
+  q_latest_tag_name=$(curl -sSL -H 'Accept: application/vnd.github.v3+json' \
+    "${GITHUB_API_BASEURL:=https://api.github.com}/repos/natesales/q/releases/latest" | \
+    grep -F 'tag_name' | cut -d'"' -f4) \
+    && _filename="q_${q_latest_tag_name#v}_linux_amd64.tar.gz" \
+    && download_url="https://github.com/natesales/q/releases/download/${q_latest_tag_name}/${_filename}" \
+    && [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g' <<< "$download_url") \
+    && if curl "$download_url" | \
+      bsdtar -xf- -- ./q; then
+      sudo "$(type -P install)" -pvD './q' '/usr/local/bin/'
+    fi
   popd || exit 1
-  /bin/rm -rf "$tmp_dir"
+  rm -rf "$tmp_dir"
   dirs -c
 
-  curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/rust-collection/latest-release/assets/dog" '/usr/local/bin/dog'
+  rm /usr/local/bin/dog \
+    /usr/local/completions/dog.bash \
+    /usr/local/completions/dog.fish \
+    /usr/local/completions/dog.zsh \
+    /usr/local/man/dog.1 \
 
   ################
 
