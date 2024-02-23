@@ -5,7 +5,7 @@ ARG github_release_latest_tag_name='v0.9.0'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/github-release/github-release@latest \
+    && go install -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -v github.com/github-release/github-release@latest \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -20,7 +20,7 @@ RUN source "/root/.bashrc" \
     && go env -w GOAMD64=v2 \
     && git_clone 'https://github.com/path-network/go-mmproxy.git' '/go/src/go-mmproxy' \
     && go mod download \
-    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/go-mmproxy -v . \
+    && go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -o /go/bin/go-mmproxy -v . \
     && strip "/go/bin"/* \
     && /go/bin/go-mmproxy --version \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
@@ -36,7 +36,7 @@ RUN source "/root/.bashrc" \
     && go env -w GOAMD64=v2 \
     && git_clone 'https://github.com/goreleaser/nfpm.git' '/go/src/nfpm' \
     && go mod download \
-    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/nfpm -v cmd/nfpm/main.go \
+    && go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -o /go/bin/nfpm -v cmd/nfpm/main.go \
     && strip "/go/bin"/* \
     && /go/bin/nfpm --version \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
@@ -51,7 +51,7 @@ RUN source "/root/.bashrc" \
     && go env -w GO111MODULE=on \
     && go env -w GOAMD64=v2 \
     && git_clone 'https://github.com/Qv2ray/mmp-go.git' '/go/src/mmp-go' \
-    && go build -trimpath -ldflags="-linkmode=external -X 'github.com/Qv2ray/mmp-go/config.Version=$(git describe --tags --long --always)' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/mmp-go -v . \
+    && go build -trimpath -ldflags="-X 'github.com/Qv2ray/mmp-go/config.Version=$(git describe --tags --long --always)' -s -w -buildid=" -buildmode=pie -o /go/bin/mmp-go -v . \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -103,11 +103,11 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
     && git_clone 'https://github.com/FiloSottile/age.git' '/go/src/age' \
-    && go build -trimpath -ldflags="-linkmode=external -X 'main.Version=$(git describe --tags --long --always) ($(go version))' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/ -v ./cmd/... \
+    && go build -trimpath -ldflags="-X 'main.Version=$(git describe --tags --long --always) ($(go version))' -s -w -buildid=" -buildmode=pie -o /go/bin/ -v ./cmd/... \
     && strip "/go/bin"/* \
     && mv "/go/bin/age" "/go/bin/age-keygen" ./ \
     && bsdtar --no-xattrs -a -cf /go/bin/age-linux-amd64.tar.gz ./age ./age-keygen
-RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X 'main.Version=$(git describe --tags --long --always) ($(go version))' -buildid=" -o /go/bin/ -v ./cmd/... \
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-X 'main.Version=$(git describe --tags --long --always) ($(go version))' -s -w -buildid=" -buildmode=pie -o /go/bin/ -v ./cmd/... \
     && mv "/go/bin/age.exe" "/go/bin/age-keygen.exe" ./ \
     && bsdtar --no-xattrs -a -cf /go/bin/age-windows-amd64.zip ./age.exe ./age-keygen.exe \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
@@ -123,7 +123,7 @@ RUN source "/root/.bashrc" \
     && go env -w GOAMD64=v2 \
     # && git_clone 'https://github.com/9seconds/mtg.git' --branch 'stable' '/go/src/mtg' \
     && git_clone 'https://github.com/9seconds/mtg.git' '/go/src/mtg' \
-    && go build -trimpath -ldflags="-linkmode=external -X 'main.version=$(git describe --tags --long --always) ($(go version)) [$(date -Ru)]' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/mtg -v . \
+    && go build -trimpath -ldflags="-X 'main.version=$(git describe --tags --long --always) ($(go version)) [$(date -Ru)]' -s -w -buildid=" -buildmode=pie -o /go/bin/mtg -v . \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -134,7 +134,7 @@ ARG pget_latest_tag_name='v0.1.1'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/Code-Hex/pget/cmd/pget@latest \
+    && go install -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -v github.com/Code-Hex/pget/cmd/pget@latest \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -146,7 +146,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GO111MODULE=on \
     && go env -w GOAMD64=v2 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v mvdan.cc/sh/v3/cmd/shfmt@latest \
+    && go install -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -v mvdan.cc/sh/v3/cmd/shfmt@latest \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -160,9 +160,9 @@ RUN source "/root/.bashrc" \
     && go env -w GO111MODULE=on \
     && go env -w GOAMD64=v2 \
     && git_clone 'https://github.com/schollz/croc.git' '/go/src/croc' \
-    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/croc -v . \
+    && go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -o /go/bin/croc -v . \
     && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/croc.exe -v . \
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -o /go/bin/croc.exe -v . \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS shadowsocks-go
@@ -174,9 +174,9 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
     && git_clone 'https://github.com/database64128/shadowsocks-go.git' '/go/src/shadowsocks-go' \
-    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/ -v ./cmd/shadowsocks-go \
+    && go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -o /go/bin/ -v ./cmd/shadowsocks-go \
     && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/ -v ./cmd/shadowsocks-go \
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -o /go/bin/ -v ./cmd/shadowsocks-go \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS nali
@@ -186,7 +186,7 @@ ARG nali_latest_commit_hash='9b0aa92bd4a677a9e61f27be5e1cce30b8040fc9'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/zu1k/nali@latest \
+    && go install -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -v github.com/zu1k/nali@latest \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -199,7 +199,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
     && git_clone 'https://github.com/ViRb3/wgcf.git' '/go/src/wgcf' \
-    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/wgcf -v . \
+    && go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -o /go/bin/wgcf -v . \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -213,7 +213,7 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
     && git_clone 'https://github.com/wagoodman/dive.git' '/go/src/dive' \
-    && go build -trimpath -ldflags="-linkmode=external -X main.version=${dive_latest_tag_name} -X 'main.commit=${dive_latest_commit_hash} -X main.buildTime=$(date -u --rfc-3339=seconds)' -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/dive -v . \
+    && go build -trimpath -ldflags="-X 'main.version=${dive_latest_tag_name}' -X 'main.commit=${dive_latest_commit_hash}' -X 'main.buildTime=$(date -u --rfc-3339=seconds)' -s -w -buildid=" -buildmode=pie -o /go/bin/dive -v . \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -224,7 +224,7 @@ ARG duf_latest_commit_hash='02161643e0fb8530aa13bfbcfefad79bd8ffdf3c'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/muesli/duf@latest \
+    && go install -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -v github.com/muesli/duf@latest \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -235,7 +235,7 @@ ARG wuzz_latest_commit_hash='0935ebdf55d223abbf0fd10cb8f0f9c0a323ccb7'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/asciimoo/wuzz@latest \
+    && go install -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -v github.com/asciimoo/wuzz@latest \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -246,7 +246,7 @@ ARG httpstat_latest_commit_hash='48531c3e2d3e4cd51f04c33002898d81d61e0c93'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/davecheney/httpstat@latest \
+    && go install -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -v github.com/davecheney/httpstat@latest \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -259,9 +259,9 @@ RUN source "/root/.bashrc" \
 #     && go env -w CGO_ENABLED=0 \
 #     && go env -w GOAMD64=v2 \
 #     && git_clone 'https://github.com/jpillora/chisel.git' '/go/src/chisel' \
-#     && go build -trimpath -ldflags="-linkmode=external -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/chisel -v . \
+#     && go build -trimpath -ldflags="-X 'github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always)' -s -w -buildid=" -buildmode=pie -o /go/bin/chisel -v . \
 #     && strip "/go/bin"/*
-# RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always) -buildid=" -o /go/bin/chisel.exe -v . \
+# RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X 'github.com/jpillora/chisel/share.BuildVersion=$(git describe --tags --long --always)' -buildid=" -buildmode=pie -o /go/bin/chisel.exe -v . \
 #     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS cloudflarespeedtest
@@ -273,9 +273,9 @@ RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
     && git_clone 'https://github.com/XIU2/CloudflareSpeedTest.git' '/go/src/CloudflareSpeedTest' \
-    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/CloudflareST -v . \
+    && go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -o /go/bin/CloudflareST -v . \
     && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/CloudflareST.exe -v . \
+RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -o /go/bin/CloudflareST.exe -v . \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS netflix-verify
@@ -289,7 +289,7 @@ RUN source "/root/.bashrc" \
     && git_clone 'https://github.com/sjlleo/netflix-verify.git' '/go/src/netflix-verify' \
     && go mod init \
     && go mod tidy \
-    && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/nf -v . \
+    && go build -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -o /go/bin/nf -v . \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
@@ -300,9 +300,9 @@ ARG piknik_latest_commit_hash='00ee34cd9fe6c6c3fca2ba954c93e2a3b129f45c'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/jedisct1/piknik@latest \
+    && go install -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -v github.com/jedisct1/piknik@latest \
     && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 go install -trimpath -ldflags="-s -w -buildid=" -v github.com/jedisct1/piknik@latest \
+RUN GOOS=windows GOARCH=amd64 go install -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -v github.com/jedisct1/piknik@latest \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS apk-file
@@ -312,7 +312,7 @@ ARG apk_file_latest_tag_name='v0.3.6'
 RUN source "/root/.bashrc" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
-    && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/genuinetools/apk-file@latest \
+    && go install -trimpath -ldflags="-s -w -buildid=" -buildmode=pie -v github.com/genuinetools/apk-file@latest \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
