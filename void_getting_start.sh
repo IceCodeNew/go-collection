@@ -9,6 +9,26 @@
 # Download: https://raw.githubusercontents.com/IceCodeNew/go-collection/master/void_getting_start.sh
 readonly local_script_version='6f54565'
 
+# Shell functions are only known to the shell. External commands like `find`, `xargs`, `su` and `sudo` do not recognize shell functions.
+# Instead, the function contents can be executed in a shell, either through sh -c or by creating a separate shell script as an executable file.
+## Refer: https://github.com/koalaman/shellcheck/wiki/SC2033
+
+cd() {
+  command cd "$@" || exit 1
+}
+cp() {
+  sudo "$(type -P cp)" -f "$@"
+}
+mv() {
+  sudo "$(type -P mv)" -f "$@"
+}
+rm() {
+  sudo "$(type -P rm)" -f "$@"
+}
+install() {
+  sudo "$(type -P install)" "$@"
+}
+
 curl_path="$(type -P curl)"
 # geo_country="$(curl 'https://api.myip.la/en?json' | jq . | grep country_code | cut -d'"' -f4)"
 # [[ x"$geo_country" = x'CN' ]] && curl_path="$(type -P curl) --retry-connrefused"
@@ -27,7 +47,7 @@ curl_to_dest() {
       find . -maxdepth 1 -type f -print0 | xargs -0 -I {} -r -s 2000 sudo "$(type -P install)" -pvD "{}" "$2"
     fi
     popd || exit 1
-    /bin/rm -rf "$tmp_dir"
+    rm -rf "$tmp_dir"
   fi
 }
 git_clone() {
@@ -52,7 +72,7 @@ self_update() {
     install_binaries
   sleep $(( ( RANDOM % 10 ) + 1 ))s && curl -i "https://purge.jsdelivr.net/gh/IceCodeNew/go-collection@master/void_getting_start.sh"
   curl -o "$HOME/void_getting_start.sh.tmp" -- 'https://raw.githubusercontents.com/IceCodeNew/go-collection/master/void_getting_start.sh' &&
-    dos2unix "$HOME/void_getting_start.sh.tmp" && /bin/mv -f "$HOME/void_getting_start.sh.tmp" "$HOME/void_getting_start.sh" &&
+    dos2unix "$HOME/void_getting_start.sh.tmp" && mv -f "$HOME/void_getting_start.sh.tmp" "$HOME/void_getting_start.sh" &&
     echo 'Upgrade successful!' && exit 1
 }
 
@@ -72,7 +92,7 @@ install_binaries() {
     sudo make setuid PREFIX=/usr && \
     sudo strip /usr/bin/btop && \
   popd || exit 1
-  /bin/rm -rf "$tmp_dir"
+  rm -rf "$tmp_dir"
   dirs -c
 
    ########
@@ -85,10 +105,10 @@ install_binaries() {
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
       sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
   if curl -fsSL "$download_url" | sudo bsdtar -xf- --strip-components 1; then
-    /bin/cp -rfpv -- * /usr/
+    cp -rfpv -- * /usr/
   fi
   popd || exit 1
-  /bin/rm -rf "$tmp_dir"
+  rm -rf "$tmp_dir"
   dirs -c
 
   download_url="https://github.com/haampie/libtree/releases/latest/download/libtree_x86_64" && \
@@ -106,10 +126,10 @@ install_binaries() {
   [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
     sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
   if curl "$download_url" | bsdtar -xf- --strip-components 1; then
-    sudo "$(type -P install)" -pvD './lnav' '/usr/local/bin/lnav'
+    install -pvD './lnav' '/usr/local/bin/lnav'
   fi
   popd || exit 1
-  /bin/rm -rf "$tmp_dir"
+  rm -rf "$tmp_dir"
   dirs -c
 
   ########
@@ -122,17 +142,17 @@ install_binaries() {
   if [[ x"$(echo "${install_go_mmproxy:=yes}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/go-mmproxy" '/usr/local/bin/go-mmproxy'
   else
-    sudo rm '/usr/local/bin/go-mmproxy'
+    rm '/usr/local/bin/go-mmproxy'
   fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_shfmt:=yes}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/shfmt" '/usr/local/bin/shfmt'
   else
-    sudo rm '/usr/local/bin/shfmt'
+    rm '/usr/local/bin/shfmt'
   fi
 
-  sudo /bin/rm -f '/usr/local/bin/mosdns'
+  rm -f '/usr/local/bin/mosdns'
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_ss_rust:=yes}" | cut -c1)" = x'y' ]]; then
@@ -145,29 +165,29 @@ install_binaries() {
     fi
     if curl "https://raw.githubusercontents.com/IceCodeNew/rust-collection/latest-release/assets/${ss_rust_file_name}" | bsdtar -xf-; then
       if [[ x"$ss_rust_file_name" = x'ss-rust-linux-gnu-x64.tar.xz' ]]; then
-        sudo "$(type -P install)" -pvD './ssservice' '/usr/local/bin/ssservice' &&
+        install -pvD './ssservice' '/usr/local/bin/ssservice' &&
         sudo ln -fs '/usr/local/bin/ssservice' '/usr/local/bin/sslocal' &&
         sudo ln -fs '/usr/local/bin/ssservice' '/usr/local/bin/ssmanager' &&
         sudo ln -fs '/usr/local/bin/ssservice' '/usr/local/bin/ssserver' &&
-        sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
+        install -pvD './ssurl' '/usr/local/bin/ssurl'
       else
-        sudo "$(type -P install)" -pvD './ssmanager' '/usr/local/bin/ssmanager'
-        sudo "$(type -P install)" -pvD './ssserver' '/usr/local/bin/ssserver'
-        sudo "$(type -P install)" -pvD './ssurl' '/usr/local/bin/ssurl'
+        install -pvD './ssmanager' '/usr/local/bin/ssmanager'
+        install -pvD './ssserver' '/usr/local/bin/ssserver'
+        install -pvD './ssurl' '/usr/local/bin/ssurl'
       fi
     fi
     popd || exit 1
-    /bin/rm -rf "$tmp_dir"
+    rm -rf "$tmp_dir"
   else
-    sudo rm '/usr/local/bin/sslocal' '/usr/local/bin/ssmanager' '/usr/local/bin/ssserver' '/usr/local/bin/ssurl'
+    rm '/usr/local/bin/sslocal' '/usr/local/bin/ssmanager' '/usr/local/bin/ssserver' '/usr/local/bin/ssurl'
   fi
 
   if [[ x"$(echo "${install_go_shadowsocks:=yes}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/shadowsocks-go" '/usr/local/bin/shadowsocks-go'
   else
-    sudo rm '/usr/local/bin/shadowsocks-go'
+    rm '/usr/local/bin/shadowsocks-go'
   fi
-  sudo rm '/usr/local/bin/go-shadowsocks2' '/usr/local/bin/v2ray-plugin'
+  rm '/usr/local/bin/go-shadowsocks2' '/usr/local/bin/v2ray-plugin'
 
   if [[ x"$(echo "${install_naiveproxy:=yes}" | cut -c1)" = x'y' ]]; then
     tmp_dir=$(mktemp -d)
@@ -181,26 +201,26 @@ install_binaries() {
     # Need glibc runtime.
     sudo strip './naive' -o '/usr/local/bin/naive'
     popd || exit 1
-    /bin/rm -rf "$tmp_dir"
+    rm -rf "$tmp_dir"
   else
-    sudo rm '/usr/local/bin/naive'
+    rm '/usr/local/bin/naive'
   fi
 
-  sudo rm '/usr/local/bin/overmind'
+  rm '/usr/local/bin/overmind'
 
-  sudo /bin/rm -f '/usr/local/bin/frpc' '/usr/local/bin/frps'
+  rm -f '/usr/local/bin/frpc' '/usr/local/bin/frps'
 
   # # shellcheck disable=SC2154
   # if [[ x"$(echo "${install_chisel:=no}" | cut -c1)" = x'y' ]]; then
   #   curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/chisel" '/usr/local/bin/chisel'
   # else
-  sudo rm '/usr/local/bin/chisel'
+  rm '/usr/local/bin/chisel'
   # fi
 
   if [[ x"$(echo "${install_pget:=yes}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/pget" '/usr/local/bin/pget'
   else
-    sudo rm '/usr/local/bin/pget'
+    rm '/usr/local/bin/pget'
   fi
 
   ################
@@ -214,7 +234,7 @@ install_binaries() {
     && [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g' <<< "$download_url") \
     && if curl "$download_url" | \
       bsdtar -xf- -- ./q; then
-      sudo "$(type -P install)" -pvD './q' '/usr/local/bin/'
+      install -pvD './q' '/usr/local/bin/'
     fi
   popd || exit 1
   rm -rf "$tmp_dir"
@@ -232,35 +252,35 @@ install_binaries() {
   if [[ x"$(echo "${install_qft:=no}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/rust-collection/latest-release/assets/qft" '/usr/local/bin/qft'
   else
-    sudo rm '/usr/local/bin/qft'
+    rm '/usr/local/bin/qft'
   fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_websocat:=no}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/rust-collection/latest-release/assets/websocat" '/usr/local/bin/websocat'
   else
-    sudo rm '/usr/local/bin/websocat'
+    rm '/usr/local/bin/websocat'
   fi
 
   # # shellcheck disable=SC2154
   # if [[ x"$(echo "${install_rsign:=yes}" | cut -c1)" = x'y' ]]; then
   #   curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/rust-collection/latest-release/assets/rsign" '/usr/local/bin/rsign'
   # else
-  #   sudo rm '/usr/local/bin/rsign'
+  #   rm '/usr/local/bin/rsign'
   # fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_b3sum:=yes}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/rust-collection/latest-release/assets/b3sum" '/usr/local/bin/b3sum'
   else
-    sudo rm '/usr/local/bin/b3sum'
+    rm '/usr/local/bin/b3sum'
   fi
 
   # # shellcheck disable=SC2154
   # if [[ x"$(echo "${install_nali:=yes}" | cut -c1)" = x'y' ]]; then
   #   curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/nali" '/usr/local/bin/nali'
   # else
-  #   sudo rm '/usr/local/bin/nali'
+  #   rm '/usr/local/bin/nali'
   # fi
 
   # # shellcheck disable=SC2154
@@ -268,55 +288,55 @@ install_binaries() {
   #   tmp_dir=$(mktemp -d)
   #   pushd "$tmp_dir" || exit 1
   #   if curl "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/age-linux-amd64.tar.gz" | bsdtar -xf-; then
-  #     sudo "$(type -P install)" -pvD './age' '/usr/local/bin/age'
-  #     sudo "$(type -P install)" -pvD './age-keygen' '/usr/local/bin/age-keygen'
+  #     install -pvD './age' '/usr/local/bin/age'
+  #     install -pvD './age-keygen' '/usr/local/bin/age-keygen'
   #   fi
   #   popd || exit 1
-  #   /bin/rm -rf "$tmp_dir"
+  #   rm -rf "$tmp_dir"
   # else
-  #   sudo rm '/usr/local/bin/age' '/usr/local/bin/age-keygen'
+  #   rm '/usr/local/bin/age' '/usr/local/bin/age-keygen'
   # fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_mtg:=no}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/mtg" '/usr/local/bin/mtg'
   else
-    sudo rm '/usr/local/bin/mtg'
+    rm '/usr/local/bin/mtg'
   fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_wgcf:=no}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/wgcf" '/usr/local/bin/wgcf'
   else
-    sudo rm '/usr/local/bin/wgcf'
+    rm '/usr/local/bin/wgcf'
   fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_mmp_go:=no}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/mmp-go" '/usr/local/bin/mmp-go'
   else
-    sudo rm '/usr/local/bin/mmp-go'
+    rm '/usr/local/bin/mmp-go'
   fi
 
   # # shellcheck disable=SC2154
   # if [[ x"$(echo "${install_cloudflarest:=yes}" | cut -c1)" = x'y' ]]; then
   #   curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/CloudflareST" '/usr/local/bin/CloudflareST'
   # else
-  #   sudo rm '/usr/local/bin/CloudflareST'
+  #   rm '/usr/local/bin/CloudflareST'
   # fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_boringtun:=no}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/rust-collection/latest-release/assets/boringtun-linux-musl-x64" '/usr/local/bin/boringtun'
   else
-    sudo rm '/usr/local/bin/boringtun'
+    rm '/usr/local/bin/boringtun'
   fi
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_cfnts:=no}" | cut -c1)" = x'y' ]]; then
     curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/rust-collection/latest-release/assets/cfnts" '/usr/local/bin/cfnts'
   else
-    sudo rm '/usr/local/bin/cfnts'
+    rm '/usr/local/bin/cfnts'
   fi
 
   ################
@@ -330,7 +350,7 @@ install_binaries() {
     [[ x"${geoip_is_cn:0:1}" = x'y' ]] && download_url=$(echo "$download_url" |
       sed -E 's!(github.com/.+/download/)!ghproxy.com/https://\1!g')
   curl_to_dest "$download_url" '/usr/local/sbin/haproxy' &&
-      sudo rm -f /usr/bin/haproxy &&
+      rm -f /usr/bin/haproxy &&
       sudo ln -s /usr/local/sbin/haproxy /usr/bin/
 
   tmp_dir=$(mktemp -d)
@@ -345,14 +365,14 @@ install_binaries() {
     fi
   fi
 
-  sudo rm -f '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
+  rm -f '/usr/local/bin/caddy' '/usr/local/bin/xcaddy'
   curl -L "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/caddy.zst" |
-    unzstd -q --no-progress -o './caddy' && sudo "$(type -P install)" -pvD './caddy' '/usr/local/sbin/caddy' &&
-    sudo rm -f '/usr/bin/caddy' && sudo ln -s /usr/local/sbin/caddy /usr/bin/
+    unzstd -q --no-progress -o './caddy' && install -pvD './caddy' '/usr/local/sbin/caddy' &&
+    rm -f '/usr/bin/caddy' && sudo ln -s /usr/local/sbin/caddy /usr/bin/
   popd || exit 1
-  /bin/rm -rf "$tmp_dir"
+  rm -rf "$tmp_dir"
 
-  sudo rm -f '/usr/share/caddy/index.html' &&
+  rm -f '/usr/share/caddy/index.html' &&
     sudo mkdir -p '/usr/share/caddy' &&
     sudo "$(type -P curl)" -o '/usr/share/caddy/index.html' -- 'https://raw.githubusercontents.com/IceCodeNew/go-collection/master/usr/share/caddy/index.html'
 
