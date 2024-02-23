@@ -79,8 +79,8 @@ RUN apk --no-progress --no-cache add \
     && /go/bin/xcaddy build \
     --output "/go/bin/caddy-with-cfdns-geoip-l4" \
     --with github.com/caddy-dns/cloudflare@master \
-    --with github.com/caddyserver/jsonc-adapter@master \
-    --with github.com/caddyserver/nginx-adapter@master \
+    --with github.com/caddyserver/jsonc-adapter=github.com/IceCodeNew/jsonc-adapter@v0.0.0-20240223101055-68e1734195e4 \
+    --with github.com/caddyserver/nginx-adapter=github.com/IceCodeNew/nginx-adapter@v0.0.0-20240223210337-29abd988d74a \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mholt/caddy-l4@master \
     && strip "/go/bin"/* \
@@ -88,8 +88,8 @@ RUN apk --no-progress --no-cache add \
     && GOOS=windows GOARCH=amd64 /go/bin/xcaddy build \
     --output "/go/bin/caddy-with-cfdns-geoip-l4.exe" \
     --with github.com/caddy-dns/cloudflare@master \
-    --with github.com/caddyserver/jsonc-adapter@master \
-    --with github.com/caddyserver/nginx-adapter@master \
+    --with github.com/caddyserver/jsonc-adapter=github.com/IceCodeNew/jsonc-adapter@v0.0.0-20240223101055-68e1734195e4 \
+    --with github.com/caddyserver/nginx-adapter=github.com/IceCodeNew/nginx-adapter@v0.0.0-20240223210337-29abd988d74a \
     --with github.com/porech/caddy-maxmind-geolocation@master \
     --with github.com/mholt/caddy-l4@master \
     && rm -rf "/go/bin/xcaddy" "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
