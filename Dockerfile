@@ -74,9 +74,9 @@ RUN apk --no-progress --no-cache add \
     && go env -w GOFLAGS="$GOFLAGS -buildmode=pie" \
     && go env -w CGO_ENABLED=0 \
     && go env -w GOAMD64=v2 \
+    && go env -w GO111MODULE='on' \
     && go install -trimpath -v github.com/caddyserver/xcaddy/cmd/xcaddy@latest \
     && /go/bin/xcaddy build \
-    master \
     --output "/go/bin/caddy-with-cfdns-geoip-l4" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
@@ -86,7 +86,6 @@ RUN apk --no-progress --no-cache add \
     && strip "/go/bin"/* \
 ### Build for windows
     && GOOS=windows GOARCH=amd64 /go/bin/xcaddy build \
-    master \
     --output "/go/bin/caddy-with-cfdns-geoip-l4.exe" \
     --with github.com/caddy-dns/cloudflare@master \
     --with github.com/caddyserver/jsonc-adapter@master \
