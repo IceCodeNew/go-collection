@@ -211,12 +211,7 @@ install_binaries() {
     sudo rm '/usr/local/bin/nfpm'
   fi
 
-  # shellcheck disable=SC2154
-  if [[ x"$(echo "${install_mosdns:=no}" | cut -c1)" = x'y' ]]; then
-    curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/mosdns" '/usr/local/bin/mosdns'
-  else
-    sudo rm '/usr/local/bin/mosdns'
-  fi
+  sudo /bin/rm -f '/usr/local/bin/mosdns'
 
   # shellcheck disable=SC2154
   if [[ x"$(echo "${install_ss_rust:=yes}" | cut -c1)" = x'y' ]]; then
@@ -272,13 +267,7 @@ install_binaries() {
 
   sudo rm '/usr/local/bin/overmind'
 
-  # # shellcheck disable=SC2154
-  # if [[ x"$(echo "${install_frp:=no}" | cut -c1)" = x'y' ]]; then
-  #   curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/frpc" '/usr/local/bin/frpc'
-  #   curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/frps" '/usr/local/bin/frps'
-  # else
-  sudo rm '/usr/local/bin/frpc' '/usr/local/bin/frps'
-  # fi
+  sudo /bin/rm -f '/usr/local/bin/frpc' '/usr/local/bin/frps'
 
   # # shellcheck disable=SC2154
   # if [[ x"$(echo "${install_chisel:=no}" | cut -c1)" = x'y' ]]; then
@@ -308,11 +297,7 @@ install_binaries() {
     sudo rm '/usr/local/bin/duf'
   fi
 
-  if [[ x"$(echo "${install_dnslookup:=yes}" | cut -c1)" = x'y' ]]; then
-    curl_to_dest "https://raw.githubusercontents.com/IceCodeNew/go-collection/latest-release/assets/dnslookup" '/usr/local/bin/dnslookup'
-  else
-    sudo rm '/usr/local/bin/dnslookup'
-  fi
+  sudo /bin/rm -f '/usr/local/bin/dnslookup'
 
   ################
 

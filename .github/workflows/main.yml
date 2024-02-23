@@ -105,20 +105,11 @@ jobs:
           echo "croc_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 "${GITHUB_API_BASEURL}/repos/schollz/croc/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "mosdns_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                "${GITHUB_API_BASEURL}/repos/IrineSistiana/mosdns/commits?per_page=1" |
-                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "shadowsocks_go_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 "${GITHUB_API_BASEURL}/repos/shadowsocks/go-shadowsocks2/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
-          # echo "frp_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-          #       "${GITHUB_API_BASEURL}/repos/fatedier/frp/commits?per_page=1" |
-          #       grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "nali_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 "${GITHUB_API_BASEURL}/repos/zu1k/nali/commits?per_page=1&path=go.mod" |
-                grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
-          echo "dnslookup_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
-                "${GITHUB_API_BASEURL}/repos/ameshkov/dnslookup/commits?per_page=1" |
                 grep -Fm1 'sha' | cut -d'"' -f4)" >> $GITHUB_ENV
           echo "wgcf_latest_commit_hash=$(curl -sL -H 'Accept: application/vnd.github.v3+json' \
                 "${GITHUB_API_BASEURL}/repos/ViRb3/wgcf/commits?per_page=1" |
@@ -188,11 +179,8 @@ jobs:
           sed -i -E "s/^ARG pget_latest_tag_name=.+/ARG pget_latest_tag_name=${pget_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG shfmt_latest_commit_hash=.+/ARG shfmt_latest_commit_hash=${shfmt_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG croc_latest_commit_hash=.+/ARG croc_latest_commit_hash=${croc_latest_commit_hash:?empty value}/" Dockerfile
-          sed -i -E "s/^ARG mosdns_latest_commit_hash=.+/ARG mosdns_latest_commit_hash=${mosdns_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG shadowsocks_go_latest_commit_hash=.+/ARG shadowsocks_go_latest_commit_hash=${shadowsocks_go_latest_commit_hash:?empty value}/" Dockerfile
-          # sed -i -E "s/^ARG frp_latest_commit_hash=.+/ARG frp_latest_commit_hash=${frp_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG nali_latest_commit_hash=.+/ARG nali_latest_commit_hash=${nali_latest_commit_hash:?empty value}/" Dockerfile
-          sed -i -E "s/^ARG dnslookup_latest_commit_hash=.+/ARG dnslookup_latest_commit_hash=${dnslookup_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG wgcf_latest_commit_hash=.+/ARG wgcf_latest_commit_hash=${wgcf_latest_commit_hash:?empty value}/" Dockerfile
           sed -i -E "s/^ARG dive_latest_tag_name=.+/ARG dive_latest_tag_name=${dive_latest_tag_name:?empty value}/" Dockerfile
           sed -i -E "s/^ARG dive_latest_commit_hash=.+/ARG dive_latest_commit_hash=${dive_latest_commit_hash:?empty value}/" Dockerfile

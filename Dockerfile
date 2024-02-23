@@ -170,20 +170,6 @@ RUN source "/root/.bashrc" \
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/croc.exe -v . \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-FROM quay.io/icecodenew/go-collection:build_base AS mosdns
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# https://api.github.com/repos/IrineSistiana/mosdns/commits?per_page=1
-ARG mosdns_latest_commit_hash='5ee263d0b686404c93016351076851861a854eb4'
-WORKDIR '/go/src/mosdns'
-RUN source "/root/.bashrc" \
-    && go env -w CGO_ENABLED=0 \
-    && go env -w GOAMD64=v2 \
-    && git_clone 'https://github.com/IrineSistiana/mosdns.git' '/go/src/mosdns' \
-    && go build -trimpath -ldflags="-linkmode=external -X main.version=$(git describe --tags --long --always) -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/mosdns -v . \
-    && strip "/go/bin"/*
-RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -X main.version=$(git describe --tags --long --always) -buildid=" -o /go/bin/mosdns.exe -v . \
-    && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
-
 FROM quay.io/icecodenew/go-collection:build_base AS shadowsocks-go
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/database64128/shadowsocks-go/commits?per_page=1
@@ -198,23 +184,6 @@ RUN source "/root/.bashrc" \
 RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/ -v ./cmd/shadowsocks-go \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
-# FROM quay.io/icecodenew/go-collection:build_base AS frp
-# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# # https://api.github.com/repos/fatedier/frp/commits?per_page=1
-# ARG frp_latest_commit_hash='72595b2da84f7eaceac735dbe8fd45ff9668d92c'
-# WORKDIR '/go/src/frp'
-# RUN source "/root/.bashrc" \
-#     && go env -w CGO_ENABLED=0 \
-#     && go env -w GO111MODULE=on \
-#     && go env -w GOAMD64=v2 \
-#     && git_clone 'https://github.com/fatedier/frp.git' '/go/src/frp' \
-#     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/frpc -v ./cmd/frpc \
-#     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/frps -v ./cmd/frps \
-#     && strip "/go/bin"/*
-# RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/frpc.exe -v ./cmd/frpc \
-#     && GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/frps.exe -v ./cmd/frps \
-#     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
-
 FROM quay.io/icecodenew/go-collection:build_base AS nali
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # https://api.github.com/repos/zu1k/nali/commits?per_page=1&path=go.mod
@@ -225,21 +194,6 @@ RUN source "/root/.bashrc" \
     && go install -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -v github.com/zu1k/nali@latest \
     && strip "/go/bin"/* \
     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
-
-# FROM quay.io/icecodenew/go-collection:build_base AS dnslookup
-# SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-# # https://api.github.com/repos/ameshkov/dnslookup/commits?per_page=1
-# ARG dnslookup_latest_commit_hash='a20f98f33d92f88c10231536b77e4b8013aeecac'
-# WORKDIR '/go/src/dnslookup'
-# RUN source "/root/.bashrc" \
-#     && go env -w CGO_ENABLED=0 \
-#     && go env -w GO111MODULE=on \
-#     && go env -w GOAMD64=v2 \
-#     && git_clone 'https://github.com/ameshkov/dnslookup.git' '/go/src/dnslookup' \
-#     && go build -trimpath -ldflags="-linkmode=external -extldflags '-fuse-ld=lld -Wl,-z,noexecstack,-z,relro,-z,now,-z,defs -Wl,--icf=all -static-pie' -buildid=" -o /go/bin/dnslookup -v . \
-#     && strip "/go/bin"/*
-# RUN GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w -buildid=" -o /go/bin/dnslookup.exe -v . \
-#     && rm -rf "/root/.cache/go-build" "/go/pkg" "/go/src" || exit 0
 
 FROM quay.io/icecodenew/go-collection:build_base AS wgcf
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -378,11 +332,8 @@ COPY --from=mtg /go/bin /go/bin/
 COPY --from=pget /go/bin /go/bin/
 COPY --from=shfmt /go/bin /go/bin/
 COPY --from=croc /go/bin /go/bin/
-COPY --from=mosdns /go/bin /go/bin/
 COPY --from=shadowsocks-go /go/bin /go/bin/
-# COPY --from=frp /go/bin /go/bin/
 COPY --from=nali /go/bin /go/bin/
-# COPY --from=dnslookup /go/bin /go/bin/
 COPY --from=wgcf /go/bin /go/bin/
 COPY --from=dive /go/bin /go/bin/
 COPY --from=duf /go/bin /go/bin/
