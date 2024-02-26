@@ -45,10 +45,10 @@ jobs:
           docker cp dummy:/go/bin/ ./publish/assets
           docker rm -f dummy
           docker rmi -f quay.io/icecodenew/go-collection:latest
-          zstd -6 -T0 -o "./publish/assets/caddy.zst" "./publish/assets/caddy-with-cfdns-geoip-l4" &&
-            rm -f "./publish/assets/caddy-with-cfdns-geoip-l4"
-          zstd -6 -T0 -o "./publish/assets/caddy.exe.zst" "./publish/assets/caddy-with-cfdns-geoip-l4.exe" &&
-            rm -f "./publish/assets/caddy-with-cfdns-geoip-l4.exe"
+          zstd -6 -T0 -o "./publish/assets/caddy.zst" "./publish/assets/caddy-with-cfdns-l4" &&
+            rm -f "./publish/assets/caddy-with-cfdns-l4"
+          zstd -6 -T0 -o "./publish/assets/caddy.exe.zst" "./publish/assets/caddy-with-cfdns-l4.exe" &&
+            rm -f "./publish/assets/caddy-with-cfdns-l4.exe"
           # curl -sSLRfq --retry 5 --retry-delay 10 --retry-max-time 60 --compressed -o './publish/assets/v2ray-plugin' \
           #   -- "https://github.com/IceCodeNew/v2ray-plugin/releases/latest/download/v2ray-plugin_linux_amd64"
       - name: Git push assets to "latest-release" branch
